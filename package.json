@@ -6,9 +6,6 @@
   "scripts": {
     "build": "rimraf app/ && babel src/ --out-dir app/",
     "start": "npm run build && node app/server.js",
-    "serve": "nodemon app/server.js",
-    "dev-build": "rimraf build/ && babel src/ --out-dir build/ && nodemon build/server.js",
-    "dev-start": "node build/server.js",
     "test": "mocha --compilers js:@babel/register"
   },
   "author": "peerapat_suk",
