@@ -4,11 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "rimraf app/ && babel src/ --out-dir app/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "build": "rimraf app/ && babel src/ --out-dir app/",
+    "start": "npm run build && node app/server.js",
     "serve": "nodemon app/server.js",
-    "dev-build" : "rimraf build/ && babel src/ --out-dir build/ && nodemon build/server.js",
-    "dev-start" : "nodemon build/server.js",
-    "start": "npm run build && npm run serve",
+    "dev-build": "rimraf build/ && babel src/ --out-dir build/ && nodemon build/server.js",
+    "dev-start": "node build/server.js",
     "test": "mocha --compilers js:@babel/register"
   },
   "author": "peerapat_suk",

@@ -88,6 +88,7 @@
       
       ```sh
         docker pull node:10.10.0-alpine
+        docker run -d --name node-dev5 -p 8080:8080 docker-node:dev npm start 
       ```
 
   - Source code compressed file
@@ -113,10 +114,10 @@
   2. Build the image using `Dockerfile`
 
       ```sh
-        docker build -t fwg-api-rabbit:test .
+        docker build -t fwg/api-rabbit .
       ```
-        * `fwg-api-rabbit:test` is `repository:tag` you provide as desire (must not duplicate with exist repository)
-        * `.` is path where `Dockerfile` exist
+        * `-t` provide repository:tag
+        * `.` path where `Dockerfile` exist
 
       Check if image exist
 

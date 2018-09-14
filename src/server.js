@@ -7,6 +7,7 @@ import morgan from 'morgan'
 import routes from './routes'
 
 const port = process.env.PORT || 8080
+const hostname = process.env.HOST || '0.0.0.0'
 const app = express()
 
 
@@ -24,7 +25,7 @@ app.use(routes)
 
 console.log("Starting server...")
 
-app.listen(port, (err) => {
+app.listen(port, hostname, (err) => {
   if (err) {
     return console.log('Fail to intial server:', err);
   } else {
