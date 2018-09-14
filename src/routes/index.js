@@ -9,7 +9,7 @@ const router = express.Router()
 
 // Logging middleware
 router.use((req, res, next) => {
-  console.log(' [x] %s %s', req.method, req.url);
+  console.log(' [x] %s %s (log from router..)', req.method, req.url);
   next()
 });
 

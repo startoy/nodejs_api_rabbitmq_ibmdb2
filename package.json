@@ -4,9 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "rimraf dist/ && babel src/ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
-    "serve": "nodemon dist/server.js",
-    "start": "npm run build && nodemon dist/server.js",
+    "build": "rimraf app/ && babel src/ --out-dir app/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "serve": "nodemon app/server.js",
+    "start": "npm run build && npm run serve",
     "test": "mocha --compilers js:@babel/register"
   },
   "author": "peerapat_suk",
