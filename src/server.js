@@ -3,7 +3,7 @@
 import express from 'express'
 import morgan from 'morgan'
 
-/* import loggerFile from './logger' */
+import loggerFile from './logger'
 import routes from './routes'
 
 const port = process.env.PORT || 8080
@@ -17,9 +17,9 @@ app.use(morgan('dev', {
     return res.statusCode < 400
   }
 }))
-/* app.use(morgan('combined', {
+app.use(morgan('combined', {
   stream: loggerFile
-})) */
+}))
 
 app.use(routes)
 

@@ -78,6 +78,7 @@
       npm start
   ```
 
+
 # 3. Build from source to Docker image
 
   this will build Docker image from source code.
@@ -88,7 +89,6 @@
       
       ```sh
         docker pull node:10.10.0-alpine
-        docker run -d --name node-dev5 -p 8080:8080 docker-node:dev npm start 
       ```
 
   - Source code compressed file
@@ -104,7 +104,7 @@
 
       ```sh
         // if using zip
-        unzip -xvzf node-api-rabbitmq.zip
+        unzip node-api-rabbitmq.zip
 
         // if using tar
         tar -xvzf node-api-rabbitmq.tar.gz
@@ -124,13 +124,13 @@
       ```sh
         docker images
           REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
-          fwg-api-rabbit            test                da6d92132463        7 minutes ago       69.9 MB
+          fwg/api-rabbit            test                da6d92132463        7 minutes ago       69.9 MB
       ```
 
   6. Export the images from docker to .tar file
 
       ```sh
-        docker save -o apiRabbit.tar fwg-api-rabbit
+        docker save -o apiRabbit.tar fwg/api-rabbit
       ```
       - `apiRabbit.tar` name the path to image tar file (MUST PROVIDE .tar to it)
       - `fwg-api-rabbit` name of image or repository on docker
@@ -142,16 +142,37 @@
       ```
       - where `<path to image tar file>` is path to image tar file
 
+      Check if images exist on server
+
+      ```sh
+        docker images
+            REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+            fwg/api-rabbit      latest              a2554eac0192        8 seconds ago       95.8MB
+      ```
+
   8. Run container to serve service
 
       ```sh
-        docker run -d --name node-api-rabbit -p 8080:8080 node-api-rabbitmq:18.03.00.01
+        docker run -d --name node-api-rabbit -p 8080:8080 fwg/api-rabbit npm start 
       ```
-      `-d` run background
-      `--name` custom name
+      - `-d` run process in background. \
+      - `--name` custom container name. \
+      - `-p` map port whereis host port:containerport. \
+      - `fwg/api-rabbit` name of repository, if no tag provided, will use latest. \
+      - `npm start` running command, if not provided will use default command from Dockerfile.
 
+  9. See Docker logs
 
-      docker run -d --name _name -v "$(pwd)":/app \
--w /app -p 4000:3000 name:tag node server.js
+      ```sh
+        docker logs 438 -f 
+      ```
+      `438` first 3 characters of container id
 
-  TODO: make shell script to custom port (map port from container to outside by conig env)
+# REMARK
+
+  - If edit src in docker container make sure you did `docker exec -it <3cid> npm run build` then `docker restart <3cid>`
+  `<3cid>` is first 3 character of CONTAINER ID.
+
+  `TODO:` Make shell script to run with custom port which set by user or config. \
+  `TODO:` Dynamic log file to server's folder (since Ifrit cannot execute docker without root permission).
+
