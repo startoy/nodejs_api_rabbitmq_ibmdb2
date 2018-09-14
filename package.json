@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "build": "rimraf app/ && babel src/ --out-dir app/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
-    "serve": "node app/server.js",
+    "serve": "nodemon app/server.js",
+    "dev-build" : "rimraf build/ && babel src/ --out-dir build/ && nodemon build/server.js",
+    "dev-start" : "nodemon build/server.js",
     "start": "npm run build && npm run serve",
     "test": "mocha --compilers js:@babel/register"
   },
