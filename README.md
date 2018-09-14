@@ -7,6 +7,9 @@
 ## Prerequisites
 
   - Nodejs >= 8.9.4(test on Windows), 8.11.3(test on Ubuntu16)
+  - Source code compressed file
+  * Use `node-api-rabbitmq.zip` if server access the internet normally.
+  * Use `node-api-rabbitmq_w_modules.zip` if server offlines or can not access the internet. 
 
 ## Setup
 
@@ -75,35 +78,79 @@
       npm start
   ```
 
-## How to build to docker image
+# 3. Build from source to Docker image
 
   this will build Docker image from source code.
   
-### Require
+## Require
 
   - Docker image `Node` which `repo:tag` should be >= `node:10.10.0-alpine`
       
       ```sh
-        docker
+        docker pull node:10.10.0-alpine
       ```
 
   - Source code compressed file
-    * Use `rabbit-api-node.zip` if server access the internet normally.
-    * Use `rabbit-api-node_w_modules.zip` if server offlines or can not access the internet. 
+    * Use `node-api-rabbitmq.zip` if server access the internet normally.
+    * Use `node-api-rabbitmq_w_modules.zip` if server offlines or can not access the internet. 
+  - *MUST* Internet access !!
 
-### Step
+## Step
   TODO:
-  Assume you have a project .zip file `rabbit-api-node.zip` and folder `/app` in it.
+  Assume you have a project .zip file `node-api-rabbitmq.zip` and folder `/node-api-rabbitmq` in it.
 
-  1. extract .zip file and cd to `app/`
+  1. Extract .zip file and cd to `node-api-rabbitmq/`
 
       ```sh
         // if using zip
-        unzip -xvzf rabbit-api-node.zip
+        unzip -xvzf node-api-rabbitmq.zip
 
         // if using tar
-        tar -xvzf rabbit-api-node.tar.gz
+        tar -xvzf node-api-rabbitmq.tar.gz
 
-        cd app/
+        cd node-api-rabbitmq/
       ```
-  2. run con
+  2. Build the image using `Dockerfile`
+
+      ```sh
+        docker build -t fwg-api-rabbit:test .
+      ```
+        * `fwg-api-rabbit:test` is `repository:tag` you provide as desire (must not duplicate with exist repository)
+        * `.` is path where `Dockerfile` exist
+
+      Check if image exist
+
+      ```sh
+        docker images
+          REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
+          fwg-api-rabbit            test                da6d92132463        7 minutes ago       69.9 MB
+      ```
+
+  6. Export the images from docker to .tar file
+
+      ```sh
+        docker save -o apiRabbit.tar fwg-api-rabbit
+      ```
+      - `apiRabbit.tar` name the path to image tar file (MUST PROVIDE .tar to it)
+      - `fwg-api-rabbit` name of image or repository on docker
+
+  7. Import image tar file to server that have Docker as you wish then execute
+
+      ```sh
+        docker load -i apiRabbit.tar
+      ```
+      - where `<path to image tar file>` is path to image tar file
+
+  8. Run container to serve service
+
+      ```sh
+        docker run -d --name node-api-rabbit -p 8080:8080 node-api-rabbitmq:18.03.00.01
+      ```
+      `-d` run background
+      `--name` custom name
+
+
+      docker run -d --name _name -v "$(pwd)":/app \
+-w /app -p 4000:3000 name:tag node server.js
+
+  TODO: make shell script to custom port (map port from container to outside by conig env)
