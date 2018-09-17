@@ -6,8 +6,9 @@
 
 
 import express from 'express'
-import "@babel/polyfill";
-import client from './amqpClient';
+import '@babel/polyfill'
+/* import client from '../customamqp' */
+import client from '../amqp'
 
 const router = express.Router()
 
@@ -24,12 +25,12 @@ router.use((req, res, next) => {
 });
 
 router.get('/:msg', async (req, res) => {
-  const msg = req.params.msg
+  const msg = req.params.msg;
   client.sendRPCMessage(channel, msg, 'rpc_queue')
     .then(msg => {
       res.send(' [+] Receive [%s]', msg)
     })
-});
+})
 
 router.get('/about', (req, res) => {
   res.send('About Page...')
