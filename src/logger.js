@@ -1,6 +1,15 @@
+/* 
+  logger.js
+
+
+
+
+*/
+
 import rfs from 'rotating-file-stream'
 import fs from 'fs'
 import path from 'path'
+import cnf from './config'
 
 const logDir = path.join(__dirname, 'log')
 

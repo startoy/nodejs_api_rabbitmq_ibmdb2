@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rimraf app/ && babel src/ --out-dir app/",
     "start": "npm run build && node app/server.js",
+    "serve": "node app/server.js",
     "test": "mocha --compilers js:@babel/register"
   },
   "author": "peerapat_suk",
@@ -23,7 +24,7 @@
     "@babel/cli": "7.0.0",
     "@babel/core": "7.0.1",
     "@babel/preset-env": "7.0.0",
-    "@babel/register": "^7.0.0",
+    "@babel/register": "7.0.0",
     "mocha": "5.2.0",
     "rimraf": "2.6.2"
   }

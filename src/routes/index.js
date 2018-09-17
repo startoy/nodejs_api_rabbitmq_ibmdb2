@@ -1,11 +1,15 @@
-import path from 'path'
-import fs from 'fs'
-import express from 'express'
+/* 
+  server.js
 
+
+*/
+
+import express from 'express'
 import * as cnf from '../config'
 
 
 const router = express.Router()
+
 
 // Logging middleware
 router.use((req, res, next) => {
@@ -14,7 +18,29 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-  res.send('Home Page...')
+
+
+/*
+// NOT THE BEST PRACTICE TO REPEAT OPEN CONNECTION EVERYTIME CALL THIS API
+
+  const connection = await amqp.connect(cnf.amqp_uri)
+  try{
+    const channel = await connection.createChannel();
+    const exchange = 'EXCHANGE01'
+    const message: Message = { hello: 'world' }
+    const buffer = Buffer.from(JSON.stringify(message))
+
+    await channel.assertExchange(exchange, 'topic', {durable : false})
+    await channel.publish(exchange, 'routing.key', buffer, {
+      contentType: 'application/json',
+    })
+    await channel.close()
+  }
+  finally{
+    await connection.close();
+  }
+*/
+  res.send(' [.] Receive [%s]', result.toString())
 });
 
 router.get('/about', (req, res) => {

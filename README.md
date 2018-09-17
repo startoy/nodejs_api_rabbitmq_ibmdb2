@@ -21,13 +21,13 @@
 
 ## Command 
 
-  - build: transpiles using Babel `./src` to `./app`
+  - build: Transpiles using Babel `./src` to `./app`
 
       ```sh
         npm run build
       ```
 
-  - serve: run the main application in ./app (which is server.js)
+  - serve: Run the main application in ./app (which is server.js)
   
       ```sh
         npm run serve
@@ -39,7 +39,7 @@
         npm start
       ```
 
-  - test: test if files in ./src can transpile with Babel using `Mocha` 
+  - test: Test if files in ./src can transpile with Babel using `Mocha` 
   
       ```sh
         npm test
@@ -51,13 +51,13 @@
 
 ## Prerequisites
 
-  - `Docker` version >= 17.03.2-ce, build f5ec1e2 (test on Ubuntu14)
-    * if Centos7 should install using binary (test Docker version 18.03.0-ce, build 0520e24)
+  - `Docker` Version >= 17.03.2-ce, build f5ec1e2 (test on Ubuntu14)
+    * If Centos7 should install using binary (test Docker version 18.03.0-ce, build 0520e24)
 
-## Run from docker image
+## Run from Docker image [ ## NOT COMPLETE. IN TODO: LIST, DON'T USE ! ]
 
-  - after load image(.tar) to docker, run follow command below.\
-    this will map the current directory to inside image directory.\
+  - After load image file (.tar) to Docker, Run following command below.\
+    this will map the current directory to inside container's directory.\
   
   ```sh
     mkdir app
@@ -69,13 +69,15 @@
   ```sh
     FIXME:
     docker run \
-      -d \
+      -d -it \
       --name container_name \
       -v "$(pwd)":/app \
       -w /app \
       -p 3000:3000 \
       repo:tag \
       npm start
+
+     docker run -d --name node-api-rabbit -p 8080:8080 fwg/api-rabbit npm start 
   ```
 
 
@@ -168,11 +170,50 @@
       ```
       `438` first 3 characters of container id
 
-# REMARK
+# Rabbitmq
+## Run Docker Image Rabbitmq
 
-  - If edit src in docker container make sure you did `docker exec -it <3cid> npm run build` then `docker restart <3cid>`
-  `<3cid>` is first 3 character of CONTAINER ID.
+  ```sh
+    docker run -d --name rabbit -p 5672:5672 -p 8080:15672 rabbitmq:3-management
+  ```
+  * Should change `8080` to another port
+## Connect to Rabbitmq
+### From Container
+Execute 
+  ```sh
+    docker network inspect bridge
+  ```
+To see the ip4 of the container
 
-  `TODO:` Make shell script to run with custom port which set by user or config. \
-  `TODO:` Dynamic log file to server's folder (since Ifrit cannot execute docker without root permission).
+Then on .js where is `amqp://localhost` change this to `amqp://172.17.0.x` follow the rabbitmq container's ip
 
+### From Outside Container
+
+  Maybe `amqp://localhost` or `amqp://127.0.0.1` or `amqp://0.0.0.0` or use with port `5672`
+
+
+
+# MY DEV NOTE
+
+If edit src in docker container make sure you did `docker exec -it <3cid> npm run build` then `docker restart <3cid>`
+- `<3cid>` is first 3 character of CONTAINER ID.
+
+`TODO:` Make shell script to run with custom port which set by user or config. \
+`TODO:` Dynamic log file to server's folder (since Ifrit cannot execute docker without root permission).
+
+Test with nodejs on docker exec
+  
+  ```sh
+    docker run -d -it --name nodejs10 -v "$(pwd)":/home -w /home node:10.10.0-alpine
+
+    docker exec -it 886 <cmd>
+  ```
+
+  ```sh
+    docker network inspect bridge
+
+  ```
+
+
+  `TypeError: Cannot read property 'createChannel' of undefined`
+  dedicate that not found ip
