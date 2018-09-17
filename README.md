@@ -81,7 +81,7 @@
   ```
 
 
-# 3. Build from source to Docker image
+# 3. Build Source To Docker Image
 
   this will build Docker image from source code.
   
@@ -94,30 +94,31 @@
       ```
 
   - Source code compressed file
-    * Use `node-api-rabbitmq.zip` if server access the internet normally.
-    * Use `node-api-rabbitmq_w_modules.zip` if server offlines or can not access the internet. 
+    * Use `node-api-rabbitmq-dev.zip` if server access the internet normally.
+    * Use `node-api-rabbitmq-dev_w_modules.zip` if server offlines or can not access the internet. 
   - *MUST* Internet access !!
 
 ## Step
   TODO:
-  Assume you have a project .zip file `node-api-rabbitmq.zip` and folder `/node-api-rabbitmq` in it.
+  Assume you have a project .zip file `node-api-rabbitmq-dev.zip` and folder `/node-api-rabbitmq-dev` in it.
 
-  1. Extract .zip file and cd to `node-api-rabbitmq/`
+  1. Extract .zip file and cd to `node-api-rabbitmq-dev/`
 
       ```sh
         // if using zip
-        unzip node-api-rabbitmq.zip
+        unzip node-api-rabbitmq-dev.zip
 
         // if using tar
-        tar -xvzf node-api-rabbitmq.tar.gz
+        tar -xvzf node-api-rabbitmq-dev.tar.gz
 
-        cd node-api-rabbitmq/
+        cd node-api-rabbitmq-dev/
       ```
   2. Build the image using `Dockerfile`
 
       ```sh
         docker build -t fwg/api-rabbit .
       ```
+
         * `-t` provide repository:tag
         * `.` path where `Dockerfile` exist
 
@@ -214,6 +215,7 @@ Test with nodejs on docker exec
 
   ```
 
+  
+## ERROR
+ `TypeError: Cannot read property 'createChannel' of undefined` - Change the uri, Dedicate that not found specific uri.
 
-  `TypeError: Cannot read property 'createChannel' of undefined`
-  dedicate that not found ip

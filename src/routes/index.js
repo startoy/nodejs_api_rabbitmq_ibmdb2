@@ -1,17 +1,21 @@
+'use strict';
 /* 
   server.js
 
-
 */
+
 
 import express from 'express'
 import "@babel/polyfill";
-import * as cnf from '../config'
-import * as rabbit from '../rabbit'
+import client from './amqpClient';
 
 const router = express.Router()
-//const conn = rabbit.initClient();
 
+let channel;
+client.createClient({ uri: 'amqp://localhost' })
+  .then(ch => {
+    channel = ch;
+  })
 
 // Logging middleware
 router.use((req, res, next) => {
@@ -19,38 +23,12 @@ router.use((req, res, next) => {
   next()
 });
 
-router.get('/', async (req, res) => {
-  try{
-  	let result = await rabbit.chClient()
-	if(result)
-  	 res.send('Getting RPC [%s]', result);
-	else
-	 res.send('Some Error');
-  
-  } catch (error) {
-	console.error(error)
-  }
-
-/*
-// NOT THE BEST PRACTICE TO REPEAT OPEN CONNECTION EVERYTIME CALL THIS API
-
-  const connection = await amqp.connect(cnf.amqp_uri)
-  try{
-    const channel = await connection.createChannel();
-    const exchange = 'EXCHANGE01'
-    const message: Message = { hello: 'world' }
-    const buffer = Buffer.from(JSON.stringify(message))
-
-    await channel.assertExchange(exchange, 'topic', {durable : false})
-    await channel.publish(exchange, 'routing.key', buffer, {
-      contentType: 'application/json',
+router.get('/:msg', async (req, res) => {
+  const msg = req.params.msg
+  client.sendRPCMessage(channel, msg, 'rpc_queue')
+    .then(msg => {
+      res.send(' [+] Receive [%s]', msg)
     })
-    await channel.close()
-  }
-  finally{
-    await connection.close();
-  }
-*/
 });
 
 router.get('/about', (req, res) => {
