@@ -7,7 +7,6 @@
 import express from 'express'
 import morgan from 'morgan'
 
-
 import logger from './logger'
 import routes from './routes'
 import * as cnf from './config'
@@ -26,7 +25,7 @@ app.use(morgan('combined', {
   stream: logger
 }))
 
-/* app.use(routes) */
+app.use(routes)
 
 console.log("Starting server...")
 

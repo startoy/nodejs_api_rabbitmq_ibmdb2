@@ -5,10 +5,12 @@
 */
 
 import express from 'express'
+import "@babel/polyfill";
 import * as cnf from '../config'
-
+import * as rabbit from '../rabbit'
 
 const router = express.Router()
+//const conn = rabbit.initClient();
 
 
 // Logging middleware
@@ -17,8 +19,17 @@ router.use((req, res, next) => {
   next()
 });
 
-router.get('/', (req, res) => {
-
+router.get('/', async (req, res) => {
+  try{
+  	let result = await rabbit.chClient()
+	if(result)
+  	 res.send('Getting RPC [%s]', result);
+	else
+	 res.send('Some Error');
+  
+  } catch (error) {
+	console.error(error)
+  }
 
 /*
 // NOT THE BEST PRACTICE TO REPEAT OPEN CONNECTION EVERYTIME CALL THIS API
@@ -40,7 +51,6 @@ router.get('/', (req, res) => {
     await connection.close();
   }
 */
-  res.send(' [.] Receive [%s]', result.toString())
 });
 
 router.get('/about', (req, res) => {
