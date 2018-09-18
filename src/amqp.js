@@ -24,6 +24,7 @@ const createClient = (setting) => amqp.connect(setting.uri)
   .then(channel => {
     channel.responseEmitter = new EventEmitter();
     channel.responseEmitter.setMaxListeners(0);
+    channel.assertQueue(REPLY_TO, {durable: false});
     channel.consume(REPLY_TO,
       msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
         noAck: true
@@ -43,7 +44,8 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
   const correlationId = util.generateUuid();
 
   channel.responseEmitter.once(correlationId, resolve);
-  channel.sendToQueue(rpcQueue, new Buffer(message), {
+  /* channel.assertQueue(rpcQueue, {durable: false}); */
+  channel.sendToQueue(rpcQueue, new Buffer.from(message), {
     correlationId,
     replyTo: REPLY_TO
   });
@@ -52,7 +54,7 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
 const sendQueueMessage = (channel, message, Queue) => {
   // unique random string
   const correlationId = util.generateUuid();
-  channel.sendToQueue(Queue, new Buffer(message));
+  channel.sendToQueue(Queue, new Buffer.from(message));
 };
 
 module.exports.createClient = createClient;
