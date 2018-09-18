@@ -156,13 +156,23 @@
   8. Run container to serve service
 
       ```sh
-        docker run -d --name node-api-rabbit -p 8080:8080 fwg/api-rabbit npm start 
+        docker run -d \
+          -e "NODE_ENV=development" -e "AMQP_URI=amqp://localhost" \
+          --name node-api-rabbit \
+          -p 8080:8080 \
+          -m "300M" \
+          fwg/api-rabbit \
+          npm start 
       ```
-      - `-d` run process in background. \
-      - `--name` custom container name. \
-      - `-p` map port whereis host port:containerport. \
-      - `fwg/api-rabbit` name of repository, if no tag provided, will use latest. \
+      - `-d` run process in background. 
+      - `--name` custom container name. 
+      - `-p` map port whereis host port:containerport. 
+      - `fwg/api-rabbit` name of repository, if no tag provided, will use latest. 
       - `npm start` running command, if not provided will use default command from Dockerfile.
+      - `-e NODE_ENVIRONMENT`, See more in config.js
+      - `-e "AMQP_URI=amqp://test:test@13.229.146.106"` Declare which host will be use. \
+          - If Rabbitmq using Docker should specific Docker container ip \
+          - if Rabbitmq using Service use ip address with username:password
 
   9. See Docker logs
 
