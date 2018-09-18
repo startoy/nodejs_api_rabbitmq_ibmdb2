@@ -1,6 +1,7 @@
 /*
-  Test the source if is valid or not when transpile with babel
- */
+  Test sources if is valid or not when transpile with Babel
+*/
+
 import http from 'http'
 import assert from 'assert'
 

@@ -1,31 +1,43 @@
+/* 
+  server.js
+
+
+*/
+
 import express from 'express'
 import morgan from 'morgan'
 
-import loggerFile from './logger'
+import logger from './logger'
 import routes from './routes'
+import * as cnf from './config'
 
-const port = process.env.PORT || 8080
 const app = express()
 
-
+if (cnf.env == 'development') {
+  app.use(morgan('dev', {
+    skip: (req, res) => {
+      return res.statusCode < 400
+    }
+  }))
+}
 app.use(morgan('tiny'))
-app.use(morgan('dev', {
-  skip: (req, res) => {
-    return res.statusCode < 400
-  }
-}))
 app.use(morgan('combined', {
-  stream: loggerFile
+  stream: logger
 }))
 
 app.use(routes)
 
 console.log("Starting server...")
 
-app.listen(port, (err) => {
+app.listen(cnf.port, cnf.hostname, (err) => {
   if (err) {
     return console.log('Fail to intial server:', err);
   } else {
-    console.log('Server is listening on port %d', port);
+    console.log('Server is listening on port %d', cnf.port);
+    console.log('Available API:')
+    console.log('/direct/:message')
+    console.log('/direct/:queue_name/:message')
+    console.log('/rpc/:message')
+    console.log('/rpc/:queue_name/:message')
   }
 })
