@@ -173,6 +173,7 @@
       - `-e "AMQP_URI=amqp://test:test@13.229.146.106"` Declare which host will be use. \
           - If Rabbitmq using Docker should specific Docker container ip \
           - if Rabbitmq using Service use ip address with username:password
+          - see [uri-spec](https://www.rabbitmq.com/uri-spec.html) for more.
 
   9. See Docker logs
 
