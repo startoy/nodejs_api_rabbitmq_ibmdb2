@@ -49,7 +49,12 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
   });
 });
 
-
+const sendQueueMessage = (channel, message, Queue) => {
+  // unique random string
+  const correlationId = util.generateUuid();
+  channel.sendToQueue(Queue, new Buffer(message));
+};
 
 module.exports.createClient = createClient;
 module.exports.sendRPCMessage = sendRPCMessage;
+module.exports.sendQueueMessage = sendQueueMessage;

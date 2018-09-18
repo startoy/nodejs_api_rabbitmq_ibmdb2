@@ -35,7 +35,9 @@ app.listen(cnf.port, cnf.hostname, (err) => {
   } else {
     console.log('Server is listening on port %d', cnf.port);
     console.log('Available API:')
-    console.log('send message to config queue => /:message')
-    console.log('send message to queue => /:queue_name/:message')
+    console.log('/direct/:message')
+    console.log('/direct/:queue_name/:message')
+    console.log('/rpc/:message')
+    console.log('/rpc/:queue_name/:message')
   }
 })
