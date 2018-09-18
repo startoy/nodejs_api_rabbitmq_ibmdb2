@@ -12,7 +12,8 @@ import EventEmitter from 'events'
 import * as cnf from './config'
 import * as util from './util'
 
-const REPLY_TO = cnf.reply_to;
+// const REPLY_TO = cnf.reply_to;
+var THIS_QUEUE;
 
 /**
  * Create amqp Channel and return back, return promise
@@ -24,15 +25,16 @@ const createClient = (setting) => amqp.connect(setting.uri)
   .then(channel => {
     channel.responseEmitter = new EventEmitter();
     channel.responseEmitter.setMaxListeners(0);
-    channel.assertQueue(REPLY_TO, {durable: false});
-    channel.consume(REPLY_TO,
+    channel.assertQueue('', {exclusive: true})
+      .then(q_name => THIS_QUEUE = q_name)
+    channel.consume(THIS_QUEUE,
       msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
         noAck: true
       });
     return channel;
   });
 
-  
+
 /** return Promise obj when event emitt from consume function
  * @param {Object} channel - amqp channel
  * @param {String} message - message to send to consumer (which is Okury)
@@ -52,8 +54,10 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
 });
 
 const sendQueueMessage = (channel, message, Queue) => {
-  // unique random string
-  const correlationId = util.generateUuid();
+  channel.assertQueue(Queue, {
+    durable: false,
+    autoDelete: true
+  });
   channel.sendToQueue(Queue, new Buffer.from(message));
 };
 
