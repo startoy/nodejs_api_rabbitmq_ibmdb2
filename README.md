@@ -170,6 +170,9 @@
       - `fwg/api-rabbit` name of repository, if no tag provided, will use latest. 
       - `npm start` running command, if not provided will use default command from Dockerfile.
       - `-e NODE_ENVIRONMENT`, See more in config.js
+      - `-e "AMQP_URI=amqp://test:test@13.229.146.106"` Declare which host will be use. \
+          - If Rabbitmq using Docker should specific Docker container ip \
+          - if Rabbitmq using Service use ip address with username:password
 
   9. See Docker logs
 
