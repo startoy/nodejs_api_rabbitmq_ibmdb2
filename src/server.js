@@ -34,5 +34,8 @@ app.listen(cnf.port, cnf.hostname, (err) => {
     return console.log('Fail to intial server:', err);
   } else {
     console.log('Server is listening on port %d', cnf.port);
+    console.log('Available API:')
+    console.log('send message to config queue => /:message')
+    console.log('send message to queue => /:queue_name/:message')
   }
 })

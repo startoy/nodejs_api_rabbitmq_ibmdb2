@@ -19,7 +19,7 @@ const REPLY_TO = cnf.reply_to;
  * @param {Object} params
  * @returns {Promise} - return amqp channel 
  */
-const createClient = (setting) => amqp.connect(setting.uri)
+const createClient = (setting) => amqp.connect(setting.url)
   .then(conn => conn.createChannel()) // create channel
   .then(channel => {
     channel.responseEmitter = new EventEmitter();
@@ -31,24 +31,25 @@ const createClient = (setting) => amqp.connect(setting.uri)
     return channel;
   });
 
+  
 /** return Promise obj when event emitt from consume function
  * @param {Object} channel - amqp channel
  * @param {String} message - message to send to consumer (which is Okury)
  * @param {String} rpcQueue - name of the queue where will be sent to
  * @returns {Promise} - return msg that send back from Okury
  */
-const sendRPCMessage = (channel, message, rpcQueue) => {
-  return new Promise(
-    resolve => {
-      const corr = util.randomid1()
-      channel.responseEmitter.once(corr, resolve)
-      channel.sendToQueue(rpcQueue, new Buffer.from(message), {
-        corr,
-        replyTo: REPLY_TO
-      })
-    }
-  )
-}
+const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
+  // unique random string
+  const correlationId = util.generateUuid();
 
-module.exports.createClient = createClient
-module.exports.sendRPCMessage = sendRPCMessage
+  channel.responseEmitter.once(correlationId, resolve);
+  channel.sendToQueue(rpcQueue, new Buffer(message), {
+    correlationId,
+    replyTo: REPLY_TO
+  });
+});
+
+
+
+module.exports.createClient = createClient;
+module.exports.sendRPCMessage = sendRPCMessage;
