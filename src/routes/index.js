@@ -9,11 +9,14 @@ import express from 'express'
 import '@babel/polyfill'
 /* import client from '../customamqp' */
 import client from '../amqp'
+import * as cnf from './config'
 
 const router = express.Router()
 
 let channel;
-client.createClient({ uri: 'amqp://localhost' })
+client.createClient({
+    uri: cnf.amqp_uri
+  })
   .then(ch => {
     channel = ch;
   })
@@ -26,7 +29,7 @@ router.use((req, res, next) => {
 
 router.get('/:msg', async (req, res) => {
   const msg = req.params.msg;
-  client.sendRPCMessage(channel, msg, 'rpc_queue')
+  client.sendRPCMessage(channel, msg, cnf.rpc_queue)
     .then(msg => {
       res.send(' [+] Receive [%s]', msg)
     })

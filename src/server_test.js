@@ -1,9 +1,11 @@
 'use strict';
 
-const amqp = require('amqplib');
+import amqp from 'amqplib'
+import * as cnf from './config'
 
-const q = 'rpc_queue';
-amqp.connect('amqp://localhost')
+const q = cnf.rpc_queue;
+
+amqp.connect(cnf.amqp_uri)
   .then(conn => {
     return conn.createChannel();
   })
@@ -13,14 +15,15 @@ amqp.connect('amqp://localhost')
     console.log(" [x] Awaiting RPC Requests");
     ch.consume(q, msg => {
       
-      const n = parseInt(msg.content.toString());
+      const n = msg.content.toString();
 
-      console.log(" [.] fib(%d)", n);
+      console.log(" [.] Receive[%s]", n);
 
       // start
       let tStart = Date.now();
 
-      let r = fibonacci(n);
+      /* let r = fibonacci(n); */
+      let r = "[FROM SERVER] RECEIVE:" + n
 
       // finish
       let tEnd = Date.now();
@@ -38,12 +41,3 @@ amqp.connect('amqp://localhost')
       ch.ack(msg);
     })
   });
-
-function fibonacci(n) {
-  if (!n) n = 1;
-
-  if (n === 0 || n === 1) 
-    return n;
-  else
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}

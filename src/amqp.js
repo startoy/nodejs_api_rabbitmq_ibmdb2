@@ -1,15 +1,21 @@
-'use strict';
+'use strict'
+
+/**
+ * For now, can't use `async/await` way
+ * use Promise (.then) instead
+ * TODO: make use of `async/await`
+ */
 
 import amqp from 'amqplib'
 import EventEmitter from 'events'
 
 import * as cnf from './config'
-import * as util from './util';
+import * as util from './util'
 
 const REPLY_TO = cnf.reply_to;
 
 /**
- * Create amqp Channel and return back as a promise
+ * Create amqp Channel and return back, return promise
  * @param {Object} params
  * @returns {Promise} - return amqp channel 
  */
@@ -19,8 +25,9 @@ const createClient = (setting) => amqp.connect(setting.uri)
     channel.responseEmitter = new EventEmitter();
     channel.responseEmitter.setMaxListeners(0);
     channel.consume(REPLY_TO,
-      msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content),
-      { noAck: true });
+      msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
+        noAck: true
+      });
     return channel;
   });
 
