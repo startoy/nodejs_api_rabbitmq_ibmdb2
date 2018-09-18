@@ -24,7 +24,7 @@ client.createClient({
 
 // Logging middleware
 router.use((req, res, next) => {
-  if (cnf.env === "develop") {
+  if (cnf.env === "development") {
     console.log(' [x] %s %s (LOG ROUTER..)', req.method, req.url);
   }
   next()
