@@ -119,8 +119,8 @@
         docker build -t fwg/api-rabbit .
       ```
 
-      * `-t` provide repository:tag
-      * `.` path where `Dockerfile` exist
+        - `-t` provide repository:tag
+        - `.` path where `Dockerfile` exist
 
       Check if image exist
 
