@@ -19,7 +19,7 @@ const REPLY_TO = cnf.reply_to;
  * @param {Object} params
  * @returns {Promise} - return amqp channel 
  */
-const createClient = (setting) => amqp.connect(setting.url)
+const createClient = (setting) => amqp.connect(setting.uri)
   .then(conn => conn.createChannel()) // create channel
   .then(channel => {
     channel.responseEmitter = new EventEmitter();
