@@ -21,7 +21,7 @@ amqp.connect('amqp://localhost')
       let tStart = Date.now();
 
       //let r = fibonacci(n);
-      let r = "SERVER|"+n
+      let r = "SERVER|REPLY|"+n+"|"
 
       // finish
       let tEnd = Date.now();
@@ -34,7 +34,7 @@ amqp.connect('amqp://localhost')
       }); */
       
       ch.sendToQueue(msg.properties.replyTo,
-        new Buffer(r.toString()),
+        new Buffer.from(r.toString()),
         { correlationId: msg.properties.correlationId });
       ch.ack(msg);
     })

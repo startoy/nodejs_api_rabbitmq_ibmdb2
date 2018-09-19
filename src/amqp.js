@@ -17,6 +17,7 @@ var THIS_QUEUE;
 
 /**
  * Create amqp Channel and return back the promise
+ * 
  * @param {Object} params
  * @returns {Promise} - return amqp channel 
  */
@@ -25,11 +26,20 @@ const createClient = (setting) => amqp.connect(setting.uri)
   .then(channel => {
     channel.responseEmitter = new EventEmitter();
     channel.responseEmitter.setMaxListeners(0);
-    channel.assertQueue('', {exclusive: true})
-      .then(q_name => THIS_QUEUE = q_name)
-    console.log(' -- GENERATE QUEUE [%s]', THIS_QUEUE)
+    channel.assertQueue('', {
+        exclusive: true
+      })
+      .then(q_name => {
+        THIS_QUEUE = q_name.queue
+        console.log(' -- GENERATE PRIVATE QUEUE --')
+        for (let prop in q_name) {
+          console.log('  Key[%s] Val[%s]', prop, q_name[prop])
+        }
+        console.log(' ----------------------------')
+      })
+
     // emit (event, [arg1], [arg2], [...]) 
-    // Make an event listener for an event called "msg.properties.correlationId", then provoke the even
+    // Make an event listener for an event called "msg.properties.correlationId", then provoke the event
     channel.consume(THIS_QUEUE,
       msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
         noAck: true
@@ -37,7 +47,9 @@ const createClient = (setting) => amqp.connect(setting.uri)
     return channel;
   });
 
-/** return Promise obj when event emit from consume function
+/** 
+ * return Promise obj when event emit from consume function
+ * 
  * @param {Object} channel - amqp channel
  * @param {String} message - message to send to consumer (which is Okury)
  * @param {String} rpcQueue - name of the queue where will be sent to
@@ -59,7 +71,8 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
 });
 
 /**
- * just send to queue without any handle
+ * just send msg to queue and end
+ * 
  * @param {*} channel 
  * @param {*} message 
  * @param {*} Queue 
