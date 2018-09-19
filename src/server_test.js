@@ -1,6 +1,7 @@
 'use strict';
 
 const amqp = require('amqplib');
+const util = require('./util');
 
 const q = 'test_queue';
 amqp.connect('amqp://localhost')
@@ -19,19 +20,21 @@ amqp.connect('amqp://localhost')
 
       // start
       let tStart = Date.now();
-
-      //let r = fibonacci(n);
-      let r = "SERVER|REPLY|"+n+"|"
+      let r;
+      if(util.isNumber(n))
+        r = fibonacci(n);
+      else
+        r = "SERVER|STRING|"+n+"|"
 
       // finish
       let tEnd = Date.now();
 
       // to send object as a message,
       // you have to call JSON.stringify
-      /* r = JSON.stringify({
+      r = JSON.stringify({
         result: r,
         time: (tEnd - tStart)
-      }); */
+      });
       
       ch.sendToQueue(msg.properties.replyTo,
         new Buffer.from(r.toString()),
