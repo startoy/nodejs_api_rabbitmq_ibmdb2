@@ -40,10 +40,12 @@ const createClient = (setting) => amqp.connect(setting.uri)
 
     // emit (event, [arg1], [arg2], [...]) 
     // Make an event listener for an event called "msg.properties.correlationId", then provoke the event
-    channel.consume(THIS_QUEUE,
+    channel.consume(
+      THIS_QUEUE,
       msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
         noAck: true
-      });
+      }
+    );
     return channel;
   });
 
@@ -71,7 +73,7 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
 });
 
 /**
- * just send msg to queue and end
+ * just send msg to queue and end process
  * 
  * @param {*} channel 
  * @param {*} message 
@@ -85,6 +87,8 @@ const sendQueueMessage = (channel, message, Queue) => {
   channel.sendToQueue(Queue, new Buffer.from(message));
 };
 
-module.exports.createClient = createClient;
-module.exports.sendRPCMessage = sendRPCMessage;
-module.exports.sendQueueMessage = sendQueueMessage;
+module.exports = {
+  createClient: createClient,
+  sendRPCMessage: sendRPCMessage,
+  sendQueueMessage: sendQueueMessage,
+}
