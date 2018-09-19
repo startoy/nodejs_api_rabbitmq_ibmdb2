@@ -12,10 +12,12 @@ import EventEmitter from 'events'
 import * as cnf from './config'
 import * as util from './util'
 
-const REPLY_TO = cnf.reply_to;
+// const REPLY_TO = cnf.reply_to;
+var THIS_QUEUE;
 
 /**
- * Create amqp Channel and return back, return promise
+ * Create amqp Channel and return back the promise
+ * 
  * @param {Object} params
  * @returns {Promise} - return amqp channel 
  */
@@ -24,15 +26,32 @@ const createClient = (setting) => amqp.connect(setting.uri)
   .then(channel => {
     channel.responseEmitter = new EventEmitter();
     channel.responseEmitter.setMaxListeners(0);
-    channel.consume(REPLY_TO,
+    channel.assertQueue('', {
+        exclusive: true
+      })
+      .then(q_name => {
+        THIS_QUEUE = q_name.queue
+        console.log(' -- GENERATE PRIVATE QUEUE --')
+        for (let prop in q_name) {
+          console.log('  Key[%s] Val[%s]', prop, q_name[prop])
+        }
+        console.log(' ----------------------------')
+      })
+
+    // emit (event, [arg1], [arg2], [...]) 
+    // Make an event listener for an event called "msg.properties.correlationId", then provoke the event
+    channel.consume(
+      THIS_QUEUE,
       msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
         noAck: true
-      });
+      }
+    );
     return channel;
   });
 
-  
-/** return Promise obj when event emitt from consume function
+/** 
+ * return Promise obj when event emit from consume function
+ * 
  * @param {Object} channel - amqp channel
  * @param {String} message - message to send to consumer (which is Okury)
  * @param {String} rpcQueue - name of the queue where will be sent to
@@ -42,19 +61,34 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
   // unique random string
   const correlationId = util.generateUuid();
 
+  // once (event, listener) Register a single listener for the specified event
+  // Invoked only once
   channel.responseEmitter.once(correlationId, resolve);
-  channel.sendToQueue(rpcQueue, new Buffer(message), {
+
+  /* channel.assertQueue(rpcQueue, {durable: false}); */
+  channel.sendToQueue(rpcQueue, new Buffer.from(message), {
     correlationId,
-    replyTo: REPLY_TO
+    replyTo: THIS_QUEUE
   });
 });
 
+/**
+ * just send msg to queue and end process
+ * 
+ * @param {Object} channel 
+ * @param {String} message 
+ * @param {String} Queue 
+ */
 const sendQueueMessage = (channel, message, Queue) => {
-  // unique random string
-  const correlationId = util.generateUuid();
-  channel.sendToQueue(Queue, new Buffer(message));
+  channel.assertQueue(Queue, {
+    durable: false,
+    autoDelete: true
+  });
+  channel.sendToQueue(Queue, new Buffer.from(message));
 };
 
-module.exports.createClient = createClient;
-module.exports.sendRPCMessage = sendRPCMessage;
-module.exports.sendQueueMessage = sendQueueMessage;
+module.exports = {
+  createClient: createClient,
+  sendRPCMessage: sendRPCMessage,
+  sendQueueMessage: sendQueueMessage,
+}
