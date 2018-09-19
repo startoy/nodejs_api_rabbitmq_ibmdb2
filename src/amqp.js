@@ -16,7 +16,7 @@ import * as util from './util'
 var THIS_QUEUE;
 
 /**
- * Create amqp Channel and return back, return promise
+ * Create amqp Channel and return back the promise
  * @param {Object} params
  * @returns {Promise} - return amqp channel 
  */
@@ -27,6 +27,9 @@ const createClient = (setting) => amqp.connect(setting.uri)
     channel.responseEmitter.setMaxListeners(0);
     channel.assertQueue('', {exclusive: true})
       .then(q_name => THIS_QUEUE = q_name)
+    console.log(' -- GENERATE QUEUE [%s]', THIS_QUEUE)
+    // emit (event, [arg1], [arg2], [...]) 
+    // Make an event listener for an event called "msg.properties.correlationId", then provoke the even
     channel.consume(THIS_QUEUE,
       msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
         noAck: true
@@ -34,8 +37,7 @@ const createClient = (setting) => amqp.connect(setting.uri)
     return channel;
   });
 
-
-/** return Promise obj when event emitt from consume function
+/** return Promise obj when event emit from consume function
  * @param {Object} channel - amqp channel
  * @param {String} message - message to send to consumer (which is Okury)
  * @param {String} rpcQueue - name of the queue where will be sent to
@@ -45,14 +47,23 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
   // unique random string
   const correlationId = util.generateUuid();
 
+  // once (event, listener) Register a single listener for the specified event
+  // Invoked only once
   channel.responseEmitter.once(correlationId, resolve);
+
   /* channel.assertQueue(rpcQueue, {durable: false}); */
   channel.sendToQueue(rpcQueue, new Buffer.from(message), {
     correlationId,
-    replyTo: REPLY_TO
+    replyTo: THIS_QUEUE
   });
 });
 
+/**
+ * just send to queue without any handle
+ * @param {*} channel 
+ * @param {*} message 
+ * @param {*} Queue 
+ */
 const sendQueueMessage = (channel, message, Queue) => {
   channel.assertQueue(Queue, {
     durable: false,
