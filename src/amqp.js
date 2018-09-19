@@ -75,9 +75,9 @@ const sendRPCMessage = (channel, message, rpcQueue) => new Promise(resolve => {
 /**
  * just send msg to queue and end process
  * 
- * @param {*} channel 
- * @param {*} message 
- * @param {*} Queue 
+ * @param {Object} channel 
+ * @param {String} message 
+ * @param {String} Queue 
  */
 const sendQueueMessage = (channel, message, Queue) => {
   channel.assertQueue(Queue, {

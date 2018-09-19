@@ -1,3 +1,14 @@
+/**
+ * Server for RPC test
+ * @param Number
+ * @returns result of fibonanci(Number)
+ * curl localhost:8080/rpc/5
+ * 
+*  @param String
+ * @returns data string from server
+ * curl localhost:8080/rpc/SOMESTRING%20EIEI 
+ */
+
 'use strict';
 
 const amqp = require('amqplib');
@@ -14,32 +25,42 @@ amqp.connect('amqp://localhost')
     });
     ch.prefetch(1);
     console.log(" [x] Awaiting RPC Requests");
-    ch.consume(q)
-      .then( msg => {
-        const n = msg.content
-        console.log(" [.] Receive [%s]", n);
-        return n, msg.properties.correlationId;
-      })
-      .then( (msg, id) => {
-        return fibonacci(msg), id;
-      })
-      .then( (result, id) => {
-        ch.sendToQueue(msg.properties.replyTo,
-          new Buffer.from(result), {
-            correlationId: id
-          });
+    ch.consume(q, msg => {
+      const n = msg.content.toString()
+      console.log(" [.] Receive [%s]", n);
 
-        ch.ack(msg);
-      })
+      // start
+      let tStart = Date.now();
+
+      let r;
+      if (util.isNumber(n))
+        r = fibonacci(n);
+      else
+        r = "SERVER|STRING|" + n + "|"
+
+      // finish
+      let tEnd = Date.now();
+
+      // to send object as a message,
+      // you have to call JSON.stringify
+      r = JSON.stringify({
+        result: r,
+        time: (tEnd - tStart)
+      });
+
+      ch.sendToQueue(msg.properties.replyTo,
+        new Buffer.from(r.toString()), {
+          correlationId: msg.properties.correlationId
+        });
+      ch.ack(msg);
     })
+  });
 
 function fibonacci(n) {
-  return new Promise( (resolve,reject) => {
-    if (!n) n = 1;
+  if (!n) n = 1;
 
-    if (n === 0 || n === 1)
-      return n;
-    else
-      return fibonacci(n - 1) + fibonacci(n - 2);
-  })
+  if (n === 0 || n === 1)
+    return n;
+  else
+    return fibonacci(n - 1) + fibonacci(n - 2);
 }
