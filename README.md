@@ -174,7 +174,7 @@
           - If Rabbitmq using Docker should specific Docker container ip \
           - if Rabbitmq using Service use ip address with username:password
           - see [uri-spec](https://www.rabbitmq.com/uri-spec.html) for more.
-
+      
   9. See Docker logs
 
       ```sh

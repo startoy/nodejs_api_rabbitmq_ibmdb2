@@ -31,11 +31,11 @@ const createClient = (setting) => amqp.connect(setting.uri)
       })
       .then(q_name => {
         THIS_QUEUE = q_name.queue
-        console.log(' -- GENERATE PRIVATE QUEUE --')
+        console.log('\n ==== GENERATE PRIVATE QUEUE ====')
         for (let prop in q_name) {
-          console.log('  Key[%s] Val[%s]', prop, q_name[prop])
+          console.log(' =  Key[.%s][%s]', prop, q_name[prop])
         }
-        console.log(' ----------------------------')
+        console.log(' ================================ \n')
       })
 
     // emit (event, [arg1], [arg2], [...]) 

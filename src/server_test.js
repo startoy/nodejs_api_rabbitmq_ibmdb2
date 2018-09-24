@@ -43,11 +43,11 @@ amqp.connect('amqp://localhost')
 
       // to send object as a message,
       // you have to call JSON.stringify
-      r = JSON.stringify({
+      /* r = JSON.stringify({
         result: r,
         time: (tEnd - tStart)
-      });
-
+      }); */
+ 
       ch.sendToQueue(msg.properties.replyTo,
         new Buffer.from(r.toString()), {
           correlationId: msg.properties.correlationId
