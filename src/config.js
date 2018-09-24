@@ -5,7 +5,7 @@
 export const env = process.env.NODE_ENV || 'development';
 
 // ACCESS
-export const hostname = process.env.HOSTNAME || '0.0.0.0';
+export const hostname = process.env.HOSTNAME || 'localhost'; // if Docker should use 0.0.0.0 ??
 export const port = process.env.PORT || 8080;
 export const amqp_uri = process.env.AMQP_URI || 'amqp://localhost';
 export const log_filename = process.env.LOG_NAME || 'access.log';
