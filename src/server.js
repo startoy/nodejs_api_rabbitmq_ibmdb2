@@ -40,5 +40,6 @@ app.listen(cnf.port, cnf.hostname, (err) => {
     console.log('==>  /direct/:queue_name/:message')
     console.log('==>  /rpc/:message')
     console.log('==>  /rpc/:queue_name/:message')
+    console.log('==> [Test] /rpc/:queue_name/:message/:iteration')
   }
 })
