@@ -10,12 +10,12 @@ async function connect(setting) {
 
 async function channel(conn) {
   const channel = await conn.createChannel();
-/*   channel.responseEmitter = new EventEmitter();
-  channel.responseEmitter.setMaxListeners(0); */
+  /*   channel.responseEmitter = new EventEmitter();
+    channel.responseEmitter.setMaxListeners(0); */
   return channel
 }
 
-async function genQueue(channel){
+async function genQueue(channel) {
   const q = await channel.assertQueue('', {
     exclusive: true
   });
@@ -23,21 +23,29 @@ async function genQueue(channel){
 }
 
 async function sendRPCMessage(channel, message, rpcQueue, q) {
-  return new Promise( resolve => {
+  return new Promise(resolve => {
     const correlationId = generateUuid().toString();
     try {
       channel.consume(q.queue, msg => {
-        if(msg.properties.correlationId == correlationId){
-          return resolve;
+        if (msg.properties.correlationId == correlationId) {
+          console.log('Should Resolve', resolve);
+          resolve(msg);
         }
-      }, {noAck: true});
-    } catch(e) {console.log(e)}
+      }, {
+        noAck: true
+      });
+    } catch (e) {
+      console.error(e)
+    }
     try {
       channel.sendToQueue(rpcQueue, new Buffer.from(message), {
         correlationId,
         replyTo: q.queue
       });
-    } catch(e) {console.log(e)}
+      console.log('Sent to Queue success');
+    } catch (e) {
+      console.error(e)
+    }
   })
 }
 
@@ -54,7 +62,6 @@ function generateUuid() {
     Math.random().toString() +
     Math.random().toString();
 }
-
 
 module.exports = {
   connect: connect,
