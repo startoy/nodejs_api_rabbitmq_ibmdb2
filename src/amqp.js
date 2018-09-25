@@ -10,8 +10,8 @@ async function connect(setting) {
 
 async function channel(conn) {
   const channel = await conn.createChannel();
-  channel.responseEmitter = new EventEmitter();
-  channel.responseEmitter.setMaxListeners(0);
+/*   channel.responseEmitter = new EventEmitter();
+  channel.responseEmitter.setMaxListeners(0); */
   return channel
 }
 
@@ -23,28 +23,22 @@ async function genQueue(channel){
 }
 
 async function sendRPCMessage(channel, message, rpcQueue, q) {
-  return new Promise(resolve => {
-    // unique random string
+  return new Promise( resolve => {
     const correlationId = generateUuid().toString();
-    channel.responseEmitter.once(correlationId, resolve);
-    channel.sendToQueue(rpcQueue, new Buffer.from(message), {
-      correlationId,
-      replyTo: q.queue
-    });
+    try {
+      channel.consume(q.queue, msg => {
+        if(msg.properties.correlationId == correlationId){
+          return resolve;
+        }
+      }, {noAck: true});
+    } catch(e) {console.log(e)}
+    try {
+      channel.sendToQueue(rpcQueue, new Buffer.from(message), {
+        correlationId,
+        replyTo: q.queue
+      });
+    } catch(e) {console.log(e)}
   })
-}
-
-async function consumeRPCMessage(channel, q) {
-  try {
-    channel.consume(q.queue, msg => {
-      channel.responseEmitter.emit(msg.properties.correlationId, msg.content)
-      channel.close();
-    }, {
-      noAck: true
-    })
-  } catch (e) {
-    console.error('Cannot consume message from queue', e)
-  }
 }
 
 async function sendToQueue(channel, Queue, message) {
@@ -67,6 +61,5 @@ module.exports = {
   channel: channel,
   genQueue: genQueue,
   sendRPCMessage: sendRPCMessage,
-  consumeRPCMessage: consumeRPCMessage,
   sendToQueue: sendToQueue
 }

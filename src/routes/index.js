@@ -44,13 +44,11 @@ router.get('/rpc/:queue_name/:message', async (req, res) => {
   try {
     const channel = await client.channel(conn);
     const q = await client.genQueue(channel)
-    client.consumeRPCMessage(channel, q)
     const msg = await client.sendRPCMessage(channel, message, queue_name, q);
-    
     console.log(msg);
     res.json(msg.toString())
   } catch(e) {
-    console.error('Error on API', e)
+    console.error(e)
   }
 });
 
