@@ -14,15 +14,25 @@ import util from 'util'
 import * as utl from '../util'
 
 const router = express.Router()
-/* 
-let conn;
-client.connect({
+
+let channel;
+
+async function main() {
+  let conn = await client.connect({
     uri: cnf.amqp_uri
   })
-  .then(c => {
-    conn = c;
-  })
- */
+  channel = await client.channel(conn);
+}
+main();
+
+/*  OR USE THIS TO DECLARE CHANNEL
+client.connect({
+  uri: cnf.amqp_uri
+}).then(conn => {
+  client.channel(conn)
+  .then( ch=>{ channel = ch })
+}) */
+
 // Logging middleware
 router.use((req, res, next) => {
   if (cnf.env === "development") {
@@ -42,16 +52,11 @@ router.get('/rpc/:queue_name/:message', async (req, res) => {
   const message = req.params.message;
   const queue_name = req.params.queue_name
   try {
-    const conn = await client.connect({
-      uri: cnf.amqp_uri
-    });
-    const channel = await client.channel(conn);
     const q = await client.genQueue(channel)
     const msg = await client.sendRPCMessage(channel, message, queue_name, q);
     // console.log(msg.content.toString());
-    conn.close();
     res.json(msg.content.toString())
-  } catch(e) {
+  } catch (e) {
     console.error(e)
   }
 });
