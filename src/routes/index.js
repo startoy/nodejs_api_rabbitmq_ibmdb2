@@ -16,12 +16,14 @@ import * as utl from '../util'
 const router = express.Router()
 
 let channel;
-
+let conn;
+let q;
 async function main() {
-  let conn = await client.connect({
+    conn = await client.connect({
     uri: cnf.amqp_uri
   })
   channel = await client.channel(conn);
+  q = await client.genQueue(channel);
 }
 main();
 
@@ -52,7 +54,8 @@ router.get('/rpc/:queue_name/:message', async (req, res) => {
   const message = req.params.message;
   const queue_name = req.params.queue_name
   try {
-    const q = await client.genQueue(channel)
+    /* const q = await client.genQueue(channel) */
+    console.log(q.queue);
     const msg = await client.sendRPCMessage(channel, message, queue_name, q);
     // console.log(msg.content.toString());
     res.json(msg.content.toString())

@@ -23,12 +23,14 @@ async function genQueue(channel) {
 }
 
 async function sendRPCMessage(channel, message, rpcQueue, q) {
+  let correlationId = await generateUuid();
   return new Promise(resolve => {
-    const correlationId = generateUuid().toString();
     try {
       channel.consume(q.queue, msg => {
+        console.log("Consume Message", correlationId);
         if (msg.properties.correlationId == correlationId) {
           console.log('Should Resolve', resolve);
+          channel.cancel(msg.fields.consumerTag)
           resolve(msg);
         }
       }, {
@@ -57,7 +59,7 @@ async function sendToQueue(channel, Queue, message) {
   channel.sendToQueue(Queue, new Buffer.from(message));
 }
 
-function generateUuid() {
+async function generateUuid() {
   return Math.random().toString() +
     Math.random().toString() +
     Math.random().toString();
