@@ -17,13 +17,11 @@ const router = express.Router()
 
 let channel;
 let conn;
-let q;
 async function main() {
     conn = await client.connect({
     uri: cnf.amqp_uri
   })
-  channel = await client.channel(conn);
-  q = await client.genQueue(channel);
+  channel = await client.create(conn);
 }
 main();
 
@@ -49,16 +47,13 @@ router.get('/direct/:queue_name/:message', async (req, res) => {
   const queue_name = req.params.queue_name;
 });
 
-
 router.get('/rpc/:queue_name/:message', async (req, res) => {
   const message = req.params.message;
-  const queue_name = req.params.queue_name
+  const queue_name = req.params.queue_name;
   try {
     /* const q = await client.genQueue(channel) */
-    console.log(q.queue);
-    const msg = await client.sendRPCMessage(channel, message, queue_name, q);
-    channel.cancel(msg.fields.consumerTag)
-    res.json(msg.content.toString())
+    const msg = await client.sendRPCMessage(channel, message, queue_name);
+    res.json(msg.toString())
   } catch (e) {
     console.error(e)
   }

@@ -3,47 +3,54 @@
 import amqp from 'amqplib'
 import EventEmitter from 'events'
 
+let Q;
+
 async function connect(setting) {
   const conn = await amqp.connect(setting.uri);
   return conn;
 }
 
-async function channel(conn) {
-  const channel = await conn.createChannel();
-  /*   channel.responseEmitter = new EventEmitter();
-    channel.responseEmitter.setMaxListeners(0); */
-  return channel
+/**
+ * Create client then consume message with Q
+ * When promise, emit the event name `correlationId` then trigger callback (which is define when `.on()` `.once()` )
+ * @param {*} conn 
+ */
+async function create(conn) {
+  try {
+    const channel = await conn.createChannel();
+    channel.responseEmitter = new EventEmitter();
+    channel.responseEmitter.setMaxListeners(0);
+    Q = await channel.assertQueue('', { exclusive:true})
+    console.log(' -- GENERATE PRIVATE QUEUE --')
+    console.log(' ----->', Q.queue)
+
+    channel.consume( Q.queue, msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
+      noAck: true
+      }
+    );
+    return channel
+  } catch (e) {
+    console.error(e)
+  }
 }
 
-async function genQueue(channel) {
-  const q = await channel.assertQueue('', {
-    exclusive: true
-  });
-  return q;
-}
-
-async function sendRPCMessage(channel, message, rpcQueue, q) {
-  let correlationId = await generateUuid();
+/**
+ * When we will send the message to broker, We listening event call `correlationId`.
+ * When event trigger we call resolve promise back to where this function called
+ * @param {*} channel 
+ * @param {*} message 
+ * @param {*} rpcQueue 
+ */
+async function sendRPCMessage(channel, message, rpcQueue) {
   return new Promise(resolve => {
+    let correlationId = generateUuid();
     try {
-      channel.consume(q.queue, msg => {
-        console.log("Consume Message", correlationId);
-        if (msg.properties.correlationId == correlationId) {  
-          console.log('Should Resolve', resolve);
-          resolve(msg);
-        }
-      }, {
-        noAck: true
-      });
-    } catch (e) {
-      console.error(e)
-    }
-    try {
+      channel.responseEmitter.once(correlationId, resolve);
       channel.sendToQueue(rpcQueue, new Buffer.from(message), {
         correlationId,
-        replyTo: q.queue
+        replyTo: Q.queue
       });
-      console.log('Sent to Queue success');
+      console.log('Sent to Queue success..');
     } catch (e) {
       console.error(e)
     }
@@ -58,16 +65,14 @@ async function sendToQueue(channel, Queue, message) {
   channel.sendToQueue(Queue, new Buffer.from(message));
 }
 
-async function generateUuid() {
+function generateUuid() {
   return Math.random().toString() +
-    Math.random().toString() +
     Math.random().toString();
 }
 
 module.exports = {
   connect: connect,
-  channel: channel,
-  genQueue: genQueue,
+  create: create,
   sendRPCMessage: sendRPCMessage,
   sendToQueue: sendToQueue
 }
