@@ -28,9 +28,8 @@ async function sendRPCMessage(channel, message, rpcQueue, q) {
     try {
       channel.consume(q.queue, msg => {
         console.log("Consume Message", correlationId);
-        if (msg.properties.correlationId == correlationId) {
+        if (msg.properties.correlationId == correlationId) {  
           console.log('Should Resolve', resolve);
-          channel.cancel(msg.fields.consumerTag)
           resolve(msg);
         }
       }, {

@@ -57,7 +57,7 @@ router.get('/rpc/:queue_name/:message', async (req, res) => {
     /* const q = await client.genQueue(channel) */
     console.log(q.queue);
     const msg = await client.sendRPCMessage(channel, message, queue_name, q);
-    // console.log(msg.content.toString());
+    channel.cancel(msg.fields.consumerTag)
     res.json(msg.content.toString())
   } catch (e) {
     console.error(e)
