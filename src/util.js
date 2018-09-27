@@ -1,3 +1,7 @@
+/**
+ * @name util.js 
+ * @description customize utility for god's sake
+ */
 `use strict`
 
 function randomid1() {
