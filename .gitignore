@@ -2,3 +2,5 @@ node_modules/
 app/
 src/log/
 src/log/access.log
+.vscode/
+
