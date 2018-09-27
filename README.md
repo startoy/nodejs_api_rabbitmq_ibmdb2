@@ -87,42 +87,6 @@
       ```sh
       npm test
       ```
-<!-- 
-# 2. Run on Docker
-
-  If run this node api through docker image
-
-## Prerequisites
-
-  - `Docker` Version >= 17.03.2-ce, build f5ec1e2 (test on Ubuntu14)
-    * If `Centos7` should install using `binary install` (test Docker version 18.03.0-ce, build 0520e24)
-
-## Run from Docker image [ ## NOT COMPLETE. IN TODO: LIST, DON'T USE ! ]
-
-  - After load image file (.tar) to Docker, Run following command below.\
-    this will map the current directory to inside container's directory.\
-  
-  ```sh
-    mkdir app
-    cd app
-  ```
-
-  - then execute
-
-  ```sh
-    FIXME:
-    docker run \
-      -d -it \
-      --name container_name \
-      -v "$(pwd)":/app \
-      -w /app \
-      -p 3000:3000 \
-      repo:tag \
-      npm start
-
-     docker run -d --name node-api-rabbit -p 8080:8080 fwg/api-rabbit npm start 
-  ```
--->
 
 # 2. Build Source To Docker Image And Run Container
 
