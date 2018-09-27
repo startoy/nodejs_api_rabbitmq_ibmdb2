@@ -1,6 +1,6 @@
 # Nodejs to Rabbitmq
 
-  This repository provided api for request data using Rabbitmq broker
+  This repository provided api for request data by sent message to specific queue using RabbitMQ
 
 # 1. Run on NodeJS
 
@@ -122,9 +122,9 @@
 
      docker run -d --name node-api-rabbit -p 8080:8080 fwg/api-rabbit npm start 
   ```
- -->
+-->
 
-# 2. Build Source To Docker Image
+# 2. Build Source To Docker Image And Run Container
 
   this will build from source code to Docker image.
   
@@ -138,6 +138,16 @@
       ```
 
   - `Source code` compressed file ( same as `Run on NodeJS` section )
+
+  #### TODO: If no internet access build instruction 
+  - See above  `# Setup with no internet access`
+
+ #### If you have this repository Docker image file .tar
+  - Download from:
+    ```
+    \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\api_rabbit_image.tar
+    ```
+    Then skip to step 4.
 
 ## Step
 
