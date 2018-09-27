@@ -37,21 +37,22 @@ amqp.connect('amqp://localhost')
         r = fibonacci(n);
       else
         r = "SERVER|STRING|" + n + "|"
-
+      console.log(" [.] Create String");
       // finish
       let tEnd = Date.now();
 
       // to send object as a message,
       // you have to call JSON.stringify
-      r = JSON.stringify({
+      /* r = JSON.stringify({
         result: r,
         time: (tEnd - tStart)
-      });
-
+      }); */
+      console.log(" [.] Send back to", msg.properties.replyTo, msg.properties.correlationId);
       ch.sendToQueue(msg.properties.replyTo,
         new Buffer.from(r.toString()), {
           correlationId: msg.properties.correlationId
         });
+      console.log("Ack msg");
       ch.ack(msg);
     })
   });

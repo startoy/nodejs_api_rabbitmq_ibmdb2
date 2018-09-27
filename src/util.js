@@ -10,11 +10,6 @@ function randomid2() {
   return new Date().getTime().toString() + Math.random().toString() + Math.random().toString();
 }
 
-function generateUuid() {
-  return Math.random().toString() +
-    Math.random().toString() +
-    Math.random().toString();
-}
 
 function isNumber(victim) {
   // is type number( ex. "123" , 123) AND not null with "" (which is string null)
@@ -26,6 +21,5 @@ function isNumber(victim) {
 module.exports = {
   randomid1 : randomid1,
   randomid2 : randomid2,
-  generateUuid : generateUuid,
   isNumber : isNumber,
 }

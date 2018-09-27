@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rimraf app/ && babel src/ --out-dir app/",
     "start": "npm run build && nodemon app/server.js --ignore 'src/'",
-    "start-sv-test": "nodemon --exec babel-node src/server_test.js --ignore 'src/'",
+    "start-sv-test": "nodemon --exec babel-node src/server_test.js --ignore 'src/' --ignore 'app/'",
+    "start-cl-test": "nodemon --exec babel-node src/server.js --ignore 'src/' --ignore 'app/'",
     "serve": "node app/server.js",
     "test": "mocha --compilers js:@babel/register"
   },
