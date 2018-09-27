@@ -224,16 +224,17 @@
       - `771` First 3 characters of container id
       - `-f` Follow log output
 
-  - Test tool
-    ```sh
-    ./api_loop_test.sh <port>
-    ```
-    * `<port>` API Port
+  8. Test tool
+
+      ```sh
+      ./api_loop_test.sh <port>
+      ```
+      * `<port>` API Port
 
 # Rabbitmq
 This instruction provide how to run a Rabbitmq's service
 ## Run Docker Image Rabbitmq
-  * Internet access required ! \
+  * Internet access required !
    This will pull the images from docker hub.
     ```sh
     docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
@@ -241,7 +242,7 @@ This instruction provide how to run a Rabbitmq's service
     - `5672` AMQP Port
     - `15672` Management Port
 
-  * No Internet access required ! \
+  * No Internet access required !
    Load image file .tar to Docker, You can find following path below.
     ```sh
     \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\rabbitmq_3-management.tar
