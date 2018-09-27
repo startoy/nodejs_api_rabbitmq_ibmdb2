@@ -25,18 +25,10 @@ async function main() {
 }
 main();
 
-/*  OR USE THIS TO DECLARE CHANNEL
-client.connect({
-  uri: cnf.amqp_uri
-}).then(conn => {
-  client.channel(conn)
-  .then( ch=>{ channel = ch })
-}) */
-
-// Logging middleware
+// Logging Middleware
 router.use((req, res, next) => {
   if (cnf.env === "development") {
-    console.log('\n [x] %s %s (NEXT)', req.method, req.url);
+    // console.log('\n [x] %s %s (NEXT)', req.method, req.url);
   }
   next()
 });

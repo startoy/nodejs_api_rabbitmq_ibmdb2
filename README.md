@@ -2,20 +2,21 @@
 
   Provided RESTful-api to request data through Rabbitmq Server
 
-# 1. Run on Node
+# 1. Run on NodeJS
 
 ## Prerequisites
 
-  - Nodejs >= 8.9.4(test on Windows), 8.11.3(test on Ubuntu16)
-  - Source code compressed file
-  * Use `node-api-rabbitmq.zip` if server access the internet normally.
-  * Use `node-api-rabbitmq_w_modules.zip` if server offlines or can not access the internet. 
+  - Nodejs >= 8.9.4 (test on Windows), 8.11.3 (test on Ubuntu16)
+  - Source code (compressed file)
+    * Use `node-api-rabbitmq.zip` If server access the internet normally.
+    * Use `node-api-rabbitmq_w_modules.zip` If server offlines or can not access the internet. 
 
 ## Setup
 
-  Install dependencies (where `package.json` located)
+  Install dependencies
 
   ```sh
+    
     npm install
   ```
 

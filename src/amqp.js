@@ -56,8 +56,13 @@ async function sendRPCMessage(channel, message, rpcQueue) {
     }
   })
 }
-
-async function sendToQueue(channel, Queue, message) {
+/**
+ * Send Message to specific queue name
+ * @param {*} channel 
+ * @param {*} message 
+ * @param {*} Queue 
+ */
+async function sendToQueue(channel, message, Queue) {
   await channel.assertQueue(Queue, {
     durable: false,
     autoDelete: true
