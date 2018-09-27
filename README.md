@@ -111,9 +111,10 @@
 
  ### If you have this repository Docker image file .tar
   - Download from:
-    ```
-    \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\api_rabbit_image.tar
-    ```
+
+      ```sh
+      \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\api_rabbit_image.tar
+      ```
     Then skip to step 4.
 
 ## Step
@@ -190,10 +191,12 @@
       - Other ENV pass to config see `config.js`
     
       Now we should see the container running
-        ```sh
-        docker ps
-        ```
+      
+      ```sh
+      docker ps
+      ```
       ![](content/node_api_rabbit.JPG)
+      
   6. Verify if succeed to start docker container.
 
       ```sh
