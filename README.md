@@ -103,10 +103,13 @@
 
   - `Source code` compressed file ( same as `Run on NodeJS` section )
 
-  #### TODO: If no internet access build instruction 
-  - See above  `# Setup with no internet access`
+  ### TODO: If no internet access build instruction 
+  - See above adapt with  `# Setup with no internet access`
+  - Then edit Dockerfile to not `npm install`
+  - Add `RUN chmod a+x node_modules/.bin/*`
+  - Follow normal build step
 
- #### If you have this repository Docker image file .tar
+ ### If you have this repository Docker image file .tar
   - Download from:
     ```
     \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\api_rabbit_image.tar
@@ -136,8 +139,8 @@
 
       ```sh
       docker images
-        REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
-        fwg/api-rabbit            test                da6d92132463        7 minutes ago       69.9 MB
+        REPOSITORY                TAG                 IMAGE ID            CREATED              SIZE
+        fwg/api-rabbit            latest              d8457d449ae1        About a minute ago   96.6 MB
       ```
 
   3. Export the images from docker to .tar file
@@ -148,9 +151,9 @@
       - `api_rabbit_image.tar` name the path to image tar file (MUST PROVIDE .tar to it)
       - `fwg-api-rabbit` name of repository on docker
 
-  - `NOW WE GOT AN DOCKER IMAGE !!`
+  - `NOW WE GOT AN IMAGE 'api_rabbit_image.tar' !!`
 
-  4. Import image tar file to server that have Docker as you wish then execute
+  4. After we got an image file. We copy it to server, Then import image .tar file to server that have Docker by execute
 
       ```sh
       docker load -i api_rabbit_image.tar
@@ -185,6 +188,12 @@
       - `-e "AMQP_URI"` Specific Rabbitmq uri.
           - See [URI SPEC](https://www.rabbitmq.com/uri-spec.html) for more.
       - Other ENV pass to config see `config.js`
+    
+      Now we should see the container running
+        ```sh
+        docker ps
+        ```
+      ![](content/node_api_rabbit.JPG)
   6. Verify if succeed to start docker container.
 
       ```sh
@@ -207,12 +216,12 @@
   7. See container's logs
 
       ```sh
-      docker logs 438 -f 
+      docker logs 771 -f 
       ```
-      - `438` First 3 characters of container id
+      - `771` First 3 characters of container id
       - `-f` Follow log output
 
-  - Test
+  - Test tool
     ```sh
     ./api_loop_test.sh <port>
     ```
