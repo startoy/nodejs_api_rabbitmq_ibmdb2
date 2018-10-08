@@ -1,12 +1,7 @@
 /**
  * Server for RPC test
- * @param Number
- * @returns result of fibonanci(Number)
- * curl localhost:8080/rpc/5
- *
- *  @param String
- * @returns data string from server
- * curl localhost:8080/rpc/SOMESTRING%20EIEI
+ * @param {*} msg
+ * @returns {*}
  */
 
 'use strict';

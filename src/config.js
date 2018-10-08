@@ -1,8 +1,10 @@
 /**
- * CONFIG
+ * @name config.js
+ * @description config when running node
  */
 
 export const env = process.env.NODE_ENV || 'development';
+export const dev = env === 'development' ? true:false;
 
 // Server
 // if RabbitMQ mount with docker use ip of docker container

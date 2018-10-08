@@ -1,4 +1,18 @@
-if [ -z "${1}" ]; then echo 'Usage: request_rabbit.sh <port> '; exit; fi
+iTemp=0;
+if [ -z "${1}" ]; then echo 'Usage: request_rabbit_loop.sh <port> <msg> <msg>...'; echo '   EX -> ./repeat.sh 8080 APF50050005%20%20,F,5005,,1,8 ATF500%20,10,,9';exit; fi
+if [ -z "${2}" ]; then default="APF50050005%20%20,F,5005,,1,8";
+else
+        for ARG in "${@:2}"
+        do
+        default[iTemp]=$ARG;
+        echo 'Request:'${default[iTemp]};
+        iTemp=$((iTemp+1));
+        done
+fi;
+
+echo '--------- Start Loop in 5 second... ---------';
+if [ "${iTemp}" -eq 0 ]; then echo 'Request:'$default; iTemp=1; fi
+sleep 3;
 
 t_count=0;
 g_count=0;
@@ -6,23 +20,24 @@ g_sum=0;
 count=0;
 l_count=0;
 
-        stime=$(date +%s%3N);
+stime=$(date +%s%3N);
 while true;
 do
         count=$((count+1));
         t_count=$((t_count+1));
         echo "  --------------------------------------------------------------------------------------";
-        #curl -v --header "Connection: keep-alive" "localhost:8080/";
-        RES=$(curl -m 10 localhost:${1}/rpc/test_queue/APF50050005%20%20,F,5005,,1,8);
+                rnd=$(( $RANDOM % $iTemp ));
+                Msg=${default[$rnd]};
+                echo 'Will Request -> '$Msg;
+        RES=$(curl -m 10 localhost:${1}/rpc/test_queue/${Msg});
         if [ -z "${RES}" ]; then l_count=$((l_count+1));
         else echo $RES; fi
 
         etime=$(date +%s%3N);
         dtime=$((${etime}-${stime}));
-        # WAIT FOR 1 SEC
         if [ ${dtime} -gt 1000 ]; then
                 g_count=$((g_count+1));
-                g_sum=$((g_sum+dtime));
+								g_sum=$((g_sum+dtime));
                 time_avg=$((g_sum/g_count));
                 msg_avg=$((t_count/g_count));
                 msg_time_avg=$((msg_avg/time_avg));
@@ -45,4 +60,4 @@ do
                 count=0;
                 stime=$(date +%s%3N);
         fi
-done
+done 

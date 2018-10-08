@@ -1,3 +1,8 @@
+/**
+ * @name amqp.js
+ * @description amqp lib with reuse + emit event-driven, emit is faster than channel.cancel(consumerTag)
+ *
+ */
 'use strict';
 
 import amqp from 'amqplib';
@@ -60,8 +65,13 @@ async function sendRPCMessage(channel, message, rpcQueue) {
     }
   });
 }
-
-async function sendToQueue(channel, Queue, message) {
+/**
+ * Send Message to specific queue name
+ * @param {*} channel
+ * @param {*} message
+ * @param {*} Queue
+ */
+async function sendToQueue(channel, message, Queue) {
   await channel.assertQueue(Queue, {
     durable: false,
     autoDelete: true
