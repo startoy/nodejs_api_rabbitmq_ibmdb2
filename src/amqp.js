@@ -1,7 +1,7 @@
-'use strict'
+'use strict';
 
-import amqp from 'amqplib'
-import EventEmitter from 'events'
+import amqp from 'amqplib';
+import EventEmitter from 'events';
 
 let Q;
 
@@ -13,33 +13,37 @@ async function connect(setting) {
 /**
  * Create client then consume message with Q
  * When promise, emit the event name `correlationId` then trigger callback (which is define when `.on()` `.once()` )
- * @param {*} conn 
+ * @param {*} conn
  */
 async function create(conn) {
   try {
     const channel = await conn.createChannel();
     channel.responseEmitter = new EventEmitter();
     channel.responseEmitter.setMaxListeners(0);
-    Q = await channel.assertQueue('', { exclusive:true})
-    console.log(' -- GENERATE PRIVATE QUEUE --')
-    console.log(' ----->', Q.queue)
+    Q = await channel.assertQueue('', { exclusive: true });
+    console.log(' -- GENERATE PRIVATE QUEUE --');
+    console.log(' ----->', Q.queue);
 
-    channel.consume( Q.queue, msg => channel.responseEmitter.emit(msg.properties.correlationId, msg.content), {
-      noAck: true
+    channel.consume(
+      Q.queue,
+      msg =>
+        channel.responseEmitter.emit(msg.properties.correlationId, msg.content),
+      {
+        noAck: true
       }
     );
-    return channel
+    return channel;
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
 }
 
 /**
  * When we will send the message to broker, We listening event call `correlationId`.
  * When event trigger we call resolve promise back to where this function called
- * @param {*} channel 
- * @param {*} message 
- * @param {*} rpcQueue 
+ * @param {*} channel
+ * @param {*} message
+ * @param {*} rpcQueue
  */
 async function sendRPCMessage(channel, message, rpcQueue) {
   return new Promise(resolve => {
@@ -52,9 +56,9 @@ async function sendRPCMessage(channel, message, rpcQueue) {
       });
       console.log('Sent to Queue success..');
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  })
+  });
 }
 
 async function sendToQueue(channel, Queue, message) {
@@ -66,8 +70,7 @@ async function sendToQueue(channel, Queue, message) {
 }
 
 function generateUuid() {
-  return Math.random().toString() +
-    Math.random().toString();
+  return Math.random().toString() + Math.random().toString();
 }
 
 module.exports = {
@@ -75,4 +78,4 @@ module.exports = {
   create: create,
   sendRPCMessage: sendRPCMessage,
   sendToQueue: sendToQueue
-}
+};

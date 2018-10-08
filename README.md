@@ -157,7 +157,7 @@
 
       ```sh
         docker run -d \
-          -e "NODE_ENV=development" -e "AMQP_URI=amqp://localhost" \
+          -e "NODE_ENV=development" -e "amqpUri=amqp://localhost" \
           --name node-api-rabbit \
           -p 8080:8080 \
           -m "300M" \
@@ -170,7 +170,7 @@
       - `fwg/api-rabbit` name of repository, if no tag provided, will use latest. 
       - `npm start` running command, if not provided will use default command from Dockerfile.
       - `-e NODE_ENVIRONMENT`, See more in config.js
-      - `-e "AMQP_URI=amqp://test:test@13.229.146.106"` Declare which host will be use. \
+      - `-e "amqpUri=amqp://test:test@13.229.146.106"` Declare which host will be use. \
           - If Rabbitmq using Docker should specific Docker container ip \
           - if Rabbitmq using Service use ip address with username:password
           - see [uri-spec](https://www.rabbitmq.com/uri-spec.html) for more.

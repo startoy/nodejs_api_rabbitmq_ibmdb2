@@ -19,12 +19,12 @@ var msg_reply;
     amqp.connect('amqp://localhost', (err, conn) => {
       let corr = randomid1().toString();
       let ch =  conn.createChannel()
-      ch.assertQueue(cnf.reply_to); 
+      ch.assertQueue(cnf.replyTo); 
 
       console.log(' [x] Request Okury')
 
   // consume
-       ch.consume(cnf.reply_to, msg => {
+       ch.consume(cnf.replyTo, msg => {
         if (msg.properties.correlationId == corr) {
           console.log(' [.] Receive [%s]', msg.content.toString())
           ch.ack(msg)
@@ -33,9 +33,9 @@ var msg_reply;
       }, {noAck:false})
 
   // publish
-       ch.sendToQueue(/* cnf.rpc_queue */ 'rpc_queue',
+       ch.sendToQueue(/* cnf.rpcQueue */ 'rpcQueue',
       new Buffer.from(/* msg_send */'10'),
-      { correlationId: corr, replyTo: cnf.reply_to})
+      { correlationId: corr, replyTo: cnf.replyTo})
     })
   } catch {
     console.error('Error on chClient()')
