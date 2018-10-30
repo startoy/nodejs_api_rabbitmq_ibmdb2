@@ -6,9 +6,9 @@
 
 ## Prerequisites
 
-  - `Nodejs` >= 8.9.4 (test on Windows), 8.11.3 (test on Ubuntu16) [Download Official](https://nodejs.org/en/download/)
+  - `Nodejs` >= 8.9.4 (test on Windows), 8.11.3 (test on Ubuntu16) [Official Download](https://nodejs.org/en/download/)
   - `Source code` (compressed file) [Download on Gitlab](http://gitlab.freewillgroup.com/peerapat_suk/node-api-rabbitmq)
-  - `Rabbitmq server` Assume broker running on `amqp://localhost` [Download](https://www.rabbitmq.com/)
+  - `Rabbitmq server` (Assume broker running on `amqp://localhost`) [Download](https://www.rabbitmq.com/)
 
 ## Setup
 ### # Setup with internet access
@@ -19,7 +19,13 @@
   cd node-api-rabbitmq-master
   npm install
   ```
-  * After execute `npm install`, folder `node_modules` should appeared
+  
+  ```sh
+  git clone {this_repo_url.git}
+  cd node-api-rabbitmq
+  npm install
+  ```
+  * After execute `npm install`, folder `node_modules` should be appeared
 
 ### # Setup with no internet access
 
@@ -32,13 +38,13 @@
   mv api_rabbitmq_node_modules.zip node-api-rabbitmq-master
   unzip api_rabbitmq_node_modules.zip
   ```
-  - *`Optionally`* chmod the `.bin` if some error occur with something like `'permission denied rimraf..'`
+  - *`Optionally`* chmod the `.bin` if some error occur like `'permission denied rimraf..'`
   ```sh
   chmod a+x node_modules/.bin/*
   ```
 
 ## Run
-  After install dependencies, now we can running the api node by execute:
+  After installed dependencies, Now we can run the api node by execute:
   ```sh
   npm start
   ```
@@ -55,7 +61,7 @@
   
   ![](content/nodejs_result.JPG) 
 
-  `TODO: Prevent serving api server if there is error on connect to Rabbitmq Broker`
+  `TODO: Prevent serving api server if there is error on connect to Rabbitmq Broker. (Currently no check if Rabbit-Server exist or not`
 
   Request Okury(sent message to queue `test_queue`)
   ```sh
