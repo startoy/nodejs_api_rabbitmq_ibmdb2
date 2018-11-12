@@ -5,10 +5,15 @@
 # 1. Run on NodeJS
 
 ## Prerequisites
-
+   
+  <img align="center" src="https://www.rabbitmq.com/img/RabbitMQ-logo.svg" height="35"> 
+  <img align="center" src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png" height="80">
+   
+  
   - `Nodejs` >= 8.9.4 (test on Windows), 8.11.3 (test on Ubuntu16) [Official Download](https://nodejs.org/en/download/)
   - `Source code` (compressed file) [Download on Gitlab](http://gitlab.freewillgroup.com/peerapat_suk/node-api-rabbitmq)
   - `Rabbitmq server` (Assume broker running on `amqp://localhost`) [Download](https://www.rabbitmq.com/)
+
 
 ## Setup
 ### # Setup with internet access
