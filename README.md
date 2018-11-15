@@ -43,7 +43,7 @@
   mv api_rabbitmq_node_modules.zip node-api-rabbitmq-master
   unzip api_rabbitmq_node_modules.zip
   ```
-  - *`Optionally`* chmod the `.bin` if some error occur like `'permission denied rimraf..'`
+  - **Optionally** chmod the `.bin` if some error occur like `'permission denied rimraf..'`
   ```sh
   chmod a+x node_modules/.bin/*
   ```
@@ -66,9 +66,9 @@
   
   ![](content/nodejs_result.JPG) 
 
-  `TODO: Prevent serving api server if there is error on connect to Rabbitmq Broker. (Currently no check if Rabbit-Server exist or not`
+  **TODO:** Prevent serving api server if there is error on connect to Rabbitmq Broker. (Currently no check if Rabbit-Server exist or not
 
-  Request Okury(sent message to queue `test_queue`)
+  **Request Okury(sent message to queue `test_queue`)**
   ```sh
   curl localhost:8080/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
   ```
@@ -92,7 +92,7 @@
       ```sh
       npm start
       ```
-  // TODO:
+  **TODO:** make test script
   - `test` : Test if files in ./src can transpile with Babel using `Mocha` 
   
       ```sh
