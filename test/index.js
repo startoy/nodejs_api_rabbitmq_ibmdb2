@@ -2,20 +2,20 @@
   Test sources if is valid or not when transpile with Babel
 */
 
-import http from 'http'
-import assert from 'assert'
+import http from 'http';
+import assert from 'assert';
 
-import '../src/server.js'
-import * as cnf from '../src/config'
+import '../src/server.js';
+import * as cnf from '../src/config';
 
-describe('=== Node Server ===', ()=>{
+describe('=== Node Server ===', () => {
   it('should return 200', done => {
-    let address = 'http://'+cnf.hostname+':'+cnf.port
-    let full = address + '/direct' + '/MessageSend'
-    console.log(' -- Call api [%s]',full)
+    let address = 'http://' + cnf.hostname + ':' + cnf.port;
+    let full = address + '/direct' + '/MessageSend';
+    console.log(' -- Call api [%s]', full);
     http.get(full, res => {
-      assert.equal(200, res.statusCode)
-      done()
-    })
-  })
-})
+      assert.equal(200, res.statusCode);
+      done();
+    });
+  });
+});

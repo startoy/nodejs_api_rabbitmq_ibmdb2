@@ -10,7 +10,8 @@ const amqp = require('amqplib');
 const util = require('./util');
 
 const q = 'test_queue';
-amqp.connect('amqp://localhost')
+amqp
+  .connect('amqp://localhost')
   .then(conn => {
     return conn.createChannel();
   })
@@ -19,22 +20,21 @@ amqp.connect('amqp://localhost')
       durable: false
     });
     ch.prefetch(1);
-    console.log(" [x] Awaiting RPC Requests");
+    console.log(' [x] Awaiting RPC Requests');
     ch.consume(q, msg => {
-      const n = msg.content.toString()
-      console.log(" [.] Receive [%s]", n);
+      const n = msg.content.toString();
+      console.log(' [.] Receive [%s]', n);
 
       // start
-      let tStart = Date.now();
+      // let tStart = Date.now();
 
       let r;
-      if (util.isNumber(n))
-        r = fibonacci(n);
-      else
-        r = "SERVER|STRING|" + n + "|"
-      console.log(" [.] Create String");
+      if (util.isNumber(n)) r = fibonacci(n);
+      else r = 'SERVER|STRING|' + n + '|';
+      console.log(' [.] Create String');
+
       // finish
-      let tEnd = Date.now();
+      // let tEnd = Date.now();
 
       // to send object as a message,
       // you have to call JSON.stringify
@@ -42,21 +42,22 @@ amqp.connect('amqp://localhost')
         result: r,
         time: (tEnd - tStart)
       }); */
-      console.log(" [.] Send back to", msg.properties.replyTo, msg.properties.correlationId);
-      ch.sendToQueue(msg.properties.replyTo,
-        new Buffer.from(r.toString()), {
-          correlationId: msg.properties.correlationId
-        });
-      console.log("Ack msg");
+      console.log(
+        ' [.] Send back to',
+        msg.properties.replyTo,
+        msg.properties.correlationId
+      );
+      ch.sendToQueue(msg.properties.replyTo, new Buffer.from(r.toString()), {
+        correlationId: msg.properties.correlationId
+      });
+      console.log('Ack msg');
       ch.ack(msg);
-    })
+    });
   });
 
 function fibonacci(n) {
   if (!n) n = 1;
 
-  if (n === 0 || n === 1)
-    return n;
-  else
-    return fibonacci(n - 1) + fibonacci(n - 2);
+  if (n === 0 || n === 1) return n;
+  else return fibonacci(n - 1) + fibonacci(n - 2);
 }

@@ -6,13 +6,14 @@
 export const env = process.env.NODE_ENV || 'development';
 export const dev = env === 'development' ? true:false;
 
-// ACCESS
-export const hostname = process.env.HOSTNAME || 'localhost'; // if Docker should use 0.0.0.0 ??
+// Server
+// if RabbitMQ mount with docker use ip of docker container
+export const hostname = process.env.HOSTNAME || 'localhost';
 export const port = process.env.PORT || 8080;
-export const amqp_uri = process.env.AMQP_URI || 'amqp://localhost';
-export const log_fname = process.env.LOG_FNAME || 'access.log';
+export const amqpUri = process.env.amqpUri || 'amqp://localhost';
+export const logFileName = process.env.LOG_NAME || 'access.log';
 
 // QUEUE
-export const reply_to = process.env.REPLY_TO || 'rabbit.reply-to';
-export const rpc_queue = process.env.RPC_QUEUE || 'test_queue';
-export const direct_queue = process.env.DIRECT_QUEUE || 'direct_queue'
+export const replyTo = process.env.replyTo || 'rabbit.reply-to';
+export const rpcQueue = process.env.rpcQueue || 'test_queue';
+export const directQueue = process.env.directQueue || 'directQueue';
