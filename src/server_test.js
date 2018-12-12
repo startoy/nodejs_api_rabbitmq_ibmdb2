@@ -7,7 +7,7 @@
 'use strict';
 
 const amqp = require('amqplib');
-const util = require('./util');
+const util = require('./lib/util');
 
 const q = 'test_queue';
 amqp
@@ -20,7 +20,7 @@ amqp
       durable: false
     });
     ch.prefetch(1);
-    console.log(' [x] Awaiting RPC Requests');
+    console.log(' [x] Awaiting RPC Requests [%s]', q);
     ch.consume(q, msg => {
       const n = msg.content.toString();
       console.log(' [.] Receive [%s]', n);
