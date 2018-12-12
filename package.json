@@ -2,25 +2,30 @@
   "name": "rabbitnode",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "bin/www",
   "scripts": {
-    "build": "rimraf app/ && babel src/ --out-dir app/",
-    "start": "npm run build && nodemon app/server.js --ignore 'src/'",
-    "start-sv-test": "nodemon --exec babel-node src/server_test.js --ignore 'src/' --ignore 'app/'",
-    "start-cl-test": "nodemon --exec babel-node src/server.js --ignore 'src/' --ignore 'app/'",
-    "serve": "node app/server.js",
-    "test": "mocha --compilers js:@babel/register"
+    "start": "npm run build && npm run clear-log && node ./bin/www",
+    "build": "rimraf build/ && babel src/ --out-dir build/",
+    "start-sv-test": "nodemon --exec babel-node src/server_test.js --ignore 'src/' --ignore 'build/'",
+    "start-cl-test": "nodemon --exec babel-node bin/www --ignore 'src/' --ignore 'build/'",
+    "clear-log": "rimraf logs/messages_dev/ && rimraf logs/messages/ ",
+    "start-build": "node ./bin/www",
+    "test": "mocha"
   },
   "author": "peerapat_suk",
   "license": "ISC",
   "dependencies": {
     "@babel/polyfill": "7.0.0",
     "amqplib": "0.5.2",
+    "cookie-parser": "1.4.3",
+    "debug": "4.1.0",
     "express": "4.16.3",
     "fs": "0.0.1-security",
+    "http-errors": "1.7.1",
     "morgan": "1.9.1",
     "nodemon": "1.18.4",
     "path": "0.12.7",
+    "pug": "2.0.3",
     "rotating-file-stream": "1.3.7",
     "util": "0.11.0"
   },
@@ -39,6 +44,7 @@
     "eslint-plugin-standard": "4.0.0",
     "mocha": "5.2.0",
     "prettier": "1.14.3",
-    "rimraf": "2.6.2"
+    "rimraf": "2.6.2",
+    "util.log": "0.0.26"
   }
 }
