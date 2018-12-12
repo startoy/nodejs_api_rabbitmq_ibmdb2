@@ -1,4 +1,4 @@
 node_modules/
-app/
-src/log/*
+build/
+logs/
 .vscode/

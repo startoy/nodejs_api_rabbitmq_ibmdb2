@@ -8,9 +8,12 @@
 import amqp from 'amqplib';
 import EventEmitter from 'events';
 
+import { log, devlog } from './util';
+
 let Q;
 
 async function connect(setting) {
+  log.info('Connecting to AMQP...');
   const conn = await amqp.connect(setting.uri);
   return conn;
 }
@@ -21,13 +24,14 @@ async function connect(setting) {
  * @param {*} conn
  */
 async function create(conn) {
+  log.info('Creating channel...');
   try {
     const channel = await conn.createChannel();
     channel.responseEmitter = new EventEmitter();
     channel.responseEmitter.setMaxListeners(0);
     Q = await channel.assertQueue('', { exclusive: true });
-    console.log(' -- GENERATE PRIVATE QUEUE --');
-    console.log(' ----->', Q.queue);
+    devlog.info(' -- GENERATE PRIVATE QUEUE --');
+    devlog.info(' ----->', Q.queue);
 
     channel.consume(
       Q.queue,
@@ -37,9 +41,12 @@ async function create(conn) {
         noAck: true
       }
     );
+    log.info('Channel Created !');
     return channel;
   } catch (e) {
-    console.error(e);
+    if (e) log.error(e);
+    log.info('Creating channel failed: Termiated process..');
+    process.exit(1);
   }
 }
 
@@ -51,6 +58,7 @@ async function create(conn) {
  * @param {*} rpcQueue
  */
 async function sendRPCMessage(channel, message, rpcQueue) {
+  devlog.info('Calling sendRPCMessage');
   return new Promise(resolve => {
     let correlationId = generateUuid();
     try {
@@ -59,12 +67,14 @@ async function sendRPCMessage(channel, message, rpcQueue) {
         correlationId,
         replyTo: Q.queue
       });
-      console.log('Sent to Queue success..');
+      devlog.info('Call sendRPCMessage Succeed...');
     } catch (e) {
-      console.error(e);
+      if (e) log.error(e);
+      devlog.info('Call sendRPCMessage Failed...');
     }
   });
 }
+
 /**
  * Send Message to specific queue name
  * @param {*} channel
