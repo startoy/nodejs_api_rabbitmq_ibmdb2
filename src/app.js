@@ -15,17 +15,16 @@ import rfs from 'rotating-file-stream';
 
 import rpcRouter from './routes/rpc';
 import directRouter from './routes/direct';
-
 import { log } from './lib/util';
-import { isDev } from './lib/config';
+import { isDev, version } from './lib/config';
 
 var app = express();
 var logFile = 'express.log';
 var logDirectory = path.join(__dirname, '../logs');
 
-isDev
+/* isDev
   ? log.info('Log path: ' + path.join(logDirectory, logFile))
-  : log.info('');
+  : log.info(''); */
 
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
@@ -66,6 +65,8 @@ app.get('/', async (req, res, next) => {
 });
 app.use('/rpc', rpcRouter);
 app.use('/direct', directRouter);
+
+log.info('NodeRB Version: ' + version);
 
 // catch 404 then redirect to error handler
 app.use((req, res, next) => {

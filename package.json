@@ -4,11 +4,12 @@
   "description": "",
   "main": "bin/www",
   "scripts": {
-    "start": "npm run build && rimraf infologs/ && node ./bin/www",
+    "start": "npm run build && npm run clear-log && node ./bin/www",
     "build": "rimraf build/ && babel src/ --out-dir build/",
     "start-sv-test": "nodemon --exec babel-node src/server_test.js --ignore 'src/' --ignore 'build/'",
-    "start-cl-test": "npm run clear-log && nodemon --exec babel-node bin/www --ignore 'src/' --ignore 'build/'",
-    "clear-log": "rimraf logs/msglogs/",
+    "start-cl-test": "nodemon --exec babel-node bin/www --ignore 'src/' --ignore 'build/'",
+    "clear-log": "rimraf logs/messages_dev/ && rimraf logs/messages/ ",
+    "start-build": "node ./bin/www",
     "test": "mocha"
   },
   "author": "peerapat_suk",

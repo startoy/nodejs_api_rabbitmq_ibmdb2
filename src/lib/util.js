@@ -4,6 +4,7 @@
  */
 import logger from 'util.log';
 import * as cnf from './config';
+import fs from 'fs';
 
 function isNumber(input) {
   // is type number( ex. "123" , 123) AND not null with "" (which is string null)
@@ -15,6 +16,8 @@ function isNumber(input) {
     return 1;
   return 0;
 }
+
+fs.existsSync('./logs') || fs.mkdirSync('./logs');
 
 // TODO: try to use file stream for rotate file
 const log = logger.instance({
