@@ -139,6 +139,7 @@
       tar -xvzf node-api-rabbitmq-master.tar.gz
 
       cd node-api-rabbitmq-master/
+      npm install
       ```
   2. สั่งให้ build docker image (จะรันโค้ดตามไฟล์ชื่อ `Dockerfile`)
 
