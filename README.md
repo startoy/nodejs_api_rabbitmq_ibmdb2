@@ -69,7 +69,7 @@
 
   *ถ้าสตาร์ทด้วย docker ต้องใช้ uri amqp ของ container
   ```sh
-  amqpUri=amqp://172.17.xx.xx NODE_ENV=production npm start
+  AMQPURI=amqp://172.17.xx.xx NODE_ENV=production npm start
   ```
 
   แล้วเช็ค
@@ -123,7 +123,7 @@
   - ดาวโหลด:
 
       ```sh
-      \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\api_rabbit_image.tar
+      \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\NodeRB_DockerImage.tar
       ```
     แล้วข้ามไป Step 4 ได้เลย
 
@@ -158,17 +158,17 @@
   3. สั่งให้ Export image บน docker กลายเป็นไฟล์ .tar
 
       ```sh
-      docker save -o api_rabbit_image.tar fwg/api-rabbit
+      docker save -o NodeRB_DockerImage.tar fwg/api-rabbit
       ```
-      - `api_rabbit_image.tar` ชื่อไฟล์หรือpathที่จะ export ออกมา (ต้องใส่ .tar ด้วย)
+      - `NodeRB_DockerImage.tar` ชื่อไฟล์หรือpathที่จะ export ออกมา (ต้องใส่ .tar ด้วย)
       - `fwg-api-rabbit` ชื่อ repository บน docker
 
-  - `ตอนนี้จะต้องได้ไฟล์ 'api_rabbit_image.tar' !!`
+  - `ตอนนี้จะต้องได้ไฟล์ 'NodeRB_DockerImage.tar' !!`
 
   4. หลังจากได้ Image ไฟล์ ให้ copy ไฟล์ไปวางไว้ที่ Server แล้ว Load image ขึ้น Docker ด้วยคำสั่ง
 
       ```sh
-      docker load -i api_rabbit_image.tar
+      docker load -i NodeRB_DockerImage.tar
       ```
 
       เช็คว่ามี Image จากคำสั่ง
@@ -183,7 +183,7 @@
 
       ```sh
       docker run -d \
-        -e "NODE_ENV=development" -e "AMQP_URI=amqp://10.22.26.23" \
+        -e "NODE_ENV=development" -e "AMQPURI=amqp://10.22.26.23" \
         --name node-api-rabbit \
         -p 3000:3000 \
         -m "300M" \
@@ -197,8 +197,8 @@
       - `npm start` Execute command, if not provided will use default command from Dockerfile.
       - `-m` Limit the max memory use of this container.
       - `-e NODE_ENVIRONMENT` Change to other word if not in development. (ex. `production`)
-      - `-e "AMQP_URI"` Specific Rabbitmq uri.
-          - If mount with docker use docker container ip instead of local ip `amqp://172.17.0.x`
+      - `-e "AMQPURI"` Specific RabbitMQ uri.
+          - If mount with docker use docker container ip instead of local ip `amqp://172.17.0.x` (ดูจาก docker network inspect bridge)
           - See [URI SPEC](https://www.rabbitmq.com/uri-spec.html) for more.
       - Other ENV pass to config see `config.js`
     

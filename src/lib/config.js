@@ -14,9 +14,12 @@ export const isDev = env === 'development' ? true : false || false;
 // if RabbitMQ mount with docker use ip of docker container !
 export const hostname = process.env.HOSTNAME || 'localhost';
 export const port = process.env.PORT || 3000;
-export const amqpUri = process.env.amqpUri || 'amqp://localhost';
+export const AMQPURI = process.env.AMQPURI || 'amqp://localhost';
 
 // QUEUE
 export const replyTo = process.env.replyTo || 'rabbit.reply-to';
 export const rpcQueue = process.env.rpcQueue || 'test_queue';
 export const directQueue = process.env.directQueue || 'directQueue';
+
+// UTIL
+export const replyWaitTime = process.env.REPLYWAITTIME || 6000;

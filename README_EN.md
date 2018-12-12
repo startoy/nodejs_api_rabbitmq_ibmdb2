@@ -183,7 +183,7 @@
 
       ```sh
       docker run -d \
-        -e "NODE_ENV=development" -e "AMQP_URI=amqp://10.22.26.23" \
+        -e "NODE_ENV=development" -e "AMQPURI=amqp://10.22.26.23" \
         --name node-api-rabbit \
         -p 8080:8080 \
         -m "300M" \
@@ -197,7 +197,7 @@
       - `npm start` Execute command, if not provided will use default command from Dockerfile.
       - `-m` Limit the max memory use of this container.
       - `-e NODE_ENVIRONMENT` Change to other word if not in development. (ex. `production`)
-      - `-e "AMQP_URI"` Specific Rabbitmq uri.
+      - `-e "AMQPURI"` Specific Rabbitmq uri.
           - If mount with docker use docker container ip instead of local ip `amqp://172.17.0.x`
           - See [URI SPEC](https://www.rabbitmq.com/uri-spec.html) for more.
       - Other ENV pass to config see `config.js`

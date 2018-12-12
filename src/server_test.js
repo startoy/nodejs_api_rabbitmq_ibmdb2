@@ -29,9 +29,10 @@ amqp
       // let tStart = Date.now();
 
       let r;
+
       if (util.isNumber(n)) r = fibonacci(n);
       else r = 'SERVER|STRING|' + n + '|';
-      console.log(' [.] Create String');
+      console.log(' [.] Create String' + r + ' Type:' + typeof r);
 
       // finish
       // let tEnd = Date.now();
@@ -53,6 +54,9 @@ amqp
       console.log('Ack msg');
       ch.ack(msg);
     });
+  })
+  .catch(err => {
+    console.log('Something went wrong ' + err);
   });
 
 function fibonacci(n) {

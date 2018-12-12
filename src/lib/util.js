@@ -17,6 +17,12 @@ function isNumber(input) {
   return 0;
 }
 
+async function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
 fs.existsSync('./logs') || fs.mkdirSync('./logs');
 
 // TODO: try to use file stream for rotate file
@@ -41,5 +47,6 @@ const devlog = logger.instance({
 module.exports = {
   log: log,
   devlog: devlog,
-  isNumber: isNumber
+  isNumber: isNumber,
+  wait: wait
 };

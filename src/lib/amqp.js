@@ -58,7 +58,7 @@ async function create(conn) {
  * @param {*} rpcQueue
  */
 async function sendRPCMessage(channel, message, rpcQueue) {
-  devlog.info('Calling sendRPCMessage');
+  devlog.info('Calling sendRPCMessage...');
   return new Promise(resolve => {
     let correlationId = generateUuid();
     try {

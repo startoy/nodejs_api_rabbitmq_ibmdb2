@@ -10,7 +10,7 @@ import '@babel/polyfill';
 
 import client from '../lib/amqp';
 import * as cnf from '../lib/config';
-import { log, devlog } from '../lib/util';
+import { log, devlog, wait } from '../lib/util';
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ let channel;
 let conn;
 
 async function main() {
-  let uri = cnf.amqpUri;
+  let uri = cnf.AMQPURI;
   if (typeof uri === 'undefined' && !uri) {
     log.error('[ERROR] provided uri is not in proper format, got ' + uri);
     process.exit(1);
@@ -58,8 +58,22 @@ router.get('/:queueName/:message', async (req, res) => {
       'Try sending message[' + message + '] Queue[' + queueName + ']'
     );
     /* const q = await client.genQueue(channel) */
-    const msg = await client.sendRPCMessage(channel, message, queueName);
-    res.json(msg.toString());
+    /* const msg = await client.sendRPCMessage(channel, message, queueName); */
+    devlog.info('Wait Time ' + cnf.replyWaitTime + ' ms');
+    Promise.race([
+      client.sendRPCMessage(channel, message, queueName),
+      wait(cnf.replyWaitTime)
+    ]).then(val => {
+      devlog.info('PromiseRace Done');
+      if (val) {
+        let data = val.toString();
+        devlog.info('Got Data: ' + data);
+        res.json({ message: data });
+      } else {
+        devlog.info('No return value');
+        res.json({ message: 'no return value' });
+      }
+    });
   } catch (e) {
     if (e) log.error(e);
     res.json({ message: 'error on calling api' });
