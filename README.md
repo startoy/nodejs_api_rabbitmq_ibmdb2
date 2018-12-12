@@ -90,7 +90,7 @@
   ตัวอย่าง
   **Request Okury (sent message to queue `test_queue`)**
   ```sh
-  curl localhost:8080/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
+  curl localhost:3000/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
   ```
 ---
 
@@ -184,7 +184,7 @@
       docker run -d \
         -e "NODE_ENV=development" -e "AMQP_URI=amqp://10.22.26.23" \
         --name node-api-rabbit \
-        -p 8080:8080 \
+        -p 3000:3000 \
         -m "300M" \
         fwg/api-rabbit \
         npm start 
