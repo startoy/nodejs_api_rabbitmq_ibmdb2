@@ -114,10 +114,12 @@
   TODO: If no internet access build instruction 
   - See above adapt with  `# Setup with no internet access`
   - Then edit Dockerfile to not `npm install`
-  - Add `RUN chmod a+x node_modules/.bin/*`
+  - Add `RUN chmod a+x node_modules/.bin/*`  
   - Follow normal build step
+
 ---
- ### ถ้าต้องการข้าม Step build ต้องการให้รัน Docker image เลย
+
+### ถ้าต้องการข้าม Step build ต้องการให้รัน Docker image เลย
   - ดาวโหลด:
 
       ```sh
