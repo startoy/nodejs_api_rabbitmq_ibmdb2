@@ -108,10 +108,10 @@
       ```sh
       docker pull node:10.10.0-alpine
       ```
-
   - `Source code` ( ไฟล์ดูจาก #1 )
+
 ---
-  ### TODO: If no internet access build instruction 
+  TODO: If no internet access build instruction 
   - See above adapt with  `# Setup with no internet access`
   - Then edit Dockerfile to not `npm install`
   - Add `RUN chmod a+x node_modules/.bin/*`
