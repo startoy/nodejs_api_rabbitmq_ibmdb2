@@ -61,7 +61,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/', async (req, res, next) => {
   // res.redirect('/rpc');
-  res.render('index', { title: 'Welcome' });
+  res.render('info', {
+    message: 'THIS IS MESSAGE FROM ROUTER, YOU SHOULD SEE THIS MESSAGE'
+  });
 });
 app.use('/rpc', rpcRouter);
 app.use('/direct', directRouter);
