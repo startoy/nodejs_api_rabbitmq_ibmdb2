@@ -46,7 +46,7 @@ app.use(
 
 isDev ? app.use(logger('dev')) : log.info('Use Production Logging..');
 
-// view engine setup
+// View engine setup
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
@@ -59,12 +59,14 @@ app.use(
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Router Setup
 app.get('/', async (req, res, next) => {
   // res.redirect('/rpc');
   res.render('info', {
     message: 'THIS IS MESSAGE FROM ROUTER, YOU SHOULD SEE THIS MESSAGE'
   });
 });
+
 app.use('/rpc', rpcRouter);
 app.use('/direct', directRouter);
 

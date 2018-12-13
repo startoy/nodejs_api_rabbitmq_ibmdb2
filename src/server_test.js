@@ -33,7 +33,7 @@ amqp
       if (util.isNumber(n)) r = fibonacci(n);
       else r = 'SERVER|STRING|' + n + '|';
       console.log(' [.] Create String' + r + ' Type:' + typeof r);
-
+      r = 'RMU10170012 ,1,1,114632800,0,0,4,ABICO ,N, ,100,0.35,0.40,0.25,0.30,710,680,0,0,*,BANPU ,A, ,050,0.35,0.40,0.25,0.30,65000,1750,0,0,*,BLISS ,N, ,100,0.35,0.40,0.25,0.30,10000,4,0,0,*,CCP ,N,S,070,0.35,0.40,0.25,0.30,10000,36,0,0,*';
       // finish
       // let tEnd = Date.now();
 

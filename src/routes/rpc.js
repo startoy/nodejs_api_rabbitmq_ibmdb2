@@ -10,7 +10,8 @@ import '@babel/polyfill';
 
 import client from '../lib/amqp';
 import * as cnf from '../lib/config';
-import { log, devlog, wait } from '../lib/util';
+import { __processMsgRecv, __processMsgSend } from '../msgManager';
+import { log, devlog, wait, jForm } from '../lib/util';
 
 const router = express.Router();
 
@@ -49,34 +50,35 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/:queueName/:message', async (req, res) => {
-  const message = req.params.message;
-  const queueName = req.params.queueName;
-  devlog.info('get message: ' + message);
-  devlog.info('call queue: ' + queueName);
   try {
-    devlog.info(
-      'Try sending message[' + message + '] Queue[' + queueName + ']'
-    );
-    /* const q = await client.genQueue(channel) */
-    /* const msg = await client.sendRPCMessage(channel, message, queueName); */
+    const msgTypeRcv = req.params.message.slice(0, 3);
+    if (!__processMsgRecv(req.params.message)) {
+      devlog.error('router rpc got msg invalid format');
+      return res.json(jForm('Invalid message format'));
+    }
+    const message = req.params.message;
+    const queueName = req.params.queueName;
+    devlog.info('Sending message[' + message + '] Queue[' + queueName + ']');
     devlog.info('Wait Time ' + cnf.replyWaitTime + ' ms');
+    log.info('RPCSend [' + msgTypeRcv + '] ' + message);
     Promise.race([
       client.sendRPCMessage(channel, message, queueName),
       wait(cnf.replyWaitTime)
     ]).then(val => {
-      devlog.info('PromiseRace Done');
+      devlog.info('Promiserace Done');
       if (val) {
         let data = val.toString();
-        devlog.info('Got Data: ' + data);
-        res.json({ message: data });
-      } else {
-        devlog.info('No return value');
-        res.json({ message: 'no return value' });
+        let msgTypeRPCRcv = data.slice(0, 3);
+        log.info('RPCRecv [' + msgTypeRPCRcv + '] ' + data);
+        let jsonData = __processMsgSend(data);
+        res.json(jsonData);
+        return;
       }
+      res.json(jForm('response from server timeout'));
     });
   } catch (e) {
     if (e) log.error(e);
-    res.json({ message: 'error on calling api' });
+    res.json(jForm('error on calling api'));
   }
 });
 
