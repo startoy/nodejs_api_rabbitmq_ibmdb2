@@ -91,6 +91,7 @@
   **Request Okury (sent message to queue `test_queue`)**
   ```sh
   curl localhost:3000/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
+  curl localhost:3000/rpc/test_queue/AMU1017,10170012%20%20,1,10
   ```
 ---
 
@@ -183,7 +184,7 @@
 
       ```sh
       docker run -d \
-        -e "NODE_ENV=development" -e "AMQPURI=amqp://10.22.26.23" \
+        -e "NODE_ENV=development" -e "AMQPURI=amqp://10.22.26.xx" \
         --name node-api-rabbit \
         -p 3000:3000 \
         -m "300M" \
@@ -196,11 +197,19 @@
       - `fwg/api-rabbit` ชื่อ Repository Image ที่จะเอามารัน
       - `npm start` Execute command, if not provided will use default command from Dockerfile.
       - `-m` Limit the max memory use of this container.
-      - `-e NODE_ENVIRONMENT` Change to other word if not in development. (ex. `production`)
-      - `-e "AMQPURI"` Specific RabbitMQ uri.
-          - If mount with docker use docker container ip instead of local ip `amqp://172.17.0.x` (ดูจาก docker network inspect bridge)
-          - See [URI SPEC](https://www.rabbitmq.com/uri-spec.html) for more.
-      - Other ENV pass to config see `config.js`
+      - `-e ENV=value` pass Parameter ชื่อ ENV ค่า value เข้า Nodejs  
+
+      **ENVIRONMENT LIST**
+      - `NODE_ENV` Mode ที่จะสตาร์ท Nodejs, Default ถ้าไม่ส่งค่าคือ development (ถ้าใช้จริงควรส่งค่า `production`). ex NODE_ENV=production
+          - `development` จะแสดง DevLog ของการเรียกฟังก์ชันต่างๆ และเก็บลงไฟล์ที่ `logs/messages_dev/` + แสดง log Request api และเก็บลงไฟล์ที่ `logs/` 
+          - `production` จะแสดงเฉพาะ log NodeRB ที่สำคัญๆ และเก็บลงไฟล์ไว้ที่ `logs/messages/` + ไม่แสดง log Request api แต่เก็บลงไฟล์ log
+      - `PORT` เลข port ที่ต้องการให้ Nodejs สตาร์ท (Default เมื่อไม่ส่งคือ 3000). ex PORT=8000
+          - ต้องแมพ -p ให้ตรงด้วย
+      - `AMQPURI` Specific RabbitMQ uri.
+          - ถ้า amqp รันด้วย docker(ไม่ใช่ service/process ที่ลงเองบนเครื่อง) ให้ใช้ ip ของ docker container แทน ip เครื่อง เช่น `amqp://172.17.0.x` (ดูจาก docker network inspect bridge)
+          - อื่นๆ [URI SPEC](https://www.rabbitmq.com/uri-spec.html) for more.
+      - สามารถดู config อื่นๆ ได้ที่ `lib/config.js`  
+      - `REPLYWAITTIME` เวลาที่จะให้รอการ response เมื่อขอ msg แบบ RPC (หน่วย ms). ex REPLYWAITTIME=6000
     
       แล้วดู Container จากคำสั่ง
       
@@ -226,6 +235,7 @@
       Request Okury(sent message to queue `test_queue`)
       ```sh
       curl localhost:3000/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
+      curl localhost:3000/rpc/test_queue/AMU1017,10170012%20%20,1,10
       ```
 
   7. ดู Container log (พวกที่ออก Console ของ Nodejs) จากคำสั่ง
