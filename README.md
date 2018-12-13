@@ -209,7 +209,7 @@
           - ถ้า amqp รันด้วย docker(ไม่ใช่ service/process ที่ลงเองบนเครื่อง) ให้ใช้ ip ของ docker container แทน ip เครื่อง เช่น `amqp://172.17.0.x` (ดูจาก docker network inspect bridge)
           - อื่นๆ [URI SPEC](https://www.rabbitmq.com/uri-spec.html) for more.
       - สามารถดู config อื่นๆ ได้ที่ `lib/config.js`  
-      - `REPLYWAITTIME` เวลาที่จะให้รอการ response เมื่อขอ msg แบบ RPC (หน่วย ms). ex REPLYWAITTIME=6000
+      - `REPLYWAITTIME` เวลาที่จะให้รอการ response เมื่อขอ msg แบบ RPC (default 6000) ในหน่วย ms. ex REPLYWAITTIME=6000
     
       แล้วดู Container จากคำสั่ง
       
