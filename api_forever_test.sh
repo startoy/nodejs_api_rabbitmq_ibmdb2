@@ -34,29 +34,4 @@ do
         RES=$(curl -m 10 localhost:${1}/rpc/test_queue/${Msg});
         if [ -z "${RES}" ]; then l_count=$((l_count+1));
         else echo $RES; fi
-
-        etime=$(date +%s%3N);
-        dtime=$((${etime}-${stime}));
-        if [ ${dtime} -gt 1000 ]; then
-                g_count=$((g_count+1));
-								g_sum=$((g_sum+dtime));
-                time_avg=$((g_sum/g_count));
-                msg_avg=$((t_count/g_count));
-                msg_time_avg=$((msg_avg/time_avg));
-
-                echo " ";
-                echo ' ************* Summary *************';
-                echo ' --- THIS ROUND --- ';
-                echo '  Msg Request: '$count;
-                echo '  Time Usage : '$dtime;
-                echo ' --- TOTAL --- ';
-                echo '  Round:    ' $g_count;
-                echo '  Messages: ' ${t_count};
-                echo '  Lost:     ' ${l_count}   '(Timeout/No response)';
-                echo '  Time AVG: '$(echo "scale=3;$g_sum/$g_count" | bc -l)'ms';
-                echo '  Msg AVG:  '$(echo "scale=3;$t_count/$g_count" | bc -l)'/1ms';
-                sleep 4;
-                count=0;
-                stime=$(date +%s%3N);
-        fi
 done 
