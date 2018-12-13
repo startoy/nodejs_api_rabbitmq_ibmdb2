@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 iTemp=0;
-if [ -z "${1}" ]; then echo 'Usage: '${0}' <port> <msg1> <msg2>...'; echo '   EX -> ./repeat.sh 3000 AMU1017,10170012%20%20,1,10 ATF500%20,10,,9';exit; fi
+if [ -z "${1}" ]; then echo 'Usage: '${0}' <port> <msg1> <msg2>...'; echo '   EX -> '${0}' 3000 AMU1017,10170012%20%20,1,10 ATF500%20,10,,9';exit; fi
 if [ -z "${2}" ]; then default="AMU1017,10170012%20%20,1,10";
 else
         for ARG in "${@:2}"
