@@ -55,8 +55,8 @@ function __processMsgSend(msg) {
       return util.jForm(err);
     }
   } else {
-    let err = 'receive rpc msg with wrong format';
-    util.log.error('undefined function msg: ' + msgType3);
+    let err = 'receive rpc msg with invalid format';
+    util.log.error('receive rpc msg with invalid format: ' + msgType3);
     return util.jForm(err);
   }
 }

@@ -4,7 +4,7 @@
  */
 
 // PROCESS
-export const version = '18.04.00.02';
+export const version = '18.04.00.03';
 
 // ENVIRONMENTS
 export const env = process.env.NODE_ENV || 'development';

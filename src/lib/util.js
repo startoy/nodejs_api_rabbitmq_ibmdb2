@@ -27,12 +27,6 @@ const devlog = logger.instance({
   enabled: false
 });
 
-async function wait(ms) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
-
 function isNumber(input) {
   // is type number( ex. "123" , 123) AND not null with "" (which is string null)
   if (
@@ -51,6 +45,12 @@ function isString(input) {
 
 function jForm(msg) {
   return { message: msg.toString() };
+}
+
+async function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
 }
 
 module.exports = {
