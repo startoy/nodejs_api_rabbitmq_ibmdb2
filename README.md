@@ -278,8 +278,66 @@
     ```sh
     docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
     ```
-  #### ถ้าต้องการลง Service แบบไม่ใช้ Docker [Click](https://www.rabbitmq.com/download.html) .
-    
+#### ถ้าต้องการลง Service แบบไม่ใช้ Docker [Click](https://www.rabbitmq.com/download.html) .
+
+---
+
+# API
+available end point API ที่มี
+
+กำหนด base url คือ 
+```sh 
+ http://localhost:3000
+```
+
+- `spacebar` หรือช่องว่างต้องแทนด้วย `%20`  
+
+=======================  
+## BASE
+#### **`/`**
+  - **METHOD** : GET
+  - **DESCRIPTION** : index page
+  - **PARAMETERS** : -
+  - **EX** : localhost:3000/
+  - **RESPONSE** : -
+
+#### **`/version`**
+  - **METHOD** : GET
+  - **DESCRIPTION** : ดูเวอร์ชันของ API
+  - **EX** : localhost:3000/version
+  - **RESPONSE** : API Version xx.xx.xx.xx (html)
+  
+=======================
+## RPC
+ ส่ง message เข้าคิว RPC API จะรอตอบกลับจาก Server แล้วตอบ Client
+
+#### **`/rpc`**
+- **METHOD** : GET
+- **DESCRIPTION** : index page of rpc
+- **PARAMETERS** : -
+- **EX** : localhost:3000/rpc/
+- **RESPONSE** : -
+
+#### **`/rpc/:queue/:message`**
+  - **METHOD** : GET
+  - **DESCRIPTION** : ดูเวอร์ชันของ API
+  - **PARAMETERS** :
+    - **:queue** : ชื่อ rpc queue ที่จะส่ง
+    - **:message** : msg ที่จะส่ง
+  - **EX** : localhost:3000/rpc/test_queue/AMU1017,10170012%20%20,1,10
+  - **RESPONSE** : ยังไม่มี format  
+
+=======================
+## DIRECT
+ ส่ง message เข้า direct queue
+#### **`/direct`**
+  - **METHOD** : GET
+  - **DESCRIPTION** : index page of direct
+  - **PARAMETERS** : -
+  - **EX** : -
+  - **RESPONSE** : -  
+
+=======================
 
 ---
 
