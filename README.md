@@ -291,8 +291,7 @@ available end point API ที่มี
 ```
 
 - `spacebar` หรือช่องว่างต้องแทนด้วย `%20`  
-
-=======================  
+  
 ## BASE
 #### **`/`**
   - **METHOD** : GET
@@ -307,7 +306,6 @@ available end point API ที่มี
   - **EX** : localhost:3000/version
   - **RESPONSE** : API Version xx.xx.xx.xx (html)
   
-=======================
 ## RPC
  ส่ง message เข้าคิว RPC API จะรอตอบกลับจาก Server แล้วตอบ Client
 
@@ -327,7 +325,6 @@ available end point API ที่มี
   - **EX** : localhost:3000/rpc/test_queue/AMU1017,10170012%20%20,1,10
   - **RESPONSE** : ยังไม่มี format  
 
-=======================
 ## DIRECT
  ส่ง message เข้า direct queue
 #### **`/direct`**
@@ -336,8 +333,6 @@ available end point API ที่มี
   - **PARAMETERS** : -
   - **EX** : -
   - **RESPONSE** : -  
-
-=======================
 
 ---
 
