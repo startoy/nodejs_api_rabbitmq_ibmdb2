@@ -44,18 +44,21 @@ function __processMsgSend(msg) {
       return e;
     }
   });
-  // util.log.info('index:' + index + ' type:' + typeof index);
+
   if (util.isNumber(index) && !(index <= 0)) {
     try {
+      // expected json object
       return msgFunction[index].func(msgType3, msg);
     } catch (e) {
       let err = '';
       if (e) err = e;
-      util.log.error('[output] Failed ' + err);
-      return util.jForm(err);
+      util.log.error('[output] Failed: ' + err);
+      return util.jForm(
+        "There's an error on output message. see log file for more detail."
+      );
     }
   } else {
-    let err = 'receive rpc msg with invalid format';
+    let err = 'recieve rpc msg with invalid format';
     util.log.error('receive rpc msg with invalid format: ' + msgType3);
     return util.jForm(err);
   }
