@@ -27,15 +27,8 @@ const devlog = logger.instance({
   enabled: false
 });
 
-function isNumber(input) {
-  // is type number( ex. "123" , 123) AND not null with "" (which is string null)
-  if (
-    typeof Number(input) === 'number' &&
-    Math.floor(Number(input)) === Number(input) &&
-    input !== ''
-  )
-    return 1;
-  return 0;
+function precise(x, precision) {
+  return Number.parseFloat(x).toPrecision(precision);
 }
 
 function isString(input) {
@@ -56,8 +49,8 @@ async function wait(ms) {
 module.exports = {
   log: log,
   devlog: devlog,
-  isNumber: isNumber,
   isString: isString,
   jForm: jForm,
+  precise: precise,
   wait: wait
 };

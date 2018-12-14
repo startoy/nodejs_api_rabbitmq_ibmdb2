@@ -45,7 +45,7 @@ function __processMsgSend(msg) {
     }
   });
 
-  if (util.isNumber(index) && !(index <= 0)) {
+  if (Number.isInteger(index) && !(index <= 0)) {
     try {
       // expected json object
       return msgFunction[index].func(msgType3, msg);

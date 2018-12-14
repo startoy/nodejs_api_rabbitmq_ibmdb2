@@ -15,7 +15,9 @@ function processAMU(msgType, msgStr) {
   // data preparation
   let loopGap = 13;
   let loopCount =
-    util.isNumber(buffer[6]) && Number(buffer[6] >= 0) ? Number(buffer[6]) : 0;
+    Number.isInteger(Number(buffer[6])) && Number(buffer[6] >= 0)
+      ? Number(buffer[6])
+      : 0;
   let jsonStr = {
     MsgType: String(buffer[0].slice(0, 3)),
     cust_no: String(buffer[0].slice(3, 12)),
@@ -37,7 +39,7 @@ function processAMU(msgType, msgStr) {
         stock_symbol: String(buffer[7 + i]),
         grade: String(buffer[8 + i]),
         stock_type: String(buffer[9 + i]),
-        mrg_code: Number(buffer[10 + i]),
+        mrg_code: buffer[10 + i].padStart(3, '0'),
         call_lmv: Number(buffer[11 + i]),
         call_smv: Number(buffer[12 + i]),
         sell_lmv: Number(buffer[13 + i]),
@@ -50,6 +52,8 @@ function processAMU(msgType, msgStr) {
       };
       jsonObj.data.push(msgObj);
     }
+  } else {
+    util.log.info('  ');
   }
 
   util.log.info(
