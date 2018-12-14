@@ -67,6 +67,13 @@ app.get('/', async (req, res, next) => {
   });
 });
 
+app.get('/version', async (req, res, next) => {
+  // res.redirect('/rpc');
+  res.render('info', {
+    version: version
+  });
+});
+
 app.use('/rpc', rpcRouter);
 app.use('/direct', directRouter);
 
