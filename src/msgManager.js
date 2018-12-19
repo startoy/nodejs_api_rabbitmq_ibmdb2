@@ -58,8 +58,8 @@ function __processMsgSend(msg) {
       );
     }
   } else {
-    let err = 'recieve rpc msg with invalid format';
-    util.log.error('receive rpc msg with invalid format: ' + msgType3);
+    let err = 'invalid msg format';
+    util.log.error(err + ' :' + msgType3);
     return util.jForm(err);
   }
 }

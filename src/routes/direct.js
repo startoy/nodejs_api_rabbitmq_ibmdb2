@@ -17,7 +17,7 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
   log.warn('TODO!');
   res.render('index', {
-    title: 'THIS IS MESSAGE FROM ROUTER, YOU SHOULD SEE THIS MESSAGE'
+    title: 'THIS IS MESSAGE FROM ROUTER INDEX PAGE, YOU SHOULD SEE THIS MESSAGE'
   });
 });
 
