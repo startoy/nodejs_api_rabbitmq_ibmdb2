@@ -45,7 +45,7 @@ main();
 
 router.get('/', async (req, res, next) => {
   res.render('index', {
-    title: 'THIS IS MESSAGE FROM ROUTER, YOU SHOULD SEE THIS MESSAGE'
+    title: 'THIS IS MESSAGE FROM ROUTER INDEX PAGE, YOU SHOULD SEE THIS MESSAGE'
   });
 });
 
@@ -65,7 +65,7 @@ router.get('/:queueName/:message', async (req, res) => {
       client.sendRPCMessage(channel, message, queueName),
       wait(cnf.replyWaitTime)
     ]).then(val => {
-      devlog.info('Promiserace Done');
+      devlog.info('Promise Race Done');
       if (val) {
         let data = val.toString();
         let msgTypeRPCRcv = data.slice(0, 3);

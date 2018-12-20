@@ -63,7 +63,14 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.get('/', async (req, res, next) => {
   // res.redirect('/rpc');
   res.render('info', {
-    message: 'THIS IS MESSAGE FROM ROUTER, YOU SHOULD SEE THIS MESSAGE'
+    message: 'THIS IS MESSAGE FROM ROUTER INDEX PAGE, YOU SHOULD SEE THIS MESSAGE'
+  });
+});
+
+app.get('/version', async (req, res, next) => {
+  // res.redirect('/rpc');
+  res.render('version', {
+    message: version
   });
 });
 

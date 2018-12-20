@@ -193,23 +193,24 @@
       ```
       - `-d` รันแบบ background. 
       - `--name` เปลี่ยนชื่อ container 
-      - `-p` แมพพอร์ตจาก `'hostport':'containerport'` 
+      - `-p` แมพพอร์ตจาก **'hostport':'containerport'**  
       - `fwg/api-rabbit` ชื่อ Repository Image ที่จะเอามารัน
       - `npm start` Execute command, if not provided will use default command from Dockerfile.
       - `-m` Limit the max memory use of this container.
       - `-e ENV=value` pass Parameter ชื่อ ENV ค่า value เข้า Nodejs  
 
       **ENVIRONMENT LIST**
-      - `NODE_ENV` Mode ที่จะสตาร์ท Nodejs, Default ถ้าไม่ส่งค่าคือ development (ถ้าใช้จริงควรส่งค่า `production`). ex NODE_ENV=production
+      - สามารถดู config อื่นๆ ได้ที่ `lib/config.js`
+      - **NODE_ENV** Mode ที่จะสตาร์ท Nodejs, Default ถ้าไม่ส่งค่าคือ development (ถ้าใช้จริงควรส่งค่า `production`). ex NODE_ENV=production
           - `development` จะแสดง DevLog ของการเรียกฟังก์ชันต่างๆ และเก็บลงไฟล์ที่ `logs/messages_dev/` + แสดง log Request api และเก็บลงไฟล์ที่ `logs/` 
           - `production` จะแสดงเฉพาะ log NodeRB ที่สำคัญๆ และเก็บลงไฟล์ไว้ที่ `logs/messages/` + ไม่แสดง log Request api แต่เก็บลงไฟล์ log
-      - `PORT` เลข port ที่ต้องการให้ Nodejs สตาร์ท (Default เมื่อไม่ส่งคือ 3000). ex PORT=8000
+      - **PORT** เลข port ที่ต้องการให้ Nodejs สตาร์ท (Default เมื่อไม่ส่งคือ 3000). ex PORT=8000
           - ต้องแมพ -p ให้ตรงด้วย
-      - `AMQPURI` Specific RabbitMQ uri.
+      - **AMQPURI** กำหนด rabbitmq uri.
           - ถ้า amqp รันด้วย docker(ไม่ใช่ service/process ที่ลงเองบนเครื่อง) ให้ใช้ ip ของ docker container แทน ip เครื่อง เช่น `amqp://172.17.0.x` (ดูจาก docker network inspect bridge)
+          - ถ้า logs จาก node ขึ้น ACCESS_ERROR อาจจะต้อง login ด้วย account จะใช้ uri รูปแบบ `amqp://username:password@ip`  
           - อื่นๆ [URI SPEC](https://www.rabbitmq.com/uri-spec.html) for more.
-      - สามารถดู config อื่นๆ ได้ที่ `lib/config.js`  
-      - `REPLYWAITTIME` เวลาที่จะให้รอการ response เมื่อขอ msg แบบ RPC (default 6000) ในหน่วย ms. ex REPLYWAITTIME=6000
+      - **REPLYWAITTIME** เวลาที่จะให้รอการ response เมื่อขอ msg แบบ RPC (default 6000) ในหน่วย ms. ex REPLYWAITTIME=6000
     
       แล้วดู Container จากคำสั่ง
       
@@ -243,15 +244,20 @@
       ```sh
       docker logs 771 -f 
       ```
-      - `771` 3 ตัวแรกของ Container ID/ชื่อ Container
-      - `-f` Follow log output
+      - **771** 3 ตัวแรกของ Container ID/ชื่อ Container
+      - **-f** Follow log output
+      - ดูจาก docker ps (ถ้า ps ไม่ได้ ให้รันด้วย root)
+      - log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
+      ```sh
+      2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
+      ```
 
-  8. Test tool
+  8. Test tool (untest)
 
       ```sh
       ./api_loop_test.sh <port>
       ```
-      * `<port>` API Port
+      * **\<port\>** API Port
 
 ---
 
@@ -278,13 +284,113 @@
     ```sh
     docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
     ```
-  #### ถ้าต้องการลง Service แบบไม่ใช้ Docker [Click](https://www.rabbitmq.com/download.html) .
-    
+#### ถ้าต้องการลง Service แบบไม่ใช้ Docker [Click](https://www.rabbitmq.com/download.html) .
+
+---
+
+# API
+available end point API ที่มี
+
+กำหนด base url คือ 
+```sh 
+ http://localhost:3000
+```
+
+- `spacebar` หรือช่องว่างต้องแทนด้วย `%20`  
+  
+## BASE
+#### **`/`**
+  - **METHOD** : GET
+  - **DESCRIPTION** : index page
+  - **PARAMETERS** : -
+  - **EX** : localhost:3000/
+  - **RESPONSE** : -
+
+#### **`/version`**
+  - **METHOD** : GET
+  - **DESCRIPTION** : ดูเวอร์ชันของ API
+  - **EX** : localhost:3000/version
+  - **RESPONSE** : API Version xx.xx.xx.xx (html)
+  
+## RPC
+ ส่ง message เข้าคิว RPC API จะรอตอบกลับจาก Server แล้วตอบ Client
+
+#### **`/rpc`**
+- **METHOD** : GET
+- **DESCRIPTION** : index page of rpc
+- **PARAMETERS** : -
+- **EX** : localhost:3000/rpc/
+- **RESPONSE** : -
+
+#### **`/rpc/:queue/:message`**
+  - **METHOD** : GET
+  - **DESCRIPTION** : ดูเวอร์ชันของ API
+  - **PARAMETERS** :
+    - **:queue** : ชื่อ rpc queue ที่จะส่ง
+    - **:message** : msg ที่จะส่ง
+  - **EX** : localhost:3000/rpc/test_queue/AMU1017,10170012%20%20,1,10
+  - **RESPONSE** : ยังไม่มี format  
+
+## DIRECT
+ ส่ง message เข้า direct queue
+#### **`/direct`**
+  - **METHOD** : GET
+  - **DESCRIPTION** : index page of direct
+  - **PARAMETERS** : -
+  - **EX** : -
+  - **RESPONSE** : -  
 
 ---
 
 # MY DEV NOTE
   Nothing to see here, you can delete all this below.
+## RabbitMQ Maintainance
+  All available detail. [See more](https://www.rabbitmq.com/rabbitmqctl.8.html)
+### Plugin
+- Management - เป็นหน้าเว็บ Monitor. จัดการ rabbitmq
+  ```sh
+  rabbitmq-plugins enable rabbitmq_management
+  ```
+### COMMAND
+อาจต้อง sudo ด้วย  
+
+- สร้าง Admin user บน rabbitmq
+  ```sh
+  rabbitmqctl add_user test test
+  rabbitmqctl set_user_tags test administrator
+  rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
+  ```
+  - [ดู User Management อื่นๆ](https://www.rabbitmq.com/rabbitmqctl.8.html#User_Management)  
+
+- ปิด/เปิด App
+  ```sh
+  rabbitmqctl start_app
+  rabbitmqctl stop_app
+  ```
+- Reset rabbitmq
+  ```sh
+  rabbitmqctl stop_app
+  rabbitmqctl reset
+  rabbitmqctl force_reset
+  ```
+#### Queue
+- ลบ messages ทั้งหมดทิ้ง
+  ```sh
+  rabbitmqctl purge_queue 
+  ```
+- ดู list_queues, list_exchanges and list_bindings
+  ```sh
+  rabbitmqctl list_* 
+  ```
+-  [-> Server Status](https://www.rabbitmq.com/rabbitmqctl.8.html#Server_Status) อื่น ๆ
+
+#### Other
+- Report
+  ```sh
+  rabbitmqctl report > server_report.txt
+  ```
+
+---
 ## ERROR
   ```
   TypeError: Cannot read property 'createChannel' of undefined
