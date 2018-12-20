@@ -8,6 +8,7 @@ import * as util from '../lib/util';
 /* 
 RMU10170012 ,1,1,114632800,0,0,4,ABICO ,N, ,100,0.35,0.40,0.25,0.30,710,680,0,0,*,BANPU ,A, ,050,0.35,0.40,0.25,0.30,65000,1750,0,0,*,BLISS ,N, ,100,0.35,0.40,0.25,0.30,10000,4,0,0,*,CCP ,N,S,070,0.35,0.40,0.25,0.30,10000,36,0,0,*
  */
+
 function processAMU(msgType, msgStr) {
   if (!msgStr) return 0;
   let buffer = msgStr.split(',');
@@ -17,7 +18,7 @@ function processAMU(msgType, msgStr) {
   let loopCount =
     Number.isInteger(buffer[6] * 1) && buffer[6] * 1 >= 0 ? buffer[6] * 1 : 0;
   let jsonStr = {
-    MsgType: String(buffer[0].slice(0, 3)),
+    MsgType: msgType,
     cust_no: String(buffer[0].slice(3, 12)),
     page: buffer[1] * 1,
     total_page: buffer[2] * 1,
@@ -52,12 +53,9 @@ function processAMU(msgType, msgStr) {
       jsonObj.data.push(msgObj);
     }
   } else {
-    util.log.info('  ');
+    util.log.info('Error : Loop count < 0');
   }
-
-  util.log.info(
-    'NodeSend [' + msgType + '] ' + 'Obj:[' + JSON.stringify(jsonObj) + ']'
-  );
+  util.log.info('Message [' + msgType + '] ' + ' return data object');
   return jsonObj;
 }
 

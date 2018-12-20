@@ -12,6 +12,7 @@ import client from '../lib/amqp';
 import * as cnf from '../lib/config';
 import { __processMsgRecv, __processMsgSend } from '../msgManager';
 import { log, devlog, wait, jForm } from '../lib/util';
+import errr from '../error/type';
 
 const router = express.Router();
 
@@ -54,7 +55,7 @@ router.get('/:queueName/:message', async (req, res) => {
     const msgTypeRcv = req.params.message.slice(0, 3);
     if (!__processMsgRecv(req.params.message)) {
       devlog.error('router rpc got msg invalid format');
-      return res.json(jForm('Invalid message format'));
+      return res.json(errr.UNKNOWN_MESSAGE_TYPE);
     }
     const message = req.params.message;
     const queueName = req.params.queueName;
@@ -74,11 +75,11 @@ router.get('/:queueName/:message', async (req, res) => {
         res.json(jsonData);
         return;
       }
-      res.json(jForm('response from server timeout'));
+      res.json(errr.RESPONSE_TIMEOUT);
     });
   } catch (e) {
     if (e) log.error(e);
-    res.json(jForm('error on calling api'));
+    res.json(errr.API_REQUEST_ERROR);
   }
 });
 

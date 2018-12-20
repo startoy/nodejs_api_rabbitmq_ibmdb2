@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var app = require('../build/app');
+var app = require('../src/app');
 
 var http = require('http');
 var debug = require('debug')('demo:server');
