@@ -42,12 +42,13 @@ function processAMU(msgType, msgStr) {
         call_lmv: String(buffer[11 + i]),
         call_smv: String(buffer[12 + i]),
         sell_lmv: String(buffer[13 + i]),
-        sell_smv: String([14 + i]),
-        actual_vol: String([15 + i]),
+        sell_smv: String(buffer[14 + i]),
+        actual_vol: String(buffer[15 + i]),
         lastsale: String(buffer[16 + i]),
-        call_margin: String(buffer[17 + i]),
-        call_force: String(buffer[18 + i]),
-        ending_flag: String(buffer[19 + i])
+        mkt_value: String(buffer[17 + i]),
+        call_margin: String(buffer[18 + i]),
+        call_force: String(buffer[19 + i]),
+        ending_flag: String(buffer[20 + i])
       };
       jsonObj.data.push(msgObj);
     }
