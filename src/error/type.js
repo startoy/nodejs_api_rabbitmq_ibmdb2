@@ -9,7 +9,7 @@ export default {
   },
   UNKNOWN_MESSAGE_TYPE: {
     code: 2,
-    message: 'Unknown message type'
+    message: 'Unknown message type or operation type'
   },
   NO_DATA: {
     code: 3,

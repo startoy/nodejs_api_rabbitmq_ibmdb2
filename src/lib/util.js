@@ -13,7 +13,7 @@ const log = logger.instance({
   namespace: 'NodeRB',
   nsWidth: 6,
   directory: './logs/messages/',
-  toConsole: cnf.isDev,
+  toConsole: true,
   enabled: true
 });
 
@@ -24,7 +24,7 @@ const devlog = logger.instance({
   nsWidth: 6,
   directory: './logs/messages_dev/',
   toConsole: cnf.isDev,
-  enabled: false
+  enabled: cnf.isDev
 });
 
 function precise(x, precision) {

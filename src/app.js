@@ -59,11 +59,19 @@ app.use(
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
+app.use((req, res, next) => {
+  res.append('Access-Control-Allow-Origin', ['*']);
+  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.append('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
 // Router Setup
 app.get('/', async (req, res, next) => {
   // res.redirect('/rpc');
   res.render('info', {
-    message: 'THIS IS MESSAGE FROM ROUTER INDEX PAGE, YOU SHOULD SEE THIS MESSAGE'
+    message:
+      'THIS IS MESSAGE FROM ROUTER INDEX PAGE, YOU SHOULD SEE THIS MESSAGE'
   });
 });
 

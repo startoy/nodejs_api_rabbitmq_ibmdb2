@@ -18,14 +18,14 @@ function processAMU(msgType, msgStr) {
   let loopCount =
     Number.isInteger(buffer[6] * 1) && buffer[6] * 1 >= 0 ? buffer[6] * 1 : 0;
   let jsonStr = {
-    MsgType: msgType,
+    MsgType: String(msgType),
     cust_no: String(buffer[0].slice(3, 12)),
-    page: buffer[1] * 1,
-    total_page: buffer[2] * 1,
-    total_mkt: buffer[3] * 1,
-    total_call: buffer[4] * 1,
-    total_force: buffer[5] * 1,
-    loop_count: buffer[6] * 1,
+    page: String(buffer[1]),
+    total_page: String(buffer[2]),
+    total_mkt: String(buffer[3]),
+    total_call: String(buffer[4]),
+    total_force: String(buffer[5]),
+    loop_count: String(buffer[6]),
     data: []
   };
 
@@ -38,16 +38,15 @@ function processAMU(msgType, msgStr) {
         stock_symbol: String(buffer[7 + i]),
         grade: String(buffer[8 + i]),
         stock_type: String(buffer[9 + i]),
-        mrg_code: buffer[10 + i].padStart(3, '0'),
-        /* call_lmv: Number(buffer[11 + i]).toFixed(2), */
-        call_lmv: buffer[11 + i] * 1,
-        call_smv: buffer[12 + i] * 1,
-        sell_lmv: buffer[13 + i] * 1,
-        sell_smv: buffer[14 + i] * 1,
-        actual_vol: buffer[15 + i] * 1,
-        lastsale: buffer[16 + i] * 1,
-        call_margin: buffer[17 + i] * 1,
-        call_force: buffer[18 + i] * 1,
+        mrg_code: String(buffer[10 + i]),
+        call_lmv: String(buffer[11 + i]),
+        call_smv: String(buffer[12 + i]),
+        sell_lmv: String(buffer[13 + i]),
+        sell_smv: String([14 + i]),
+        actual_vol: String([15 + i]),
+        lastsale: String(buffer[16 + i]),
+        call_margin: String(buffer[17 + i]),
+        call_force: String(buffer[18 + i]),
         ending_flag: String(buffer[19 + i])
       };
       jsonObj.data.push(msgObj);
