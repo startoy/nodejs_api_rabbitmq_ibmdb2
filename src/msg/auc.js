@@ -11,21 +11,21 @@ function processAUC(msgType, msgStr) {
 
   let jsonStr = {
     MsgType: msgType,
-    found_flag: String(buffer[0].slice(-1)) * 1,
+    found_flag: String(buffer[0].slice(-1)),
     cust_no: String(buffer[1]),
     cust_name: String(buffer[2]),
-    credit_limit: buffer[3] * 1,
-    buy_total_credit: buffer[4] * 1,
-    sell_cr: buffer[5] * 1,
-    cash_balance: buffer[6] * 1,
-    collateral: buffer[7] * 1,
-    start_debt: buffer[8] * 1,
-    ar: buffer[9] * 1,
-    ap: buffer[10] * 1,
-    BuyUnmatch: buffer[11] * 1,
-    SellUnmatch: buffer[12] * 1,
+    credit_limit: String(buffer[3]),
+    buy_total_credit: String(buffer[4]),
+    sell_cr: String(buffer[5]),
+    cash_balance: String(buffer[6]),
+    collateral: String(buffer[7]),
+    start_debt: String(buffer[8]),
+    ar: String(buffer[9]),
+    ap: String(buffer[10]),
+    BuyUnmatch: String(buffer[11]),
+    SellUnmatch: String(buffer[12]),
     cust_code: String(buffer[13]),
-    motherCredit: buffer[14] * 1
+    motherCredit: String(buffer[14])
   };
 
   let jsonObj = jsonStr;

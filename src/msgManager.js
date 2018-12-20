@@ -25,7 +25,7 @@ const msgFunction = [
 function __processMsgRecv(msg) {
   const msgType3 = msg.slice(0, 3);
   const msgType = msg.slice(1, 3);
-  util.log.info('NodeRecv [' + msgType3 + '] ' + msg);
+  util.log.info('NodeRecv [' + msgType3 + '] [' + msg + ']');
   if (
     msgFunction.some(e => {
       if (msgType === e.msg) {
@@ -45,6 +45,11 @@ function __processMsgRecv(msg) {
   }
 }
 
+function __processMsgType(msg) {
+  const msgType3 = msg.slice(0, 3);
+  const msgType = msg.slice(1, 3);
+}
+
 function __processMsgSend(msg) {
   const msgType3 = msg.slice(0, 3);
   const msgType = msg.slice(1, 3);
@@ -54,7 +59,11 @@ function __processMsgSend(msg) {
     }
   });
 
-  if (Number.isInteger(index) && !(index <= 0)) {
+  if (
+    Number.isInteger(index) &&
+    !(index <= 0) &&
+    msgType3.slice(0, 1) === 'R'
+  ) {
     try {
       // expected json object
       const jsonObj = msgFunction[index].func(msgType3, msg);
@@ -77,5 +86,6 @@ function __processMsgSend(msg) {
 
 module.exports = {
   __processMsgRecv: __processMsgRecv,
-  __processMsgSend: __processMsgSend
+  __processMsgSend: __processMsgSend,
+  __processMsgType: __processMsgType
 };

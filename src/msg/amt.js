@@ -17,11 +17,11 @@ function processAMT(msgType, msgStr) {
     credit_type: String(buffer[3]),
     trader_char: String(buffer[4]),
     trader_name: String(buffer[5]),
-    TotalBuy: buffer[6] * 1,
-    TotalSell: buffer[7] * 1,
-    buy_total_cr: buffer[8] * 1,
-    sellorshortvalue: buffer[9] * 1,
-    credit_limit: buffer[10] * 1
+    TotalBuy: String(buffer[6]),
+    TotalSell: String(buffer[7]),
+    buy_total_cr: String(buffer[8]),
+    sellorshortvalue: String(buffer[9]),
+    credit_limit: String(buffer[10])
   };
 
   let jsonObj = jsonStr;
