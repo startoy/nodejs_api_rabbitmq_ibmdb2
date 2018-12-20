@@ -59,7 +59,7 @@
   npm start
   ```
   - default NODE_ENV คือ development (มองเห็น log dev, log request router ออกจอ)
-  - default port คือ **15673**
+  - default port คือ **3000** (TODO: config port)
   - default uri amqp คือ amqp://localhost
 
   *ถ้าสตาร์ท production mode (ไม่เก็บและไม่เห็น log dev, เก็บ log ลงไฟล์)
@@ -75,10 +75,10 @@
   แล้วเช็ค
   ```sh
   // ON TERMINAL
-  curl localhost:15673/ 
+  curl localhost:3000/ 
 
   // ON BROWSER
-  localhost:15673
+  localhost:3000
   ```
 
   หน้าจอจะแสดงผล
@@ -90,8 +90,8 @@
   ตัวอย่าง
   **Request Okury (sent message to queue `test_queue`)**
   ```sh
-  curl localhost:15673/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
-  curl localhost:15673/rpc/test_queue/AMU1017,10170012%20%20,1,10
+  curl localhost:3000/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
+  curl localhost:3000/rpc/test_queue/AMU1017,10170012%20%20,1,10
   ```
 ---
 
@@ -186,7 +186,7 @@
       docker run -d \
         -e "NODE_ENV=development" -e "AMQPURI=amqp://10.22.26.xx" \
         --name node-api-rabbit \
-        -p 15673:15673 \
+        -p 3000:3000 \
         -m "300M" \
         fwg/api-rabbit \
         npm start 
@@ -204,7 +204,7 @@
       - **NODE_ENV** Mode ที่จะสตาร์ท Nodejs, Default ถ้าไม่ส่งค่าคือ development (ถ้าใช้จริงควรส่งค่า `production`). ex NODE_ENV=production
           - `development` จะแสดง DevLog ของการเรียกฟังก์ชันต่างๆ และเก็บลงไฟล์ที่ `logs/messages_dev/` + แสดง log Request api และเก็บลงไฟล์ที่ `logs/` 
           - `production` จะแสดงเฉพาะ log NodeRB ที่สำคัญๆ และเก็บลงไฟล์ไว้ที่ `logs/messages/` + ไม่แสดง log Request api แต่เก็บลงไฟล์ log
-      - **PORT** เลข port ที่ต้องการให้ Nodejs สตาร์ท (Default เมื่อไม่ส่งคือ 15673). ex PORT=8000
+      - **PORT** เลข port ที่ต้องการให้ Nodejs สตาร์ท (Default เมื่อไม่ส่งคือ 3000). ex PORT=8000
           - ต้องแมพ -p ให้ตรงด้วย
       - **AMQPURI** กำหนด rabbitmq uri.
           - ถ้า amqp รันด้วย docker(ไม่ใช่ service/process ที่ลงเองบนเครื่อง) ให้ใช้ ip ของ docker container แทน ip เครื่อง เช่น `amqp://172.17.0.x` (ดูจาก docker network inspect bridge)
@@ -223,10 +223,10 @@
 
       ```sh
       // ON TERMINAL
-      curl localhost:15673/ 
+      curl localhost:3000/ 
 
       // ON BROWSER
-      localhost:15673
+      localhost:3000
       ```
 
       ควรจะได้ตอบกลับตามนี้
@@ -235,8 +235,8 @@
 
       Request Okury(sent message to queue `test_queue`)
       ```sh
-      curl localhost:15673/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
-      curl localhost:15673/rpc/test_queue/AMU1017,10170012%20%20,1,10
+      curl localhost:3000/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
+      curl localhost:3000/rpc/test_queue/AMU1017,10170012%20%20,1,10
       ```
 
   7. ดู Container log (พวกที่ออก Console ของ Nodejs) จากคำสั่ง
@@ -293,7 +293,7 @@ available end point API ที่มี
 
 กำหนด base url คือ 
 ```sh 
- http://localhost:15673
+ http://localhost:3000
 ```
 
 - `spacebar` หรือช่องว่างต้องแทนด้วย `%20`  
@@ -303,13 +303,13 @@ available end point API ที่มี
   - **METHOD** : GET
   - **DESCRIPTION** : index page
   - **PARAMETERS** : -
-  - **EX** : localhost:15673/
+  - **EX** : localhost:3000/
   - **RESPONSE** : -
 
 #### **`/version`**
   - **METHOD** : GET
   - **DESCRIPTION** : ดูเวอร์ชันของ API
-  - **EX** : localhost:15673/version
+  - **EX** : localhost:3000/version
   - **RESPONSE** : API Version xx.xx.xx.xx (html)
   
 ## RPC
@@ -319,7 +319,7 @@ available end point API ที่มี
 - **METHOD** : GET
 - **DESCRIPTION** : index page of rpc
 - **PARAMETERS** : -
-- **EX** : localhost:15673/rpc/
+- **EX** : localhost:3000/rpc/
 - **RESPONSE** : -
 
 #### **`/rpc/:queue/:message`**
@@ -328,7 +328,7 @@ available end point API ที่มี
   - **PARAMETERS** :
     - **:queue** : ชื่อ rpc queue ที่จะส่ง
     - **:message** : msg ที่จะส่ง
-  - **EX** : localhost:15673/rpc/test_queue/AMU1017,10170012%20%20,1,10
+  - **EX** : localhost:3000/rpc/test_queue/AMU1017,10170012%20%20,1,10
   - **RESPONSE** : ยังไม่มี format  
 
 ## DIRECT
@@ -439,6 +439,4 @@ Test with nodejs on docker exec
 
   
 
-## LEGACY - WILL NOT UPDATE
 
-if you need amqp.lib as reuse function. feel free to use it
