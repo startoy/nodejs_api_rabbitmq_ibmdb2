@@ -14,7 +14,7 @@ function processAMU(msgType, msgStr) {
   let buffer = msgStr.split(',');
 
   // data preparation
-  let loopGap = 13;
+  let loopGap = 14;
   let loopCount =
     Number.isInteger(buffer[6] * 1) && buffer[6] * 1 >= 0 ? buffer[6] * 1 : 0;
   let jsonStr = {
