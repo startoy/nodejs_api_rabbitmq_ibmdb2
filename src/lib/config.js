@@ -4,7 +4,7 @@
  */
 
 // PROCESS
-export const version = '18.04.00.03';
+export const version = '18.04.00.04';
 
 // ENVIRONMENTS
 export const env = process.env.NODE_ENV || 'development';
@@ -13,7 +13,7 @@ export const isDev = env === 'development' ? true : false || false;
 // Server
 // if RabbitMQ mount with docker use ip of docker container !
 export const hostname = process.env.HOSTNAME || 'localhost';
-export const port = process.env.PORT || 3000;
+export const port = process.env.PORT || '15673';
 export const AMQPURI = process.env.AMQPURI || 'amqp://localhost';
 
 // QUEUE
