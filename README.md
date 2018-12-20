@@ -244,15 +244,20 @@
       ```sh
       docker logs 771 -f 
       ```
-      - `771` 3 ตัวแรกของ Container ID/ชื่อ Container
-      - `-f` Follow log output
+      - **771** 3 ตัวแรกของ Container ID/ชื่อ Container
+      - **-f** Follow log output
+      - ดูจาก docker ps (ถ้า ps ไม่ได้ ให้รันด้วย root)
+      - log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
+      ```sh
+      2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
+      ```
 
-  8. Test tool
+  8. Test tool (untest)
 
       ```sh
       ./api_loop_test.sh <port>
       ```
-      * `<port>` API Port
+      * **\<port\>** API Port
 
 ---
 
