@@ -4,7 +4,7 @@
  */
 
 'use strict';
-import { decode64, encode64, devlog, log } from '../lib/util';
+import { decode64, devlog, log } from '../lib/util';
 
 function decodeAMU(msgType, reqObject) {
   if (!reqObject) return 0;
