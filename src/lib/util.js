@@ -46,11 +46,21 @@ async function wait(ms) {
   });
 }
 
+function decode64(base64Data) {
+  return Buffer.from(base64Data, 'base64').toString('ascii');
+}
+
+function encode64(data) {
+  return Buffer.from(data).toString('base64');
+}
+
 module.exports = {
   log: log,
   devlog: devlog,
   isString: isString,
   jForm: jForm,
   precise: precise,
-  wait: wait
+  wait: wait,
+  decode64: decode64,
+  encode64: encode64
 };

@@ -3,11 +3,23 @@
  * @description call force/ call margin, process msg to jso nformat
  */
 
-import * as util from '../lib/util';
+'use strict';
+import { decode64, devlog, log } from '../lib/util';
 
-/* 
-RMU10170012 ,1,1,114632800,0,0,4,ABICO ,N, ,100,0.35,0.40,0.25,0.30,710,680,0,0,*,BANPU ,A, ,050,0.35,0.40,0.25,0.30,65000,1750,0,0,*,BLISS ,N, ,100,0.35,0.40,0.25,0.30,10000,4,0,0,*,CCP ,N,S,070,0.35,0.40,0.25,0.30,10000,36,0,0,*
- */
+function decodeAMU(msgType, reqObject) {
+  if (!reqObject) return 0;
+
+  // list of encode-decode var
+  let custNo = decode64(reqObject['cust_no']);
+  let trdId = decode64(reqObject['trd_id']);
+
+  // list of non-encode var
+  let stockSymbol = reqObject['stock_symbol'];
+  let page = reqObject['page'];
+  let pageSize = reqObject['page_size'];
+
+  return stringAMU(msgType, trdId, custNo, stockSymbol, page, pageSize);
+}
 
 function processAMU(msgType, msgStr) {
   if (!msgStr) return 0;
@@ -17,7 +29,7 @@ function processAMU(msgType, msgStr) {
   let loopGap = 14;
   let loopCount =
     Number.isInteger(buffer[6] * 1) && buffer[6] * 1 >= 0 ? buffer[6] * 1 : 0;
-  let jsonStr = {
+  let jsonObj = {
     MsgType: String(msgType),
     cust_no: String(buffer[0].slice(3, 12)),
     page: String(buffer[1]),
@@ -29,7 +41,6 @@ function processAMU(msgType, msgStr) {
     data: []
   };
 
-  let jsonObj = jsonStr;
   let loopMultiplyGap = loopCount * loopGap;
   if (loopCount >= 0) {
     for (let i = 0; i < loopMultiplyGap; i += loopGap) {
@@ -53,12 +64,30 @@ function processAMU(msgType, msgStr) {
       jsonObj.data.push(msgObj);
     }
   } else {
-    util.log.info('Error : Loop count < 0');
+    log.info('Error : Loop count < 0');
   }
-  util.log.info('Message [' + msgType + '] ' + ' return data object');
+  log.info('Message [' + msgType + '] ' + ' return data object');
   return jsonObj;
 }
 
+function stringAMU(MsgType, trdId, custNo, stockSymbol, page, pageSize) {
+  let str =
+    MsgType +
+    trdId.padEnd(4, ' ') +
+    ',' +
+    custNo.padEnd(10, ' ') +
+    ',' +
+    stockSymbol +
+    ',' +
+    page +
+    ',' +
+    pageSize;
+  devlog.info('Decode to String: ' + str);
+  // expected: AMU1017,10170012%20%20,BANPU,1,10
+  return str;
+}
+
 module.exports = {
+  decodeAMU: decodeAMU,
   processAMU: processAMU
 };
