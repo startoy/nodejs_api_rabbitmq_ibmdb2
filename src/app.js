@@ -77,8 +77,11 @@ app.get('/', async (req, res, next) => {
 
 app.get('/version', async (req, res, next) => {
   // res.redirect('/rpc');
-  res.render('version', {
-    message: version
+  res.json({
+    service: 'Node-API-Rabbit',
+    version: version,
+    desc: '- add POST router',
+    last_update: '24/12/2018'
   });
 });
 

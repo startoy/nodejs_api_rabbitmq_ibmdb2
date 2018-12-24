@@ -11,6 +11,10 @@ export default {
     code: 2,
     message: 'Unknown message type or operation type'
   },
+  UNKNOWN_MESSAGE_FROM_SERVER_TYPE: {
+    code: 2,
+    message: 'Unknown message type or operation type from the server'
+  },
   NO_DATA: {
     code: 3,
     message: 'No Data'
