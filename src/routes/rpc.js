@@ -8,6 +8,7 @@
 import express from 'express';
 import '@babel/polyfill';
 
+import * as db from '../db/connectDB';
 import client from '../lib/amqp';
 import * as cnf from '../lib/config';
 import {
@@ -54,6 +55,44 @@ router.get('/', async (req, res, next) => {
   });
 });
 
+router.post('/query', async (req, res) => {
+  try {
+    const msgType = req.body.msgType.slice(0, 3); // TypeError if not send field msgtype to this router
+    const msgData = req.body;
+    if (!__processMsgRecv(msgType, JSON.stringify(msgData))) {
+      devlog.error('Error on __processMsgRecv');
+      return res.json(errr.UNKNOWN_MESSAGE_TYPE);
+    }
+
+    // logic goes here...
+    let dataString = __processObjtoStr(msgData);
+    console.log('Router get ' + dataString);
+
+    // promise race
+    Promise.race([
+      client.sendRPCMessage(channel, dataString, cnf.rpcQueue),
+      wait(cnf.replyWaitTime)
+    ]).then(val => {
+      devlog.info('Promise Race Done');
+      if (val) {
+        let data = val.toString();
+        let msgTypeRPCRcv = data.slice(0, 3);
+        log.info('RPCRecv [' + msgTypeRPCRcv + '] ' + '[' + data + ']');
+        let jsonData = __processMsgSend(data);
+        res.json(jsonData);
+        return;
+      }
+      res.json(errr.RESPONSE_TIMEOUT);
+    });
+  } catch (e) {
+    if (e) log.error(e);
+    res.json(errr.API_REQUEST_ERROR);
+  }
+});
+
+/**
+ * @deprecated
+ */
 router.get('/:queueName/:message', async (req, res) => {
   try {
     const msgTypeRcv = req.params.message.slice(0, 3);
@@ -91,35 +130,10 @@ router.get('/:queueName/:message', async (req, res) => {
   }
 });
 
-router.post('/query', async (req, res) => {
+router.get('/db', async (req, res) => {
   try {
-    const msgType = req.body.msgType.slice(0, 3); // TypeError if not send field msgtype to this router
-    const msgData = req.body;
-    if (!__processMsgRecv(msgType, JSON.stringify(msgData))) {
-      devlog.error('Error on __processMsgRecv');
-      return res.json(errr.UNKNOWN_MESSAGE_TYPE);
-    }
-
-    // logic goes here...
-    let dataString = __processObjtoStr(msgData);
-    console.log('Router get ' + dataString);
-
-    // promise race
-    Promise.race([
-      client.sendRPCMessage(channel, dataString, cnf.rpcQueue),
-      wait(cnf.replyWaitTime)
-    ]).then(val => {
-      devlog.info('Promise Race Done');
-      if (val) {
-        let data = val.toString();
-        let msgTypeRPCRcv = data.slice(0, 3);
-        log.info('RPCRecv [' + msgTypeRPCRcv + '] ' + '[' + data + ']');
-        let jsonData = __processMsgSend(data);
-        res.json(jsonData);
-        return;
-      }
-      res.json(errr.RESPONSE_TIMEOUT);
-    });
+    await db.query();
+    res.json(errr.SUCCESS);
   } catch (e) {
     if (e) log.error(e);
     res.json(errr.API_REQUEST_ERROR);

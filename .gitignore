@@ -3,3 +3,6 @@ build/
 logs/
 .vscode/
 src/note.js
+data/
+*.zip
+*.bk

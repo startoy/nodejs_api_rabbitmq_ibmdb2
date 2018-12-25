@@ -21,5 +21,15 @@ export const replyTo = process.env.replyTo || 'rabbit.reply-to';
 export const rpcQueue = process.env.rpcQueue || 'test_queue';
 export const directQueue = process.env.directQueue || 'directQueue';
 
+// DATABASE
+export const db = {
+  ip: process.env.DBIP || '10.22.19.13',
+  port: process.env.DBPORT || '50001',
+  name: process.env.DBNAME || 'fisdb_nt',
+  table: process.env.DBTABLE || 'SECCALLFORCERATETAB',
+  user: process.env.DBUSER || 'db2inst1',
+  pwd: process.env.DBPWD || 'db2inst1'
+};
+
 // UTIL
 export const replyWaitTime = process.env.REPLYWAITTIME || 6000;
