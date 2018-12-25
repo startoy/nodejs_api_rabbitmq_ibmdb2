@@ -353,6 +353,21 @@ available end point API ที่มี
   Nothing to see here, you can delete all this below.
 ## RabbitMQ Maintainance
   All available detail. [See more](https://www.rabbitmq.com/rabbitmqctl.8.html)
+  - Install
+    ```sh
+    // RabbitMQ
+    docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3
+
+    // RabbitMQ Plugin
+    // access inside localhost
+    docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3-management
+
+    // or access outside the host
+    docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 rabbitmq:3-management
+    ```
+    - access via http://container-ip:15672 
+    - access outside the host via http://localhost:8080 or http://host-ip:8080
+
 ### Plugin
 - Management - เป็นหน้าเว็บ Monitor. จัดการ rabbitmq
   ```sh
