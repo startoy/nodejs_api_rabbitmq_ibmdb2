@@ -3,6 +3,13 @@
   repository นี้ เป็น API เขียนจาก nodejs (express) เพื่อส่ง message เข้าไปที่คิวของ rabbitmq service
   rabbitmq service จะมี c รอรับอ่านคิว เพื่อคิวรี่เอาข้อมูลและส่งกลับมาที่ api, api จะส่งต่อไป client/requester
 
+# CHANGELOG
+
+  ### 25/12/2018
+  - เพิ่ม Version แยก 18.04.DB.01 ให้ทำงานร่วมกับ IBM DB2
+    - ต้องใช้ node version เต็ม (~ 800-900 MB) เพื่อลง db2 cli driver เนื่องจาก node version alpine ติดพวก lib ต่างๆ เช่น libcrypt.so.1, libpam ..  
+    - ให้ไปเรียกคำสั่ง `docker build..` ใน path **/install** แทน
+
 # 1. Run ด้วย Nodejs
 
 ## Prerequisites

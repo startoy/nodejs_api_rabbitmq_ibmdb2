@@ -9,11 +9,12 @@ var ibmdb = require('ibm_db');
 
 let connectionString = createDBConn(db.name, db.ip, db.user, db.pwd, db.port);
 
-async function query() {
+async function query(queryStr) {
+  if (!queryStr) queryStr = 'SELECT * FROM SECCALLFORCERATETAB;';
   ibmdb.open(connectionString, function(err, conn) {
     if (err) return console.log(err);
 
-    conn.query('select * from SECCALLFORCERATETAB', function(err, data) {
+    conn.query(queryStr, function(err, data) {
       if (err) console.log(err);
       else console.log(data);
 

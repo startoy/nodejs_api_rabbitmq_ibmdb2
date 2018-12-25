@@ -130,9 +130,9 @@ router.get('/:queueName/:message', async (req, res) => {
   }
 });
 
-router.get('/db', async (req, res) => {
+router.get('/db/:message', async (req, res) => {
   try {
-    await db.query();
+    await db.query(req.params.message);
     res.json(errr.SUCCESS);
   } catch (e) {
     if (e) log.error(e);
