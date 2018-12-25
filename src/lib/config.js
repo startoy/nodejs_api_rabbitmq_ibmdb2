@@ -4,7 +4,12 @@
  */
 
 // PROCESS
-export const version = '18.04.00.05';
+export const sv = {
+  service: 'Node-API-Rabbit',
+  version: '18.04.00.06',
+  desc: '- add router to query DB2',
+  last_update: '25/12/2018'
+};
 
 // ENVIRONMENTS
 export const env = process.env.NODE_ENV || 'development';

@@ -16,7 +16,7 @@ import rfs from 'rotating-file-stream';
 import rpcRouter from './routes/rpc';
 import directRouter from './routes/direct';
 import { log } from './lib/util';
-import { isDev, version } from './lib/config';
+import { isDev, sv } from './lib/config';
 
 var app = express();
 var logFile = 'express.log';
@@ -77,18 +77,13 @@ app.get('/', async (req, res, next) => {
 
 app.get('/version', async (req, res, next) => {
   // res.redirect('/rpc');
-  res.json({
-    service: 'Node-API-Rabbit',
-    version: version,
-    desc: '- add POST router',
-    last_update: '24/12/2018'
-  });
+  res.json(sv);
 });
 
 app.use('/rpc', rpcRouter);
 app.use('/direct', directRouter);
 
-log.info('NodeRB Version: ' + version);
+log.info('NodeRB Version: ' + sv.version);
 
 // catch 404 then redirect to error handler
 app.use((req, res, next) => {
