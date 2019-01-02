@@ -27,17 +27,17 @@ export const rpcQueue = process.env.rpcQueue || 'test_queue';
 export const directQueue = process.env.directQueue || 'directQueue';
 
 // DATABASE
-export const db = {
+export const db2 = {
   codepage: process.env.CODEPAGE || '874',
-  ip: process.env.DBHOST || '10.22.19.13',
+  host: process.env.DBHOST || '10.22.19.13',
   port: process.env.DBPORT || '50001',
-  host: process.env.DBNAME || 'fisdb_nt',
+  name: process.env.DBNAME || 'fisdb_nt',
   table: process.env.DBTABLE || 'SECCALLFORCERATETAB',
   user: process.env.DBUSER || 'db2inst1',
   pwd: process.env.DBPWD || 'db2inst1'
 };
 
-process.env.DB2CODEPAGE = db.codepage;
+process.env.DB2CODEPAGE = db2.codepage;
 
 // UTIL
 export const replyWaitTime = process.env.REPLYWAITTIME || 6000;

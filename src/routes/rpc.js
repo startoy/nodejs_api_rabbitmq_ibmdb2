@@ -90,9 +90,22 @@ router.post('/query', async (req, res) => {
   }
 });
 
+router.post('/querydb', async (req, res) => {
+  try {
+    let queryStm = 'SELECT * FROM SECCALLFORCERATETAB';
+    let jsonObj = await db.query(queryStm);
+    log.info('DB2Send [' + JSON.stringify(jsonObj) + ']');
+    res.json(jsonObj);
+  } catch (e) {
+    if (e) log.error(e);
+    res.json(errr.API_REQUEST_ERROR);
+  }
+});
+
 /**
  * @deprecated
  */
+
 router.get('/:queueName/:message', async (req, res) => {
   try {
     const msgTypeRcv = req.params.message.slice(0, 3);
@@ -133,9 +146,9 @@ router.get('/:queueName/:message', async (req, res) => {
 router.get('/querydb', async (req, res) => {
   try {
     let queryStm = 'SELECT * FROM SECCALLFORCERATETAB';
-    let res = await db.query(queryStm);
-    log.info('Query Result [' + res + ']');
-    res.json(res);
+    let jsonObj = await db.query(queryStm);
+    log.info('DB2Send => ' + JSON.stringify(jsonObj));
+    res.json(jsonObj);
   } catch (e) {
     if (e) log.error(e);
     res.json(errr.API_REQUEST_ERROR);

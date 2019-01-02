@@ -4,6 +4,8 @@
   rabbitmq service จะมี c รอรับอ่านคิว เพื่อคิวรี่เอาข้อมูลและส่งกลับมาที่ api, api จะส่งต่อไป client/requester
 
 # CHANGELOG
+  ### HOT FIX !!
+  - version 19.01.DB.01 ถ้ารันด้วย Docker image ที่ build ให้ ให้ทำการ docker scp src/ id:app/src แล้ว restart ใหม่
   ### 02/12/2018
   - UPDATE VERSION 19.01.DB.01
     - แก้ไขให้สามารถเชื่อมต่อ DB2 ได้ แก้โดยการตั้ง process.env.DB2CODEPAGE = **874**
