@@ -16,7 +16,7 @@ import {
   __processMsgSend,
   __processObjtoStr
 } from '../msgManager';
-import { log, devlog, wait, jForm } from '../lib/util';
+import { log, devlog, wait } from '../lib/util';
 import errr from '../error/type';
 
 const router = express.Router();
@@ -130,10 +130,12 @@ router.get('/:queueName/:message', async (req, res) => {
   }
 });
 
-router.get('/db/:message', async (req, res) => {
+router.get('/querydb', async (req, res) => {
   try {
-    await db.query(req.params.message);
-    res.json(errr.SUCCESS);
+    let queryStm = 'SELECT * FROM SECCALLFORCERATETAB';
+    let res = await db.query(queryStm);
+    log.info('Query Result [' + res + ']');
+    res.json(res);
   } catch (e) {
     if (e) log.error(e);
     res.json(errr.API_REQUEST_ERROR);

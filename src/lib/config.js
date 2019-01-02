@@ -6,9 +6,9 @@
 // PROCESS
 export const sv = {
   service: 'Node-API-Rabbit',
-  version: '18.04.00.06',
-  desc: '- add router to query DB2',
-  last_update: '25/12/2018'
+  version: '19.01.DB.01',
+  desc: '- Fix error connect to DB2',
+  last_update: '02/01/2019'
 };
 
 // ENVIRONMENTS
@@ -28,13 +28,16 @@ export const directQueue = process.env.directQueue || 'directQueue';
 
 // DATABASE
 export const db = {
-  ip: process.env.DBIP || '10.22.19.13',
+  codepage: process.env.CODEPAGE || '874',
+  ip: process.env.DBHOST || '10.22.19.13',
   port: process.env.DBPORT || '50001',
-  name: process.env.DBNAME || 'fisdb_nt',
+  host: process.env.DBNAME || 'fisdb_nt',
   table: process.env.DBTABLE || 'SECCALLFORCERATETAB',
   user: process.env.DBUSER || 'db2inst1',
   pwd: process.env.DBPWD || 'db2inst1'
 };
+
+process.env.DB2CODEPAGE = db.codepage;
 
 // UTIL
 export const replyWaitTime = process.env.REPLYWAITTIME || 6000;
