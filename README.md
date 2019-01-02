@@ -3,6 +3,19 @@
   repository นี้ เป็น API เขียนจาก nodejs (express) เพื่อส่ง message เข้าไปที่คิวของ rabbitmq service
   rabbitmq service จะมี c รอรับอ่านคิว เพื่อคิวรี่เอาข้อมูลและส่งกลับมาที่ api, api จะส่งต่อไป client/requester
 
+# CHANGELOG
+  ### HOT FIX !!
+  - version 19.01.DB.01 ถ้ารันด้วย Docker image ที่ build ให้ ให้ทำการ docker scp src/ id:app/src แล้ว restart ใหม่
+  ### 02/12/2018
+  - UPDATE VERSION 19.01.DB.01
+    - แก้ไขให้สามารถเชื่อมต่อ DB2 ได้ แก้โดยการตั้ง process.env.DB2CODEPAGE = **874**
+    - ย้าย Dockerfile เก่าไปไว้ในโฟลเดอร์ install  
+
+  ### 25/12/2018
+  - เพิ่ม Version แยก 18.04.DB.01 ให้ทำงานร่วมกับ IBM DB2
+    - ต้องใช้ node version เต็ม (~ 800-900 MB) เพื่อลง db2 cli driver เนื่องจาก node version alpine ติดพวก lib ต่างๆ เช่น libcrypt.so.1, libpam ..  
+    - ให้ไปเรียกคำสั่ง `docker build..` ใน path **/install** แทน
+
 # 1. Run ด้วย Nodejs
 
 ## Prerequisites
@@ -100,6 +113,7 @@
   สเต็บนี้จะเป็นการ build source ให้เป็น docker image แทน ในกรณีที่เครื่องไม่สามารถลง nodejs ได้โดยตรง แต่ใช้ docker ได้
   
 ## สิ่งที่ต้องมี
+### Version เก่า ที่ต่ำกว่า 19.xx.xx.xx
 
   - **ต้องมี** Internet access !!
   - ลง **Docker** แล้ว
@@ -111,6 +125,13 @@
       ```
   - `Source code` ( ไฟล์ดูจาก #1 )
 
+### Version ตั้งแต่ 19.01.DB.01
+
+  - ใช้ Node image version **node:10.10.0** เนื่องจาก DB2 ต้องใช้ libc (ระวัง disk เต็ม)
+  ```sh
+  docker pull node:10.10.0
+  ```
+  
 ---
   TODO: If no internet access build instruction 
   - See above adapt with  `# Setup with no internet access`
@@ -120,15 +141,16 @@
 
 ---
 
-### ถ้าต้องการข้าม Step build ต้องการให้รัน Docker image เลย
+### Docker image ที่ build มาให้แล้ว (ข้าม step build)
   - ดาวโหลด:
 
       ```sh
-      \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\NodeRB_DockerImage.tar
+      \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\noderb_<version>.tar
       ```
     แล้วข้ามไป Step 4 ได้เลย
 
 ## Step การ Build
+เมื่อดาวโหลด source code จาก repository นี้ไปแล้ว  
 
   1. Extract .zip file แล้ว cd ไปที่ `node-api-rabbitmq-master/` (โฟลเดอร์ที่ได้จากการแตกไฟล์)
 
@@ -145,8 +167,9 @@
   2. สั่งให้ build docker image (จะรันโค้ดตามไฟล์ชื่อ `Dockerfile`)
 
       ```sh
-      docker build -t fwg/api-rabbit .
+      docker build -t fwg/api-rabbit:<version> .
       ```
+      - version ใส่เวอร์ชัน เช่น 19.01.DB.01 ถ้าไม่ใส่ จะได้ TAG latest
 
       เช็คว่าได้ image หรือยัง จากคำสั่ง
 
@@ -159,17 +182,18 @@
   3. สั่งให้ Export image บน docker กลายเป็นไฟล์ .tar
 
       ```sh
-      docker save -o NodeRB_DockerImage.tar fwg/api-rabbit
+      docker save -o noderb_<version>.tar fwg/api-rabbit:TAG
       ```
-      - `NodeRB_DockerImage.tar` ชื่อไฟล์หรือpathที่จะ export ออกมา (ต้องใส่ .tar ด้วย)
-      - `fwg-api-rabbit` ชื่อ repository บน docker
+      - `noderb_<version>.tar` ชื่อไฟล์หรือpathที่จะ export ออกมา (ต้องใส่ .tar ด้วย)
+      - `fwg-api-rabbit` ชื่อ repository บน docker ถ้ามี TAG ให้ใส่ด้วย ถ้าเป็น latest ไม่ต้องใส่
+      - `:TAG` ถ้า image TAG latest ไม่ต้องใส่ ให้ลบออก
 
-  - `ตอนนี้จะต้องได้ไฟล์ 'NodeRB_DockerImage.tar' !!`
+  - `ตอนนี้จะต้องได้ไฟล์ 'noderb_<version>.tar' !!`
 
   4. หลังจากได้ Image ไฟล์ ให้ copy ไฟล์ไปวางไว้ที่ Server แล้ว Load image ขึ้น Docker ด้วยคำสั่ง
 
       ```sh
-      docker load -i NodeRB_DockerImage.tar
+      docker load -i noderb_<version>.tar
       ```
 
       เช็คว่ามี Image จากคำสั่ง
@@ -184,11 +208,10 @@
 
       ```sh
       docker run -d \
-        -e "NODE_ENV=development" -e "AMQPURI=amqp://10.22.26.xx" \
+        -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
         --name node-api-rabbit \
         -p 15673:15673 \
-        -m "300M" \
-        fwg/api-rabbit \
+        fwg/api-rabbit:19.01.DB.01 \
         npm start 
       ```
       - `-d` รันแบบ background. 
@@ -346,6 +369,21 @@ available end point API ที่มี
   Nothing to see here, you can delete all this below.
 ## RabbitMQ Maintainance
   All available detail. [See more](https://www.rabbitmq.com/rabbitmqctl.8.html)
+  - Install
+    ```sh
+    // RabbitMQ
+    docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3
+
+    // RabbitMQ Plugin
+    // access inside localhost
+    docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3-management
+
+    // or access outside the host
+    docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 rabbitmq:3-management
+    ```
+    - access via http://container-ip:15672 
+    - access outside the host via http://localhost:8080 or http://host-ip:8080
+
 ### Plugin
 - Management - เป็นหน้าเว็บ Monitor. จัดการ rabbitmq
   ```sh
@@ -404,6 +442,14 @@ available end point API ที่มี
   // execute <command> to container (ex. npm start)
   docker exec -it <id> <command>
   ```
+
+- ถ้าใช้ sh ไม่ได้ ให้ใช้ bash แล้วไปลง vim บน container (ใช้ internet)
+  ```sh
+  docker exec -it <container> bash
+  apt-get update
+  apt-get install vim
+  ```
+
 ## Connect to Rabbitmq
 ### From Container
  
@@ -434,10 +480,35 @@ Test with nodejs on docker exec
 
   ```sh
     docker network inspect bridge
-
   ```
+## Start Container แบบต่างๆ  
+### Rabbitmq อยู่บน Docker
+  ```sh
+  docker run -d \
+    -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
+    --name node-api-rabbit \
+    -p 15673:15673 \
+    fwg/api-rabbit:19.04.DB.01 \
+    npm start
+  ```
+  - inspect network ดู ip
 
-  
+### Rabbitmq รันเป็น service native
+  ```sh
+   docker run -it -d \
+    -e "NODE_ENV=development" -e "AMQPURI=amqp://test:test@13.229.136.216" \
+    --name node \
+    -p 15673:15673 \
+    fwg/api-rabbit:19.01.DB.01 \
+    npm start
+  ```
+  - ต้องสร้าง user บน service ใหม่ (ใช้ guest ไม่ได้)
+  - ip ของ server
+
+
+---
+## Fix Terminated Container  
+- https://stackoverflow.com/a/32353134
 
 ## LEGACY - WILL NOT UPDATE
 
