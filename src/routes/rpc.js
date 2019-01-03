@@ -92,9 +92,29 @@ router.post('/query', async (req, res) => {
 
 router.post('/querydb', async (req, res) => {
   try {
-    let queryStm = 'SELECT * FROM SECCALLFORCERATETAB';
-    let jsonObj = await db.query(queryStm);
-    log.info('DB2Send [' + JSON.stringify(jsonObj) + ']');
+    let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
+    let jsonArray = await db.query(queryStmnt);
+    // logic goes here...
+    // TODO:
+    // convert to json object format
+    let jsonObj = db.getJsonObj(jsonArray);
+    log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
+    res.json(jsonObj);
+  } catch (e) {
+    if (e) log.error(e);
+    res.json(errr.API_REQUEST_ERROR);
+  }
+});
+
+router.post('/querystock', async (req, res) => {
+  try {
+    let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
+    let jsonArray = await db.query(queryStmnt);
+    // get stock from each array
+    let dataArray = db.getValuefromKey(jsonArray, 'SECSYMBOL');
+    // convert to json object format
+    let jsonObj = db.getJsonObj(dataArray);
+    log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
     if (e) log.error(e);
@@ -145,9 +165,29 @@ router.get('/:queueName/:message', async (req, res) => {
 
 router.get('/querydb', async (req, res) => {
   try {
-    let queryStm = 'SELECT * FROM SECCALLFORCERATETAB';
-    let jsonObj = await db.query(queryStm);
-    log.info('DB2Send => ' + JSON.stringify(jsonObj));
+    let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
+    let jsonArray = await db.query(queryStmnt);
+    // logic goes here...
+    // TODO:
+    // convert to json object format
+    let jsonObj = db.getJsonObj(jsonArray);
+    log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
+    res.json(jsonObj);
+  } catch (e) {
+    if (e) log.error(e);
+    res.json(errr.API_REQUEST_ERROR);
+  }
+});
+
+router.get('/querystock', async (req, res) => {
+  try {
+    let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
+    let jsonArray = await db.query(queryStmnt);
+    // get stock from each array
+    let dataArray = db.getValuefromKey(jsonArray, 'SECSYMBOL');
+    // convert to json object format
+    let jsonObj = db.getJsonObj(dataArray);
+    log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
     if (e) log.error(e);

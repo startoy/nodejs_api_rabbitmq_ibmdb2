@@ -20,17 +20,15 @@ let connectionString = createDBConn(
   db2.port
 );
 
-let jsonString = {
-  code: '0',
-  message: 'success',
-  data: []
-};
-
 devlog.info('DB2 Using Codepage: [' + db2.codepage + ']');
 devlog.info('DB2 Connection String [' + connectionString + ']');
 
+/**
+ *
+ * @param {*} queryStr SQL Query
+ * @returns {jsonArray}
+ */
 async function query(queryStr) {
-  if (!queryStr) log.warn('No query string provided');
   return new Promise((resolve, reject) => {
     try {
       ibmdb.open(connectionString, (err, conn) => {
@@ -39,32 +37,33 @@ async function query(queryStr) {
           return; // prevent continue reading code : asynchronous
         }
 
+        if (!queryStr) {
+          log.warn('No query string provided');
+          resolve(false);
+        }
+
         conn.query(queryStr, (err, object) => {
           if (err) {
             reject(err);
             return;
           } else {
-            log.info('DB2Recv => ' + JSON.stringify(object));
+            let jsonArray = [];
+            log.info('RecvDB2 => ' + JSON.stringify(object));
 
-            for (const data in object) {
-              if (object.hasOwnProperty(data)) {
-                const element = object[data];
-                jsonString.data.push(element);
-              }
-            }
+            if (JSON.stringify(object).startsWith('{')) jsonArray.push(object);
+            else jsonArray = object;
 
-            devlog.info('DB2Resolved => ' + JSON.stringify(jsonString));
-            resolve(jsonString);
+            resolve(jsonArray);
           }
 
           conn.close(() => {
-            log.info('Connection Close...');
+            log.info('Connection Closed..');
           });
         });
       });
     } catch (e) {
       if (e) log.error('db catch' + e);
-      devlog.info('Cannot open ibm db connection');
+      devlog.info('Cannot open ibm DB connection');
       reject(e);
     }
   });
@@ -89,6 +88,47 @@ function createDBConn(dbname, hostname, uid, pwd, port) {
   return str;
 }
 
+/**
+ *
+ * @param {*} jsonArray
+ * @returns {jsonObject}
+ */
+function getJsonObj(jsonArray) {
+  let jsonObj = {
+    code: '0',
+    message: 'success',
+    data: []
+  };
+  for (const data in jsonArray) {
+    if (jsonArray.hasOwnProperty(data)) {
+      const element = jsonArray[data];
+      jsonObj.data.push(element);
+    }
+  }
+  return jsonObj;
+}
+
+/**
+ *
+ * @param {*} jsonArray
+ * @param {*} keys
+ * @returns {jsonArray}
+ */
+function getValuefromKey(jsonArray, keys) {
+  let dataArray = [];
+  for (const data in jsonArray) {
+    if (jsonArray.hasOwnProperty(data)) {
+      const element = jsonArray[data];
+      let tmp = {};
+      tmp[keys] = element[keys];
+      dataArray.push(tmp);
+    }
+  }
+  return dataArray;
+}
+
 module.exports = {
-  query: query
+  query: query,
+  getJsonObj: getJsonObj,
+  getValuefromKey: getValuefromKey
 };
