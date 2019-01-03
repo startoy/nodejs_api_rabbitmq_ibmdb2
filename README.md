@@ -5,7 +5,7 @@
 
 # CHANGELOG
 ## HOT FIX !!
-  - Version **19.01.DB.01** ถ้ารันด้วย Docker image ที่ build ให้ ให้ทำการ docker scp src/ id:app/src แล้ว restart ใหม่  
+  - **Version 19.01.DB.01** ถ้ารันด้วย Docker image ที่ build ให้ src ที่ build เป็น version bug อยู่ ให้ทำการ docker scp src/ id:app/src แล้ว restart ใหม่  
 
 ### 02/12/2018
   - UPDATE VERSION 19.01.DB.01
