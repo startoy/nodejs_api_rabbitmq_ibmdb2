@@ -19,6 +19,13 @@ let connectionString = createDBConn(
   db2.pwd,
   db2.port
 );
+
+let jsonString = {
+  code: '0',
+  message: 'success',
+  data: []
+};
+
 devlog.info('DB2 Using Codepage: [' + db2.codepage + ']');
 devlog.info('DB2 Connection String [' + connectionString + ']');
 
@@ -29,7 +36,7 @@ async function query(queryStr) {
       ibmdb.open(connectionString, (err, conn) => {
         if (err) {
           reject(err);
-          return;
+          return; // prevent continue reading code : asynchronous
         }
 
         conn.query(queryStr, (err, object) => {
@@ -38,12 +45,6 @@ async function query(queryStr) {
             return;
           } else {
             log.info('DB2Recv => ' + JSON.stringify(object));
-
-            let jsonString = {
-              code: '0',
-              message: 'success',
-              data: []
-            };
 
             for (const data in object) {
               if (object.hasOwnProperty(data)) {
@@ -57,7 +58,7 @@ async function query(queryStr) {
           }
 
           conn.close(() => {
-            log.info('Query Done...');
+            log.info('Connection Close...');
           });
         });
       });
@@ -68,13 +69,14 @@ async function query(queryStr) {
     }
   });
 }
+
 /**
  *
- * @param {*} dbname database name
- * @param {*} hostname server host name or ip
- * @param {*} uid username
- * @param {*} pwd password
- * @param {*} port port
+ * @param {*} dbname Dtabase name
+ * @param {*} hostname Server host name or ip
+ * @param {*} uid Username
+ * @param {*} pwd Password
+ * @param {*} port Port
  */
 function createDBConn(dbname, hostname, uid, pwd, port) {
   let str = '';

@@ -8,7 +8,7 @@
 import express from 'express';
 import '@babel/polyfill';
 
-import * as db from '../db/connectDB';
+import * as db from '../db/nodedb2';
 import client from '../lib/amqp';
 import * as cnf from '../lib/config';
 import {
