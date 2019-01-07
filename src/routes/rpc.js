@@ -55,7 +55,54 @@ router.get('/', async (req, res, next) => {
   });
 });
 
-router.post('/query', async (req, res) => {
+router.post('/query', queryOkury);
+router.post('/querydb', queryDB);
+router.post('/querystock', queryStock);
+
+/**
+ * @deprecated
+ * in Development only !
+ */
+router.get('/:queueName/:message', async (req, res) => {
+  try {
+    const msgTypeRcv = req.params.message.slice(0, 3);
+    const message = req.params.message;
+    const queueName = req.params.queueName;
+
+    if (!__processMsgRecv(msgTypeRcv, message)) {
+      devlog.error('Error on __processMsgRecv');
+      return res.json(errr.UNKNOWN_MESSAGE_TYPE);
+    }
+
+    devlog.info('Sending message[' + message + '] Queue[' + queueName + ']');
+    devlog.info('Wait Time ' + cnf.replyWaitTime + ' ms');
+    log.info('RPCSend [' + msgTypeRcv + '] ' + '[' + message + ']');
+
+    Promise.race([
+      client.sendRPCMessage(channel, message, queueName),
+      wait(cnf.replyWaitTime)
+    ]).then(val => {
+      devlog.info('Promise Race Done');
+      if (val) {
+        let data = val.toString();
+        let msgTypeRPCRcv = data.slice(0, 3);
+        log.info('RPCRecv [' + msgTypeRPCRcv + '] ' + '[' + data + ']');
+        let jsonData = __processMsgSend(data);
+        res.json(jsonData);
+        return;
+      }
+      res.json(errr.RESPONSE_TIMEOUT);
+    });
+  } catch (e) {
+    if (e) log.error(e);
+    res.json(errr.API_REQUEST_ERROR);
+  }
+});
+
+router.get('/querydb', queryDB);
+router.get('/querystock', queryStock);
+
+async function queryOkury(req, res) {
   try {
     const msgType = req.body.msgType.slice(0, 3); // TypeError if not send field msgtype to this router
     const msgData = req.body;
@@ -92,91 +139,8 @@ router.post('/query', async (req, res) => {
     }
     res.json(jsonObj);
   }
-});
-
-router.post('/querydb', async (req, res) => {
-  try {
-    let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
-    let jsonArray = await db.query(queryStmnt);
-    // logic goes here...
-    // TODO:
-    // convert to json object format
-    let jsonObj = db.getJsonObj(jsonArray);
-    log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
-    res.json(jsonObj);
-  } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
-    res.json(jsonObj);
-  }
-});
-
-router.post('/querystock', async (req, res) => {
-  try {
-    let queryStmnt = 'SELECT SECSYMBOL FROM SECCALLFORCERATETAB';
-    let jsonArray = await db.query(queryStmnt);
-    // get stock from each array
-    // let dataArray = db.getValuefromKey(jsonArray, 'SECSYMBOL');
-
-    // convert to json object format
-    let jsonObj = db.getJsonObj(jsonArray);
-    log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
-    res.json(jsonObj);
-  } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
-    res.json(jsonObj);
-  }
-});
-
-/**
- * @deprecated
- */
-
-router.get('/:queueName/:message', async (req, res) => {
-  try {
-    const msgTypeRcv = req.params.message.slice(0, 3);
-    const message = req.params.message;
-    const queueName = req.params.queueName;
-
-    if (!__processMsgRecv(msgTypeRcv, message)) {
-      devlog.error('Error on __processMsgRecv');
-      return res.json(errr.UNKNOWN_MESSAGE_TYPE);
-    }
-
-    devlog.info('Sending message[' + message + '] Queue[' + queueName + ']');
-    devlog.info('Wait Time ' + cnf.replyWaitTime + ' ms');
-
-    log.info('RPCSend [' + msgTypeRcv + '] ' + '[' + message + ']');
-
-    Promise.race([
-      client.sendRPCMessage(channel, message, queueName),
-      wait(cnf.replyWaitTime)
-    ]).then(val => {
-      devlog.info('Promise Race Done');
-      if (val) {
-        let data = val.toString();
-        let msgTypeRPCRcv = data.slice(0, 3);
-        log.info('RPCRecv [' + msgTypeRPCRcv + '] ' + '[' + data + ']');
-        let jsonData = __processMsgSend(data);
-        res.json(jsonData);
-        return;
-      }
-      res.json(errr.RESPONSE_TIMEOUT);
-    });
-  } catch (e) {
-    if (e) log.error(e);
-    res.json(errr.API_REQUEST_ERROR);
-  }
-});
-
-router.get('/querydb', async (req, res) => {
+}
+async function queryDB(req, res) {
   try {
     let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
     let jsonArray = await db.query(queryStmnt);
@@ -195,17 +159,16 @@ router.get('/querydb', async (req, res) => {
     }
     res.json(jsonObj);
   }
-});
-
-router.get('/querystock', async (req, res) => {
+}
+async function queryStock(req, res) {
   try {
     let queryStmnt = 'SELECT SECSYMBOL FROM SECCALLFORCERATETAB';
     let jsonArray = await db.query(queryStmnt);
     // get stock from each array
-    // let dataArray = db.getValuefromKey(jsonArray, 'SECSYMBOL');
+    let dataArray = db.getValueArrayfromKey(jsonArray, 'SECSYMBOL');
 
     // convert to json object format
-    let jsonObj = db.getJsonObj(jsonArray);
+    let jsonObj = db.getJsonObj(dataArray);
     log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
@@ -216,6 +179,6 @@ router.get('/querystock', async (req, res) => {
     }
     res.json(jsonObj);
   }
-});
+}
 
 module.exports = router;

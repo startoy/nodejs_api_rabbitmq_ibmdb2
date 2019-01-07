@@ -51,7 +51,6 @@ function __processObjtoStr(reqObject) {
   const msgType = reqObject[keys].slice(0, 3); // ex. AMU
   const msgType2 = reqObject[keys].slice(1, 3); // ex. MU
   const index = getIndexFromMsg(msgType2);
-  console.log(index);
   const str = msgFunction[index].funcIn(msgType, reqObject);
   return str;
 }

@@ -7,7 +7,7 @@
 export const sv = {
   service: 'Node-API-Rabbit',
   version: '19.01.DB.02',
-  desc: '- Add query all stock name',
+  desc: '- Add API query all stock name',
   last_update: '07/01/2019'
 };
 

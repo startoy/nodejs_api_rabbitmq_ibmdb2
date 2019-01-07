@@ -108,13 +108,24 @@ function getJsonObj(jsonArray) {
   return jsonObj;
 }
 
+function getValueArrayfromKey(jsonArray, keys) {
+  let dataArray = [];
+  for (const data in jsonArray) {
+    if (jsonArray.hasOwnProperty(data)) {
+      const element = jsonArray[data];
+      dataArray.push(element[keys].replace(/ /g, ''));
+    }
+  }
+  return dataArray;
+}
+
 /**
  *
  * @param {*} jsonArray array[]
  * @param {*} keys any
  * @returns {jsonArray} array[]
  */
-function getValuefromKey(jsonArray, keys) {
+function getKeyValueArrayfromKey(jsonArray, keys) {
   let dataArray = [];
   for (const data in jsonArray) {
     if (jsonArray.hasOwnProperty(data)) {
@@ -130,5 +141,6 @@ function getValuefromKey(jsonArray, keys) {
 module.exports = {
   query: query,
   getJsonObj: getJsonObj,
-  getValuefromKey: getValuefromKey
+  getKeyValueArrayfromKey: getKeyValueArrayfromKey,
+  getValueArrayfromKey: getValueArrayfromKey
 };
