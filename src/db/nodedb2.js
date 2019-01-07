@@ -38,7 +38,7 @@ async function query(queryStr) {
         }
 
         if (!queryStr) {
-          log.warn('No query string provided');
+          log.error('No query string provided');
           resolve(false);
         }
 
@@ -57,13 +57,13 @@ async function query(queryStr) {
           }
 
           conn.close(() => {
-            log.info('Connection Closed..');
+            log.warn('Connection Closed..');
           });
         });
       });
     } catch (e) {
       if (e) log.error('db catch' + e);
-      devlog.info('Cannot open ibm DB connection');
+      devlog.error('Cannot open connection to IBM DB2...');
       reject(e);
     }
   });
@@ -90,8 +90,8 @@ function createDBConn(dbname, hostname, uid, pwd, port) {
 
 /**
  *
- * @param {*} jsonArray
- * @returns {jsonObject}
+ * @param {jsonArray} jsonArray array[]
+ * @returns {jsonObject} object{}
  */
 function getJsonObj(jsonArray) {
   let jsonObj = {
@@ -110,9 +110,9 @@ function getJsonObj(jsonArray) {
 
 /**
  *
- * @param {*} jsonArray
- * @param {*} keys
- * @returns {jsonArray}
+ * @param {*} jsonArray array[]
+ * @param {*} keys any
+ * @returns {jsonArray} array[]
  */
 function getValuefromKey(jsonArray, keys) {
   let dataArray = [];

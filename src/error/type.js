@@ -38,5 +38,9 @@ export default {
   API_REQUEST_ERROR: {
     code: 8,
     message: 'API request error'
+  },
+  API_CUSTOM_ERROR: {
+    code: 999,
+    message: 'Custom error : Internal error'
   }
 };

@@ -85,8 +85,12 @@ router.post('/query', async (req, res) => {
       res.json(errr.RESPONSE_TIMEOUT);
     });
   } catch (e) {
-    if (e) log.error(e);
-    res.json(errr.API_REQUEST_ERROR);
+    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
+    if (e) {
+      log.error(e);
+      jsonObj.message = e;
+    }
+    res.json(jsonObj);
   }
 });
 
@@ -101,24 +105,33 @@ router.post('/querydb', async (req, res) => {
     log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
-    if (e) log.error(e);
-    res.json(errr.API_REQUEST_ERROR);
+    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
+    if (e) {
+      log.error(e);
+      jsonObj.message = e;
+    }
+    res.json(jsonObj);
   }
 });
 
 router.post('/querystock', async (req, res) => {
   try {
-    let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
+    let queryStmnt = 'SELECT SECSYMBOL FROM SECCALLFORCERATETAB';
     let jsonArray = await db.query(queryStmnt);
     // get stock from each array
-    let dataArray = db.getValuefromKey(jsonArray, 'SECSYMBOL');
+    // let dataArray = db.getValuefromKey(jsonArray, 'SECSYMBOL');
+
     // convert to json object format
-    let jsonObj = db.getJsonObj(dataArray);
+    let jsonObj = db.getJsonObj(jsonArray);
     log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
-    if (e) log.error(e);
-    res.json(errr.API_REQUEST_ERROR);
+    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
+    if (e) {
+      log.error(e);
+      jsonObj.message = e;
+    }
+    res.json(jsonObj);
   }
 });
 
@@ -168,30 +181,40 @@ router.get('/querydb', async (req, res) => {
     let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
     let jsonArray = await db.query(queryStmnt);
     // logic goes here...
-    // TODO:
+    // TODO: insert logic
+
     // convert to json object format
     let jsonObj = db.getJsonObj(jsonArray);
     log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
-    if (e) log.error(e);
-    res.json(errr.API_REQUEST_ERROR);
+    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
+    if (e) {
+      log.error(e);
+      jsonObj.message = e;
+    }
+    res.json(jsonObj);
   }
 });
 
 router.get('/querystock', async (req, res) => {
   try {
-    let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
+    let queryStmnt = 'SELECT SECSYMBOL FROM SECCALLFORCERATETAB';
     let jsonArray = await db.query(queryStmnt);
     // get stock from each array
-    let dataArray = db.getValuefromKey(jsonArray, 'SECSYMBOL');
+    // let dataArray = db.getValuefromKey(jsonArray, 'SECSYMBOL');
+
     // convert to json object format
-    let jsonObj = db.getJsonObj(dataArray);
+    let jsonObj = db.getJsonObj(jsonArray);
     log.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
-    if (e) log.error(e);
-    res.json(errr.API_REQUEST_ERROR);
+    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
+    if (e) {
+      log.error(e);
+      jsonObj.message = e;
+    }
+    res.json(jsonObj);
   }
 });
 

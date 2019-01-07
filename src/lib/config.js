@@ -6,9 +6,9 @@
 // PROCESS
 export const sv = {
   service: 'Node-API-Rabbit',
-  version: '19.01.DB.01',
-  desc: '- Fix error connect to DB2',
-  last_update: '02/01/2019'
+  version: '19.01.DB.02',
+  desc: '- Add query all stock name',
+  last_update: '07/01/2019'
 };
 
 // ENVIRONMENTS
