@@ -7,7 +7,6 @@
 'use strict';
 
 const amqp = require('amqplib');
-const util = require('./lib/util');
 
 const q = 'test_queue';
 amqp

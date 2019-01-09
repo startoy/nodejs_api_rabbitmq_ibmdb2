@@ -24,7 +24,7 @@ const msgFunction = [
  */
 function __processMsgRecv(msgType, msgData) {
   const msg = msgData !== undefined ? msgData : 'No provided data';
-  devlog.info('Get ' + msgData + ' Type' + typeof msgData);
+  devlog.info('Get ' + msgData + ' Type ' + typeof msgData);
   log.info('NodeRecv [' + msgType + '] [' + msg + ']');
 
   if (checkMsgExist(msgType.slice(1, 3)) && msgType.slice(0, 1) === 'A')
