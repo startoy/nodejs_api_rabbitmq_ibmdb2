@@ -42,12 +42,14 @@
 **Lite** ไม่ต้องต่อกับ DB2 ไม่ต้องใช้ lib ของ linux ทั้งหมด ได้ image ขนาดเล็ก   
 **TODO: ใน src ยังมีต่ออยู่ อาจ error ต้องแก้ src**
   - **Node** ใช้ Version **>= `node:10.10.0-alpine`**  
-      ```sh
+
+      ```sh  
       docker pull node:10.10.0-alpine
       ```
 
 **Full** มีการเชื่อมต่อกับ IBM DB2 ต้องลง cli-driver ถึงจะเรียก database ได้ แต่ driver ต้องใช้ libgcc, python, libssl ... ซึ่งใน node alpine ไม่มี  ได้ image ขนาดใหญ่  
   - **Node** ใช้ Version **>= `node:10.10.0`**
+
       ```sh
       docker pull node:10.10.0
       ```
@@ -63,7 +65,9 @@
       chmod +x build.sh
       ./build.sh <version>
       ```
+
       - version ใส่เวอร์ชัน เช่น 19.01.DB.01 ถ้าไม่ใส่ จะได้ TAG latest
+      
       ```sh
         REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
         fwg/nodejs-api      latest              c4dfedfd51ae        8 seconds ago       836MB 
@@ -85,7 +89,7 @@
           fwg/api-rabbit      latest              a2554eac0192        8 seconds ago       95.8MB
       ```
 
-  5. สตาร์ท Container จาก Image ด้วยคำสั่ง
+  3. สตาร์ท Container จาก Image ด้วยคำสั่ง
 
       ```sh
       docker run -d \
@@ -95,6 +99,7 @@
         fwg/nodejs-api \
         npm start 
       ```
+
       - `-d` รันแบบ background. 
       - `--name` เปลี่ยนชื่อ container 
       - `-p` แมพพอร์ตจาก **'hostport':'containerport'**  
@@ -123,7 +128,9 @@
       ```sh
       docker ps
       ```
+
       ![]() 
+
       ```sh
       curl localhost:15673/version
       ```
@@ -133,6 +140,7 @@
       ```sh
       docker logs 771 -f 
       ```
+
       - **771** 3 ตัวแรกของ Container ID/ชื่อ Container
       - log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
         ```sh
@@ -165,19 +173,23 @@
   cd node-api-rabbitmq
   npm install
   ```
+
   * หลังจากสั่งคำสั่ง `npm install` เสร็จ, ควรจะมีโฟลเดอร์ `node_modules` ขึ้นมา
 
 ## วิธีสตาร์ท
 หลังลง dependencies แล้ว ให้สั่งคำสั่ง 
+
   ```
   npm start
   ```
+
    - for developing testing etc.
    - เห็น log, logdev, log request router ออกจอ
 
   ```
   NODE_ENV=production npm start
   ```
+
    - for production
    - เห็น log เก็บ log ลงไฟล์, ไม่เก็บและไม่เห็น logdev
    
@@ -188,11 +200,13 @@ config อื่นๆ ให้อิงตามที่ **ENVIRONMENT LIST**
 
 
 ตัวอย่าง ถ้า rabbitmq อยู่บน docker ต้องใช้ uri amqp ของ container นั้น  
+
   ```sh
   AMQPURI=amqp://172.17.xx.xx NODE_ENV=production npm start
   ```
 
   เช็คว่าใช้ได้หรือไม่
+
   ```sh
   // ON TERMINAL
   curl localhost:15673/ 
@@ -207,6 +221,7 @@ config อื่นๆ ให้อิงตามที่ **ENVIRONMENT LIST**
 Available end point API
 
 กำหนด Base url คือ 
+
 ```sh 
  http://localhost:15673
 ```
