@@ -142,6 +142,9 @@ async function queryOkury(req, res) {
 }
 async function queryDB(req, res) {
   try {
+    // check req.method GET or POST
+    // if GET
+    // if POST
     let queryStmnt = 'SELECT * FROM SECCALLFORCERATETAB';
     let jsonArray = await db.query(queryStmnt);
     // logic goes here...

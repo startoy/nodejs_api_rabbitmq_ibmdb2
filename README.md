@@ -1,200 +1,80 @@
-# Nodejs API to Rabbitmq
+# Nodejs, RabbitMQ, IBM-DB2
 
-  repository นี้ เป็น API เขียนจาก nodejs (express) เพื่อส่ง message เข้าไปที่คิวของ rabbitmq service
-  rabbitmq service จะมี c รอรับอ่านคิว เพื่อคิวรี่เอาข้อมูลและส่งกลับมาที่ api, api จะส่งต่อไป client/requester
+  <img align="" src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png" height="80">
+  <img align="" src="https://cdn-images-1.medium.com/max/1200/1*-cHwP37aTACS1XnzA_YnIw.png" height="80">
+  <img align="" src="https://img.stackshare.io/service/1029/preview.png" height="80">
+  
+  - Nodejs act as API
+  - Nodejs connect to Rabbitmq service
+  - Nodejs connect to IBM DB2
 
 # CHANGELOG
-## HOT FIX !!
-  - **Version 19.01.DB.01** ถ้ารันด้วย Docker image ที่ build ให้ src ที่ build เป็น version bug อยู่ ให้ทำการ docker scp src/ id:app/src แล้ว restart ใหม่  
 
 ### 02/12/2018
   - UPDATE VERSION 19.01.DB.01
     - แก้ไขให้สามารถเชื่อมต่อ DB2 ได้ แก้โดยการตั้ง process.env.DB2CODEPAGE = **874**
-    - ย้าย Dockerfile เก่าไปไว้ในโฟลเดอร์ install  
+    - ย้าย Dockerfile เก่าไปไว้ในโฟลเดอร์ install
 
-### 25/12/2018
-  - เพิ่ม Version แยก 18.04.DB.01 ให้ทำงานร่วมกับ IBM DB2
-    - ต้องใช้ node version เต็ม (~ 800-900 MB) เพื่อลง db2 cli driver เนื่องจาก node version alpine ติดพวก lib ต่างๆ เช่น libcrypt.so.1, libpam ..  
-    - ให้ไปเรียกคำสั่ง `docker build..` ใน path **/install** แทน
+# วิธี Update source code (ไม่ต้อง Build image ใหม่)
+**ถ้าไม่มีการเพิ่ม/ลด dependencies** แค่ copy src/ ขึ้นไปบน container แล้วสั่ง restart ก็จะได้ src ใหม่แล้ว  
+**ถ้ามีการ npm install ... เพิ่ม dependency** ต้อง build images ใหม่  
 
-# 1. Run ด้วย Nodejs
+- ใช้ **shell/cpdocker.sh**
+1. เอาทั้งโฟลเดอร์ **src/** ที่มีอัพเดท ไปไว้ในโฟลเดอร์ **shell/**  
+2. สั่ง cpdocker.sh
 
-## Prerequisites
-   
-  <img align="center" src="https://www.rabbitmq.com/img/RabbitMQ-logo.svg" height="35"> 
-  <img align="center" src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png" height="80">
-   
+- **logdocker.sh** ดู logs
+- **rmvdocker.sh** ลบ log ของ docker container
+
+# วิธี Build Source เป็น Docker Image (10/01/2019)
+
+  ขั้นตอนการ build source ให้เป็น docker image แทน ในกรณีที่เครื่องไม่สามารถลง nodejs ได้โดยตรง แต่ต้องใช้ docker ได้
   
-  - `Nodejs` >= 8.9.4 (test on Windows), 8.11.3 (test on Ubuntu16) [Official Download](https://nodejs.org/en/download/)
-  - `Source code` (compressed file) [Download on Gitlab](http://gitlab.freewillgroup.com/peerapat_suk/node-api-rabbitmq)
-  - `Rabbitmq server` (Assume broker running on `amqp://localhost`) [Download](https://www.rabbitmq.com/)
+## Prerequisite
+  - Internet access  
+  - **Docker**
+  - **Node** Docker Images
+  - Source code
 
+### แยกเป็น 2 version
 
-## ติดตั้ง
-### --> ถ้าเชื่อมต่อ Internet ได้ 
-  Install dependencies
-
-  ```sh
-  unzip node-api-rabbitmq-master.zip
-  cd node-api-rabbitmq-master
-  npm install
-  ```
-  
-  ```sh
-  git clone {this_repo_url.git}
-  cd node-api-rabbitmq
-  npm install
-  ```
-  * หลังจากสั่งคำสั่ง `npm install` เสร็จ, ควรจะมีโฟลเดอร์ `node_modules` ขึ้นมา
-
-### --> ถ้าเชื่อมต่อ Internet ไม่ได้
-
-  ให้ดาวโหลดโฟลเดอร์ `node_modules` มาใส่แทน จาก path:
-  ```sh
-  \\nas1\securities\SDP\user\prs\RabbitMQ\api_rabbitmq_node_modules.zip
-  ```
-  ย้ายไฟล์ .zip ไปที่โฟลเดอร์ของโปรเจ็คนี้ แล้วแตกไฟล์ .zip
-  ```sh
-  mv api_rabbitmq_node_modules.zip node-api-rabbitmq-master
-  unzip api_rabbitmq_node_modules.zip
-  ```
-
-  - ถ้าเกิด error `'permission denied rimraf...'` ให้ chmod permission **.bin** ใน **node_modules**
-
-  ```sh
-  chmod a+x node_modules/.bin/*
-  ```
-
----
-
-## วิธีสตาร์ท
-  หลังลง dependencies แล้ว ให้สั่งคำสั่ง 
-  ```
-  npm start
-  ```
-  - default NODE_ENV คือ development (มองเห็น log dev, log request router ออกจอ)
-  - default port คือ **15673**
-  - default uri amqp คือ amqp://localhost
-
-  *ถ้าสตาร์ท production mode (ไม่เก็บและไม่เห็น log dev, เก็บ log ลงไฟล์)
-  ```sh
-  NODE_ENV=production npm start
-  ```
-
-  *ถ้าสตาร์ทด้วย docker ต้องใช้ uri amqp ของ container
-  ```sh
-  AMQPURI=amqp://172.17.xx.xx NODE_ENV=production npm start
-  ```
-
-  แล้วเช็ค
-  ```sh
-  // ON TERMINAL
-  curl localhost:15673/ 
-
-  // ON BROWSER
-  localhost:15673
-  ```
-
-  หน้าจอจะแสดงผล
-  
-  ![](content/nodejs_result.JPG)
-
----
-
-  ตัวอย่าง
-  **Request Okury (sent message to queue `test_queue`)**
-  ```sh
-  curl localhost:15673/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
-  curl localhost:15673/rpc/test_queue/AMU1017,10170012%20%20,1,10
-  ```
----
-
-# 2. build source เป็น docker image แล้วสตาร์ทจาก docker
-
-  สเต็บนี้จะเป็นการ build source ให้เป็น docker image แทน ในกรณีที่เครื่องไม่สามารถลง nodejs ได้โดยตรง แต่ใช้ docker ได้
-  
-## สิ่งที่ต้องมี
-### Version เก่า ที่ต่ำกว่า 19.xx.xx.xx
-
-  - **ต้องมี** Internet access !!
-  - ลง **Docker** แล้ว
-  - มี Docker image `Node` ซึ่ง `repo:tag` ควรที่จะ **>= `node:10.10.0-alpine`**  
-    สามารถดึง image ได้จากคำสั่ง
-      
+**@DEPRECATED**  
+**Lite** ไม่ต้องต่อกับ DB2 ไม่ต้องใช้ lib ของ linux ทั้งหมด ได้ image ขนาดเล็ก   
+**TODO: ใน src ยังมีต่ออยู่ อาจ error ต้องแก้ src**
+  - **Node** ใช้ Version **>= `node:10.10.0-alpine`**  
       ```sh
       docker pull node:10.10.0-alpine
       ```
-  - `Source code` ( ไฟล์ดูจาก #1 )
 
-### Version ตั้งแต่ 19.01.DB.01
-
-  - ใช้ Node image version **node:10.10.0** เนื่องจาก DB2 ต้องใช้ libc (ระวัง disk เต็ม)
-  ```sh
-  docker pull node:10.10.0
-  ```
-  
----
-  TODO: If no internet access build instruction 
-  - See above adapt with  `# Setup with no internet access`
-  - Then edit Dockerfile to not `npm install`
-  - Add `RUN chmod a+x node_modules/.bin/*`  
-  - Follow normal build step
-
----
-
-### Docker image ที่ build มาให้แล้ว (ข้าม step build)
-  - ดาวโหลด:
-
+**Full** มีการเชื่อมต่อกับ IBM DB2 ต้องลง cli-driver ถึงจะเรียก database ได้ แต่ driver ต้องใช้ libgcc, python, libssl ... ซึ่งใน node alpine ไม่มี  ได้ image ขนาดใหญ่  
+  - **Node** ใช้ Version **>= `node:10.10.0`**
       ```sh
-      \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\noderb_<version>.tar
+      docker pull node:10.10.0
       ```
-    แล้วข้ามไป Step 4 ได้เลย
+---
 
-## Step การ Build
+## Build Step
 เมื่อดาวโหลด source code จาก repository นี้ไปแล้ว  
 
-  1. Extract .zip file แล้ว cd ไปที่ `node-api-rabbitmq-master/` (โฟลเดอร์ที่ได้จากการแตกไฟล์)
+  1. สั่งให้ build docker image (เช็ค `Dockerfile`)
 
       ```sh
-      // ถ้าใช้ zip แตกไฟล์
-      unzip node-api-rabbitmq-master.zip
-
-      // ถ้าใช้ tar แตกไฟล์
-      tar -xvzf node-api-rabbitmq-master.tar.gz
-
-      cd node-api-rabbitmq-master/
-      npm install
-      ```
-  2. สั่งให้ build docker image (จะรันโค้ดตามไฟล์ชื่อ `Dockerfile`)
-
-      ```sh
-      docker build -t fwg/api-rabbit:<version> .
+      cd docker
+      chmod +x build.sh
+      ./build.sh <version>
       ```
       - version ใส่เวอร์ชัน เช่น 19.01.DB.01 ถ้าไม่ใส่ จะได้ TAG latest
-
-      เช็คว่าได้ image หรือยัง จากคำสั่ง
-
       ```sh
-      docker images
-        REPOSITORY                TAG                 IMAGE ID            CREATED              SIZE
-        fwg/api-rabbit            latest              d8457d449ae1        About a minute ago   96.6 MB
+        REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+        fwg/nodejs-api      latest              c4dfedfd51ae        8 seconds ago       836MB 
       ```
-      - **fwg/api-rabbit** สามารถเปลี่ยนเป็นชื่อ repository อะไรก็ได้
-  3. สั่งให้ Export image บน docker กลายเป็นไฟล์ .tar
+    
+      จะได้ไฟล์ **nodejs-api.tar**
+
+  2. หลังจากได้ Image ไฟล์ ให้ copy ไฟล์ไปวางไว้ที่ server ที่ deploy แล้ว Load image ขึ้น Docker ด้วยคำสั่ง
 
       ```sh
-      docker save -o noderb_<version>.tar fwg/api-rabbit:TAG
-      ```
-      - `noderb_<version>.tar` ชื่อไฟล์หรือpathที่จะ export ออกมา (ต้องใส่ .tar ด้วย)
-      - `fwg-api-rabbit` ชื่อ repository บน docker ถ้ามี TAG ให้ใส่ด้วย ถ้าเป็น latest ไม่ต้องใส่
-      - `:TAG` ถ้า image TAG latest ไม่ต้องใส่ ให้ลบออก
-
-  - `ตอนนี้จะต้องได้ไฟล์ 'noderb_<version>.tar' !!`
-
-  4. หลังจากได้ Image ไฟล์ ให้ copy ไฟล์ไปวางไว้ที่ Server แล้ว Load image ขึ้น Docker ด้วยคำสั่ง
-
-      ```sh
-      docker load -i noderb_<version>.tar
+      docker load -i nodejs-api.tar
       ```
 
       เช็คว่ามี Image จากคำสั่ง
@@ -212,7 +92,7 @@
         -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
         --name node-api-rabbit \
         -p 15673:15673 \
-        fwg/api-rabbit:19.01.DB.01 \
+        fwg/nodejs-api \
         npm start 
       ```
       - `-d` รันแบบ background. 
@@ -238,84 +118,95 @@
     
       แล้วดู Container จากคำสั่ง
       
+  4. ดู container สตาร์ทและใช้งานได้จริงจากคำสั่ง
+            
       ```sh
       docker ps
       ```
-      ![](content/node_api_rabbit.JPG)
-      
-  6. ดูว่า Container สตาร์ทและใช้งานได้จริงจากคำสั่ง
-
+      ![]() 
       ```sh
-      // ON TERMINAL
-      curl localhost:15673/ 
-
-      // ON BROWSER
-      localhost:15673
+      curl localhost:15673/version
       ```
 
-      ควรจะได้ตอบกลับตามนี้
-      
-      ![](content/nodejs_result.JPG) 
-
-      Request Okury(sent message to queue `test_queue`)
-      ```sh
-      curl localhost:15673/rpc/test_queue/APF50050005%20%20,F,5005,,1,8
-      curl localhost:15673/rpc/test_queue/AMU1017,10170012%20%20,1,10
-      ```
-
-  7. ดู Container log (พวกที่ออก Console ของ Nodejs) จากคำสั่ง
+  5. ดู Container log (พวกที่ออก Console ของ Nodejs) จากคำสั่ง
 
       ```sh
       docker logs 771 -f 
       ```
       - **771** 3 ตัวแรกของ Container ID/ชื่อ Container
-      - **-f** Follow log output
-      - ดูจาก docker ps (ถ้า ps ไม่ได้ ให้รันด้วย root)
       - log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
-      ```sh
-      2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
-      ```
-
-  8. Test tool (untest)
-
-      ```sh
-      ./api_loop_test.sh <port>
-      ```
-      * **\<port\>** API Port
+        ```sh
+        2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
+        ```
 
 ---
 
-# RabbitMQ
-ส่วนนี้เป็นวิธีสตาร์ท RabbitMQ Service ขึ้นมา
-## สตาร์ทจาก Docker Image ของ Rabbitmq
-  * ถ้าต้องใช้ Internet Access !!  
-   Pull image จากคำสั่ง
-    ```sh
-    docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-    ```
-    - `5672` AMQP Port
-    - `15672` Management Port
+# 2. Run ด้วย Nodejs (Not Update)
 
-  * ถ้าไม่มี Internet Access!
-   ให้ทำการ Load ไฟล์ Image มาใช้แทนการ Pull (เหมือนการสตาร์ท Nodejs) ไฟล์อยู่ที่:
-    ```sh
-    \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\rabbitmq_3-management.tar
+## Prerequisites
+  
+  - `Nodejs` >= 8.9.4 (test on Windows), 8.11.3 (test on Ubuntu16) [Official Download](https://nodejs.org/en/download/)
+  - `Source code` (compressed file) [Download on Gitlab](http://gitlab.freewillgroup.com/peerapat_suk/node-api-rabbitmq)
+  - `Rabbitmq server` (Assume broker running on `amqp://localhost`) [Download](https://www.rabbitmq.com/)
 
-    // copy ไปที่ server แล้ว Load ขึ้น Docker
-    docker load -i rabbitmq_3-management.tar
-    ```
-    แล้วสั่งคำสั่ง:
-    ```sh
-    docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-    ```
-#### ถ้าต้องการลง Service แบบไม่ใช้ Docker [Click](https://www.rabbitmq.com/download.html) .
 
----
+## ติดตั้ง
+
+  Install dependencies
+
+  ```sh
+  unzip node-api-rabbitmq-master.zip
+  cd node-api-rabbitmq-master
+  npm install
+  ```
+  
+  ```sh
+  git clone {this_repo_url.git}
+  cd node-api-rabbitmq
+  npm install
+  ```
+  * หลังจากสั่งคำสั่ง `npm install` เสร็จ, ควรจะมีโฟลเดอร์ `node_modules` ขึ้นมา
+
+## วิธีสตาร์ท
+หลังลง dependencies แล้ว ให้สั่งคำสั่ง 
+  ```
+  npm start
+  ```
+   - for developing testing etc.
+   - เห็น log, logdev, log request router ออกจอ
+
+  ```
+  NODE_ENV=production npm start
+  ```
+   - for production
+   - เห็น log เก็บ log ลงไฟล์, ไม่เก็บและไม่เห็น logdev
+   
+default NODE_ENV คือ development  
+default port คือ **15673**  
+default uri amqp คือ amqp://localhost  
+config อื่นๆ ให้อิงตามที่ **ENVIRONMENT LIST**  
+
+
+ตัวอย่าง ถ้า rabbitmq อยู่บน docker ต้องใช้ uri amqp ของ container นั้น  
+  ```sh
+  AMQPURI=amqp://172.17.xx.xx NODE_ENV=production npm start
+  ```
+
+  เช็คว่าใช้ได้หรือไม่
+  ```sh
+  // ON TERMINAL
+  curl localhost:15673/ 
+
+  // ON BROWSER
+  localhost:15673
+  ```
+
+  ![]()
 
 # API
-available end point API ที่มี
+Available end point API
 
-กำหนด base url คือ 
+กำหนด Base url คือ 
 ```sh 
  http://localhost:15673
 ```
@@ -364,10 +255,38 @@ available end point API ที่มี
   - **EX** : -
   - **RESPONSE** : -  
 
----
 
-# MY DEV NOTE
-  Nothing to see here, you can delete all this below.
+
+# DEV NOTE
+  maintenance ต่างๆ ที่เกี่ยวข้อง  
+
+## RabbitMQ
+
+ส่วนนี้เป็นวิธีสตาร์ท RabbitMQ Service ขึ้นมา
+
+### สตาร์ทจาก Docker Image ของ Rabbitmq
+  * ถ้าต้องใช้ Internet Access !!  
+   Pull image จากคำสั่ง
+    ```sh
+    docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+    ```
+    - `5672` AMQP Port
+    - `15672` Management Port
+
+  * ถ้าไม่มี Internet Access!
+   ให้ทำการ Load ไฟล์ Image มาใช้แทนการ Pull (เหมือนการสตาร์ท Nodejs) ไฟล์อยู่ที่:
+    ```sh
+    \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\rabbitmq_3-management.tar
+
+    // copy ไปที่ server แล้ว Load ขึ้น Docker
+    docker load -i rabbitmq_3-management.tar
+    ```
+    แล้วสั่งคำสั่ง:
+    ```sh
+    docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+    ```
+#### ถ้าต้องการลง Service แบบไม่ใช้ Docker [Click](https://www.rabbitmq.com/download.html) .
+
 ## RabbitMQ Maintainance
   All available detail. [See more](https://www.rabbitmq.com/rabbitmqctl.8.html)
   - Install
@@ -451,7 +370,7 @@ available end point API ที่มี
   apt-get install vim
   ```
 
-## Connect to Rabbitmq
+## เชื่อมต่อ amqp ของ RabbitMQ
 ### From Container
  
   ```sh
