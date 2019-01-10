@@ -5,10 +5,10 @@
 
 // PROCESS
 export const sv = {
-  service: 'Node-API-Rabbit',
-  version: '19.01.DB.02',
-  desc: '- Add API query all stock name',
-  last_update: '07/01/2019'
+  service: 'fwg/nodejs-api',
+  version: '19.01.DB.03',
+  desc: '- add field avg_cost',
+  last_update: '10/01/2019'
 };
 
 // ENVIRONMENTS

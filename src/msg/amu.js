@@ -45,28 +45,31 @@ function processAMU(msgType, msgStr) {
     Number.isInteger(buffer[10] * 1) && buffer[10] * 1 >= 0
       ? buffer[10] * 1
       : 0;
-  let loopGap = 14;
 
+  // loopGap calculate from total fields in loop
+  let loopGap = 15;
   let jsonObj = jsonStr;
   let loopMultiplyGap = loopCount * loopGap;
   if (loopCount >= 0) {
     for (let i = 0; i < loopMultiplyGap; i += loopGap) {
-      // start from 11, gap jump every 14
+      // start from index 11th, gap jump every 15
+      let idx = +11;
       let msgObj = {
-        stock_symbol: String(buffer[11 + i]),
-        grade: String(buffer[12 + i]),
-        stock_type: String(buffer[13 + i]),
-        mrg_code: String(buffer[14 + i]),
-        call_lmv: String(buffer[15 + i]),
-        call_smv: String(buffer[16 + i]),
-        sell_lmv: String(buffer[17 + i]),
-        sell_smv: String(buffer[18 + i]),
-        actual_vol: String(buffer[19 + i]),
-        lastsale: String(buffer[20 + i]),
-        mkt_value: String(buffer[21 + i]),
-        call_margin: String(buffer[22 + i]),
-        call_force: String(buffer[23 + i]),
-        ending_flag: String(buffer[24 + i])
+        stock_symbol: String(buffer[idx++ + i]),
+        grade: String(buffer[idx++ + i]),
+        stock_type: String(buffer[idx++ + i]),
+        mrg_code: String(buffer[idx++ + i]),
+        call_lmv: String(buffer[idx++ + i]),
+        call_smv: String(buffer[idx++ + i]),
+        sell_lmv: String(buffer[idx++ + i]),
+        sell_smv: String(buffer[idx++ + i]),
+        actual_vol: String(buffer[idx++ + i]),
+        lastsale: String(buffer[idx++ + i]),
+        mkt_value: String(buffer[idx++ + i]),
+        call_margin: String(buffer[idx++ + i]),
+        call_force: String(buffer[idx++ + i]),
+        avg_cost: String(buffer[idx++ + i]),
+        ending_flag: String(buffer[idx++ + i])
       };
       jsonObj.data.push(msgObj);
     }
