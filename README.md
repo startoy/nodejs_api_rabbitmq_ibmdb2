@@ -90,7 +90,7 @@
       ```sh
       docker run -d \
         -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
-        --name node-api-rabbit \
+        --name nodejs-api \
         -p 15673:15673 \
         fwg/nodejs-api \
         npm start 
@@ -416,7 +416,7 @@ Test with nodejs on docker exec
 ### Rabbitmq รันเป็น service native
   ```sh
    docker run -it -d \
-    -e "NODE_ENV=development" -e "AMQPURI=amqp://test:test@13.229.136.216" \
+    -e "NODE_ENV=development" -e "AMQPURI=amqp://test:test@13.229.156.31" \
     --name node \
     -p 15673:15673 \
     fwg/api-rabbit:19.01.DB.01 \
