@@ -9,6 +9,10 @@ usage() {
         echo -e "---------------------------";
 }
 
+export_docker_image() {
+  docker save -o nodejs-api$VERSION.tar fwg/nodejs-api$VERSION
+}
+
 build() {
   echo 'Build with Version: ' $VERSION;
   echo 'Finding Dockerfile';
@@ -20,15 +24,24 @@ build() {
   ls -la $(pwd)/../
 
   cd $(pwd)/../
-  docker build -t fwg/nodejs-api:$VERSION .
+  docker build -t fwg/nodejs-api$VERSION .
 
   cd -
 
   docker images
   docker ps -a
+  echo -e "export docker image.."
+  export_docker_image
+
+  echo -e "export completed"
+  ls -la
 }
 
 if [ -z "$VERSION" ]
-then usage
-else build
+then
+VERSION=$VERSION
+build
+else 
+VERSION=':'$VERSION
+build
 fi

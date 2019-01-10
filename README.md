@@ -423,7 +423,7 @@ Test with nodejs on docker exec
     -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
     --name node-api-rabbit \
     -p 15673:15673 \
-    fwg/api-rabbit:19.04.DB.01 \
+    fwg/nodejs-api \
     npm start
   ```
   - inspect network ดู ip
@@ -434,7 +434,7 @@ Test with nodejs on docker exec
     -e "NODE_ENV=development" -e "AMQPURI=amqp://test:test@13.229.156.31" \
     --name node \
     -p 15673:15673 \
-    fwg/api-rabbit:19.01.DB.01 \
+    fwg/nodejs-api \
     npm start
   ```
   - ต้องสร้าง user บน service ใหม่ (ใช้ guest ไม่ได้)
