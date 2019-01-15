@@ -60,14 +60,13 @@
 เมื่อดาวโหลด source code จาก repository นี้ไปแล้ว  
 
   1. สั่งให้ build docker image (เช็ค `Dockerfile`)
-
+  
       ```sh
-      cd docker
-      chmod +x build.sh
-      ./build.sh <version>
+        cd docker
+        chmod +x build.sh
+        ./build.sh <version>
       ```
-
-      - version ใส่เวอร์ชัน เช่น 19.01.DB.01 ถ้าไม่ใส่ จะได้ TAG latest
+ - version ใส่เวอร์ชัน เช่น 19.01.DB.01 ถ้าไม่ใส่ จะได้ TAG latest
       
       ```sh
         REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
