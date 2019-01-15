@@ -91,7 +91,7 @@ function createDBConn(dbname, hostname, uid, pwd, port) {
  */
 function getJsonObj(jsonArray) {
   let jsonObj = {
-    code: '0',
+    code: 0,
     message: 'success',
     data: []
   };
