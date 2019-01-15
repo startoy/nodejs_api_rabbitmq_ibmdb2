@@ -5,15 +5,20 @@ VERSION=${1};
 usage() {
         echo -e "---------------------------";
         echo -e " Usage: "$(basename ${0})" <version>";
-        echo -e "  ex. <version> = 19.01.00.01"
+        echo -e "  ex. <version> = 19.01.DB.01"
         echo -e "---------------------------";
 }
 
 export_docker_image() {
+  echo -e "export docker image.."
   docker save -o nodejs-api$VERSION.tar fwg/nodejs-api$VERSION
+
+  echo -e "export processing completed.."
+  ls -la
 }
 
 build() {
+  local VERSION=':'$VERSION
   echo 'Build with Version: ' $VERSION;
   echo 'Finding Dockerfile';
   ls -la $(pwd)/full
@@ -30,18 +35,12 @@ build() {
 
   docker images
   docker ps -a
-  echo -e "export docker image.."
-  export_docker_image
-
-  echo -e "export completed"
-  ls -la
 }
 
 if [ -z "$VERSION" ]
 then
-VERSION=$VERSION
-build
+usage
 else 
-VERSION=':'$VERSION
 build
+export_docker_image
 fi

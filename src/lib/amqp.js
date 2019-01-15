@@ -8,12 +8,12 @@
 import amqp from 'amqplib';
 import EventEmitter from 'events';
 
-import { log, devlog } from './util';
+import { log, devlog, printf } from './util';
 
 let Q;
 
 async function connect(setting) {
-  log.info('Connecting to AMQP...');
+  log.info(' [-] Connecting to AMQP...');
   const conn = await amqp.connect(setting.uri);
   return conn;
 }
@@ -24,14 +24,14 @@ async function connect(setting) {
  * @param {*} conn
  */
 async function create(conn) {
-  log.info('Creating channel...');
+  log.info(' [-] Creating channel...');
   try {
     const channel = await conn.createChannel();
     channel.responseEmitter = new EventEmitter();
     channel.responseEmitter.setMaxListeners(0);
     Q = await channel.assertQueue('', { exclusive: true });
-    devlog.info(' -- GENERATE PRIVATE QUEUE --');
-    devlog.info(' ----->', Q.queue);
+
+    devlog.info(printf(' [-] GENERATE PRIVATE QUEUE [%s]', Q.queue));
 
     channel.consume(
       Q.queue,
@@ -41,11 +41,11 @@ async function create(conn) {
         noAck: true
       }
     );
-    log.info('Channel Created !');
+    log.info(' [-] Channel Created !');
     return channel;
   } catch (e) {
     if (e) log.error(e);
-    log.info('Creating channel failed: Termiated process..');
+    log.info(' [x] Creating channel failed: Termiated process..');
     process.exit(1);
   }
 }

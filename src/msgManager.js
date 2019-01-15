@@ -10,7 +10,7 @@ import * as amu from './msg/amu';
 import * as rer from './msg/rer';
 
 // Util
-import { log, devlog } from './lib/util';
+import { log, devlog, datalog } from './lib/util';
 import errr from './error/type';
 
 const msgFunction = [
@@ -25,7 +25,7 @@ const msgFunction = [
 function __processMsgRecv(msgType, msgData) {
   const msg = msgData !== undefined ? msgData : 'No provided data';
   devlog.info('Get ' + msgData + ' Type ' + typeof msgData);
-  log.info('NodeRecv [' + msgType + '] [' + msg + ']');
+  datalog.info('NodeRecv [' + msgType + '] [' + msg + ']');
 
   if (checkMsgExist(msgType.slice(1, 3)) && msgType.slice(0, 1) === 'A')
     return 1;
@@ -64,7 +64,7 @@ function __processMsgSend(msg) {
     try {
       // Call msg function
       const jsonObj = msgFunction[index].funcOut(msgType3, msg);
-      log.info(
+      datalog.info(
         'NodeSend [' + msgType3 + '] ' + 'Obj:[' + JSON.stringify(jsonObj) + ']'
       );
       // expected json object

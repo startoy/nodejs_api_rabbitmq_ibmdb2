@@ -1,14 +1,15 @@
 /**
  * @name util.js
- * @description customize utility for god's sake
+ * @description customize utility for using in app
  */
 import logger from 'util.log';
-import * as cnf from './config';
+import * as conf from './config';
 import fs from 'fs';
 
 fs.existsSync('./logs') || fs.mkdirSync('./logs');
 
-// TODO: try to use file stream for rotate file
+// FIXME: rotate file
+
 const log = logger.instance({
   namespace: 'NodeRB',
   nsWidth: 6,
@@ -17,14 +18,20 @@ const log = logger.instance({
   enabled: true
 });
 
-// enabled: true when in Dev which mean [toConsole, WriteFile]
-// if: false nothing will come out
 const devlog = logger.instance({
   namespace: 'DevLog',
   nsWidth: 6,
   directory: './logs/messages_dev/',
-  toConsole: cnf.isDev,
-  enabled: cnf.isDev
+  toConsole: conf.isDev,
+  enabled: conf.isDev
+});
+
+const datalog = logger.instance({
+  namespace: 'DataLog',
+  nsWidth: 7,
+  directory: './logs/messages_data/',
+  toConsole: conf.logConsole,
+  enabled: true
 });
 
 function precise(x, precision) {
@@ -54,13 +61,24 @@ function encode64(data) {
   return Buffer.from(data).toString('base64');
 }
 
+function printf(format) {
+  // (...a) => {return a.reduce((p: string, c: any) => p.replace(/%s/, c));
+  var values = Array.prototype.slice.call(arguments, 1);
+  function insert(str, val) {
+    return str.replace(/%s/, val);
+  }
+  return values.reduce(insert, format);
+}
+
 module.exports = {
   log: log,
   devlog: devlog,
+  datalog: datalog,
   isString: isString,
   jForm: jForm,
   precise: precise,
   wait: wait,
   decode64: decode64,
-  encode64: encode64
+  encode64: encode64,
+  printf: printf
 };

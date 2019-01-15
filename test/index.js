@@ -6,11 +6,11 @@ import http from 'http';
 import assert from 'assert';
 
 import '../src/server.js';
-import * as cnf from '../src/config';
+import * as conf from '../src/config';
 
 describe('=== Node Server ===', () => {
   it('should return 200', done => {
-    let address = 'http://' + cnf.hostname + ':' + cnf.port;
+    let address = 'http://' + conf.rbHostname + ':' + conf.rbPort;
     let full = address + '/direct' + '/MessageSend';
     console.log(' -- Call api [%s]', full);
     http.get(full, res => {

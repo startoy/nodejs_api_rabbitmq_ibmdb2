@@ -3,7 +3,7 @@
 var app = require('../build/app');
 
 var http = require('http');
-var debug = require('debug')('demo:server');
+// var debug = require('debug')('demo:server');
 
 let port = normalizePort(process.env.PORT || '15673');
 app.set('port', port);

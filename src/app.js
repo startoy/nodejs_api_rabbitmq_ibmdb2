@@ -2,7 +2,7 @@
  * @name nodejs_api_rabbitmq
  * @description nodejs_api_rabbitmq
  * @author Peerapat Suksri
- * @version 18.04.00.01
+ * @version see /lib/config
  */
 
 import express from 'express';
@@ -13,18 +13,17 @@ import cookieParser from 'cookie-parser';
 import fs from 'fs';
 import rfs from 'rotating-file-stream';
 
+import { log, printf } from './lib/util';
+import * as routerfn from './lib/routerFunction';
+import { isDev, sv, logConsole } from './lib/config';
+
 import rpcRouter from './routes/rpc';
 import directRouter from './routes/direct';
-import { log } from './lib/util';
-import { isDev, sv } from './lib/config';
+import db2Router from './routes/db2';
 
 var app = express();
 var logFile = 'express.log';
 var logDirectory = path.join(__dirname, '../logs');
-
-/* isDev
-  ? log.info('Log path: ' + path.join(logDirectory, logFile))
-  : log.info(''); */
 
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
@@ -44,7 +43,16 @@ app.use(
   })
 );
 
-isDev ? app.use(logger('dev')) : log.info('Use Production Logging..');
+if (isDev) {
+  app.use(logger('dev'));
+  log.info(' [x] Use Development Logging..');
+} else {
+  log.info(' [x] Use Production Logging..');
+}
+
+log.info(
+  printf(' [-] Show DataLog to screen [%s][%s]', logConsole, typeof logConsole)
+);
 
 // View engine setup
 app.set('views', path.join(__dirname, '../views'));
@@ -58,32 +66,14 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
-
-app.use((req, res, next) => {
-  res.append('Access-Control-Allow-Origin', ['*']);
-  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.append('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
+app.use(routerfn.setResHeader);
 
 // Router Setup
-app.get('/', async (req, res, next) => {
-  // res.redirect('/rpc');
-  res.render('info', {
-    message:
-      'THIS IS MESSAGE FROM ROUTER INDEX PAGE, YOU SHOULD SEE THIS MESSAGE'
-  });
-});
-
-app.get('/version', async (req, res, next) => {
-  // res.redirect('/rpc');
-  res.json(sv);
-});
-
+app.all('/', routerfn.showIndex);
+app.all('/version', routerfn.showVersion);
 app.use('/rpc', rpcRouter);
 app.use('/direct', directRouter);
-
-log.info('NodeRB Version: ' + sv.version);
+app.use('/db', db2Router);
 
 // catch 404 then redirect to error handler
 app.use((req, res, next) => {
@@ -99,5 +89,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error');
 });
+
+log.info(' [.] Node API Version: ' + sv.version);
 
 module.exports = app;

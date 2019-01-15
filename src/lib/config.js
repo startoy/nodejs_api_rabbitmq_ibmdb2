@@ -3,32 +3,39 @@
  * @description config when running node
  */
 
-// PROCESS
+// DEPLOY SRC VERSION
 export const sv = {
   service: 'fwg/nodejs-api',
-  version: '19.01.DB.03',
+  version: '19.01.DB.04',
   desc: '- add field avg_cost',
-  last_update: '10/01/2019'
+  last_update: '11/01/2019'
 };
 
 // ENVIRONMENTS
-export const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'development';
 export const isDev = env === 'development' ? true : false || false;
+const logCS = process.env.WRITEDATALOGCONSOLE || 'no';
+export const logConsole = logCS === 'yes' ? true : false || false;
+export const enableDB2 = process.env.ENABLEDB2 || true;
+export const replyWaitTime = process.env.REPLYWAITTIME || 6000;
 
 // Server
-// if RabbitMQ mount with docker use ip of docker container !
-export const hostname = process.env.HOSTNAME || 'localhost';
-export const port = process.env.PORT || '15673';
+// if RabbitMQ mount with docker - use docker's container ip !
+export const rbHostname = process.env.RBHOSTNAME || 'localhost';
+export const rbPort = process.env.RBPORT || '15673';
 export const AMQPURI = process.env.AMQPURI || 'amqp://localhost';
 
 // QUEUE
-export const replyTo = process.env.replyTo || 'rabbit.reply-to';
-export const rpcQueue = process.env.rpcQueue || 'test_queue';
-export const directQueue = process.env.directQueue || 'directQueue';
+// default self queue for replyback - currently use queue.random (auto gen by libraly)
+export const selfQueue = process.env.SELFQUEUE || 'rabbit.reply-to';
+// default target rpc queue
+export const rpcQueue = process.env.RPCQUEUE || 'test_queue';
+// default target direct queue
+export const directQueue = process.env.DIRECTQUEUE || 'directQueue';
 
 // DATABASE
 export const db2 = {
-  codepage: process.env.CODEPAGE || '874',
+  codepage: process.env.DBCODEPAGE || '874',
   host: process.env.DBHOST || '10.22.19.13',
   port: process.env.DBPORT || '50001',
   name: process.env.DBNAME || 'fisdb_nt',
@@ -39,5 +46,5 @@ export const db2 = {
 
 process.env.DB2CODEPAGE = db2.codepage;
 
-// UTIL
-export const replyWaitTime = process.env.REPLYWAITTIME || 6000;
+// GLOBAL VARIABLES
+global.pageSize = process.env.PAGESIZE || 20;
