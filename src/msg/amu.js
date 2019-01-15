@@ -87,7 +87,7 @@ function stringAMU(MsgType, trdId, custNo, stockSymbol, page, pageSize) {
     ',' +
     custNo.padEnd(10, ' ') +
     ',' +
-    stockSymbol +
+    stockSymbol.toUpperCase() +
     ',' +
     page +
     ',' +

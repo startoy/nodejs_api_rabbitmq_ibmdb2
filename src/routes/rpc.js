@@ -51,12 +51,9 @@ main();
 
 router.get('/', showIndex);
 router.post('/query', queryOkury);
+router.get('/:queueName/:message', queryGetOkury);
 
-/**
- * @deprecated
- * in Development only !
- */
-router.get('/:queueName/:message', async (req, res) => {
+async function queryGetOkury(req, res) {
   try {
     const msgTypeRcv = req.params.message.slice(0, 3);
     const message = req.params.message;
@@ -90,7 +87,7 @@ router.get('/:queueName/:message', async (req, res) => {
     if (e) log.error(e);
     res.json(errr.API_REQUEST_ERROR);
   }
-});
+}
 
 async function queryOkury(req, res) {
   try {
