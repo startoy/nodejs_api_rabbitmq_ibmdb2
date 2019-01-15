@@ -10,7 +10,7 @@ import '@babel/polyfill';
 
 import * as db from '../lib/db2Function';
 import * as conf from '../lib/config';
-import { log, devlog, datalog, printf } from '../lib/util';
+import { log, devlog, datalog } from '../lib/util';
 import { showIndex, getDB2ReqParamsAfterNext } from '../lib/routerFunction';
 import errr from '../error/type';
 

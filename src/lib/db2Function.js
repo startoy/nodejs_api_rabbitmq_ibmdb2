@@ -6,7 +6,6 @@
 'use strict';
 import { db2 } from './config';
 import { log, devlog, datalog, printf } from './util';
-import util from 'util';
 import ibmdb from 'ibm_db';
 
 let connectionString = createDBConn(
