@@ -439,6 +439,25 @@ Test with nodejs on docker exec
 ## Fix Terminated Container  
 - https://stackoverflow.com/a/32353134
 
+## cURL
+
+```sh
+curl --location --request POST "http://{{serverURL}}/db/querysec" \
+  --header "Content-Type: application/json" \
+  --data "{
+	\"fields\" : [ \"SECSYMBOL\", \"MRGCODE\", \"FORCE_SMV\"],
+	\"page\" : 1,
+	\"page_size\": 5
+}"
+```
+
+```sh
+curl --location --request GET "http://{{serverURL}}/db/querysec?page=1" \
+  --header "Content-Type: application/json" \
+  --data ""
+```
+
+
 ## LEGACY - WILL NOT UPDATE
 
 if you need amqp.lib as reuse function. feel free to use it

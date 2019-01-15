@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var app = require('../build/app');
+var log = require('../build/lib/util').log;
 
 var http = require('http');
 // var debug = require('debug')('demo:server');
@@ -35,13 +36,13 @@ function onError(error) {
   var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
-  console.log('Error occure ' + error);
+  log.log('Error occure ' + error);
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      log.error(bind + ' requires elevated privileges');
       process.exit(1);
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      log.error(bind + ' is already in use');
       process.exit(1);
     default:
       throw error;
@@ -51,5 +52,5 @@ function onError(error) {
 function onListening() {
   let addr = server.address();
   let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  console.log(' [x] Process listening on ' + bind);
+  log.info(' [x] Process listening on ' + bind);
 }
