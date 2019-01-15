@@ -6,9 +6,9 @@
 // DEPLOY SRC VERSION
 export const sv = {
   service: 'fwg/nodejs-api',
-  version: '19.01.DB.04',
-  desc: '- add field avg_cost',
-  last_update: '11/01/2019'
+  version: '19.01.DB.05',
+  desc: '- seperate router for db, config log',
+  last_update: '15/01/2019'
 };
 
 // ENVIRONMENTS

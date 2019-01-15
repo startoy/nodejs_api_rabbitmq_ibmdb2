@@ -3,17 +3,14 @@
   <img align="" src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png" height="80">
   <img align="" src="https://cdn-images-1.medium.com/max/1200/1*-cHwP37aTACS1XnzA_YnIw.png" height="80">
   <img align="" src="https://img.stackshare.io/service/1029/preview.png" height="80">
-  
-  - Nodejs act as |DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |
+
   - Nodejs connect to Rabbitmq service
   - Nodejs connect to IBM DB2
 
 # CHANGELOG
 
 ### 02/12/2018
-  - UPDATE VERSION 19.01.DB.01
+  - UPDATE VERSION 19.01.DB.05
     - แก้ไขให้สามารถเชื่อมต่อ DB2 ได้ แก้โดยการตั้ง process.env.DB2CODEPAGE = **874**
     - ย้าย Dockerfile เก่าไปไว้ในโฟลเดอร์ install
 
@@ -72,21 +69,15 @@
       
       ```sh
         REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-        fwg/nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |      latest              c4dfedfd51ae        8 seconds ago       836MB 
+        fwg/nodejs-      latest              c4dfedfd51ae        8 seconds ago       836MB 
       ```
     
-      จะได้ไฟล์ **nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |.tar**
+      จะได้ไฟล์ **nodejs-.tar**
 
   2. หลังจากได้ Image ไฟล์ ให้ copy ไฟล์ไปวางไว้ที่ server ที่ deploy แล้ว Load image ขึ้น Docker ด้วยคำสั่ง
 
       ```sh
-      docker load -i nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |.tar
+      docker load -i nodejs-.tar
       ```
 
       เช็คว่ามี Image จากคำสั่ง
@@ -94,9 +85,7 @@
       ```sh
       docker images
           REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-          fwg/|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |-rabbit      latest              a2554eac0192        8 seconds ago       95.8MB
+          fwg/-rabbit      latest              a2554eac0192        8 seconds ago       95.8MB
       ```
 
   3. สตาร์ท Container จาก Image ด้วยคำสั่ง
@@ -104,22 +93,16 @@
       ```sh
       docker run -d \
         -e "NODE_ENV=production" -e "AMQPURI=amqp://172.17.0.2" \
-        --name nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |-10-01-19-prod \
+        --name nodejs--10-01-19-prod \
         -p 15673:15673 \
-        fwg/nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue | \
+        fwg/nodejs- \
         npm start 
       ```
       - TODO: ทำ script deploy รับ config เข้าไป แล้วรัน container
       - `-d` รันแบบ background. 
       - `--name` เปลี่ยนชื่อ container 
       - `-p` แมพพอร์ตจาก **'hostport':'containerport'**  
-      - `fwg/|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |-rabbit` ชื่อ Repository Image ที่จะเอามารัน
+      - `fwg/-rabbit` ชื่อ Repository Image ที่จะเอามารัน
       - `npm start` Execute command, if not provided will use default command from Dockerfile.
       - `-m` Limit the max memory use of this container.
       - `-e ENV=value` pass Parameter ชื่อ ENV ค่า value เข้า Nodejs  
@@ -127,12 +110,8 @@
       **ENVIRONMENT LIST**
       - สามารถดู config อื่นๆ ได้ที่ `lib/config.js`
       - **NODE_ENV** Mode ที่จะสตาร์ท Nodejs, Default ถ้าไม่ส่งค่าคือ development (ถ้าใช้จริงควรส่งค่า `production`). ex NODE_ENV=production
-          - `development` จะแสดง DevLog ของการเรียกฟังก์ชันต่างๆ และเก็บลงไฟล์ที่ `logs/messages_dev/` + แสดง log Request |DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue | และเก็บลงไฟล์ที่ `logs/` 
-          - `production` จะแสดงเฉพาะ log NodeRB ที่สำคัญๆ และเก็บลงไฟล์ไว้ที่ `logs/messages/` + ไม่แสดง log Request |DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue | แต่เก็บลงไฟล์ log
+          - `development` จะแสดง DevLog ของการเรียกฟังก์ชันต่างๆ และเก็บลงไฟล์ที่ `logs/messages_dev/` + แสดง log Request  และเก็บลงไฟล์ที่ `logs/` 
+          - `production` จะแสดงเฉพาะ log NodeRB ที่สำคัญๆ และเก็บลงไฟล์ไว้ที่ `logs/messages/` + ไม่แสดง log Request  แต่เก็บลงไฟล์ log
       - **PORT** เลข port ที่ต้องการให้ Nodejs สตาร์ท (Default เมื่อไม่ส่งคือ 15673). ex PORT=8000
           - ต้องแมพ -p ให้ตรงด้วย
       - **AMQPURI** กำหนด rabbitmq uri.
@@ -174,9 +153,7 @@
 ## Prerequisites
   
   - `Nodejs` >= 8.9.4 (test on Windows), 8.11.3 (test on Ubuntu16) [Official Download](https://nodejs.org/en/download/)
-  - `Source code` (compressed file) [Download on Gitlab](http://gitlab.freewillgroup.com/peerapat_suk/node-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |-rabbitmq)
+  - `Source code` (compressed file) [Download on Gitlab](http://gitlab.freewillgroup.com/peerapat_suk/node--rabbitmq)
   - `Rabbitmq server` (Assume broker running on `amqp://localhost`) [Download](https://www.rabbitmq.com/)
 
 
@@ -185,20 +162,14 @@
   Install dependencies
 
   ```sh
-  unzip node-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |-rabbitmq-master.zip
-  cd node-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |-rabbitmq-master
+  unzip node--rabbitmq-master.zip
+  cd node--rabbitmq-master
   npm install
   ```
   
   ```sh
   git clone {this_repo_url.git}
-  cd node-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |-rabbitmq
+  cd node--rabbitmq
   npm install
   ```
 
@@ -245,12 +216,8 @@ config อื่นๆ ให้อิงตามที่ **ENVIRONMENT LIST**
 
   ![]()
 
-# |DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |
-Available end point |DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |  
+# 
+Available end point   
 ดูใน excel หรือ https://documenter.getpostman.com/view/3529476/RznJmbr8#intro
   
 
@@ -403,13 +370,9 @@ Test with nodejs on docker exec
   ```sh
   docker run -it -d \
     -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
-    --name nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue | \
+    --name nodejs- \
     -p 15673:15673 \
-    fwg/nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue | \
+    fwg/nodejs- \
     npm start
   ```
   - inspect network ดู ip
@@ -418,13 +381,9 @@ Test with nodejs on docker exec
   docker run -it -d \
     -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
     -e "WRITEDATA LOGCONSOLE=no" \
-    --name nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |-1901RBXX \
+    --name nodejs--1901RBXX \
     -p 15673:15673 \
-    fwg/nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue | \
+    fwg/nodejs- \
     npm start
   ```
 
@@ -434,9 +393,7 @@ Test with nodejs on docker exec
     -e "NODE_ENV=development" -e "AMQPURI=amqp://test:test@13.229.156.31" \
     --name node \
     -p 15673:15673 \
-    fwg/nodejs-|DBCODEPAGE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|DBHOST|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DBPORT| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue | \
+    fwg/nodejs-api \
     npm start
   ```
   - ต้องสร้าง user บน service ใหม่ (ใช้ guest ไม่ได้)
