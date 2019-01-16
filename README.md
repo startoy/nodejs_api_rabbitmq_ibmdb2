@@ -228,6 +228,7 @@ Available end point
 ### สตาร์ทจาก Docker Image ของ Rabbitmq
   * ถ้าต้องใช้ Internet Access !!  
    Pull image จากคำสั่ง
+   
     ```sh
     docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
     ```
@@ -236,13 +237,16 @@ Available end point
 
   * ถ้าไม่มี Internet Access!
    ให้ทำการ Load ไฟล์ Image มาใช้แทนการ Pull (เหมือนการสตาร์ท Nodejs) ไฟล์อยู่ที่:
+
     ```sh
     \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\rabbitmq_3-management.tar
 
     // copy ไปที่ server แล้ว Load ขึ้น Docker
     docker load -i rabbitmq_3-management.tar
     ```
+
     แล้วสั่งคำสั่ง:
+
     ```sh
     docker run -d --name rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
     ```
@@ -267,6 +271,7 @@ Available end point
 
 ### Plugin
 - Management - เป็นหน้าเว็บ Monitor. จัดการ rabbitmq
+
   ```sh
   rabbitmq-plugins enable rabbitmq_management
   ```
@@ -274,19 +279,23 @@ Available end point
 อาจต้อง sudo ด้วย  
 
 - สร้าง Admin user บน rabbitmq
+
   ```sh
   rabbitmqctl add_user test test
   rabbitmqctl set_user_tags test administrator
   rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
+
   ```
   - [ดู User Management อื่นๆ](https://www.rabbitmq.com/rabbitmqctl.8.html#User_Management)  
 
 - ปิด/เปิด App
+
   ```sh
   rabbitmqctl start_app
   rabbitmqctl stop_app
   ```
 - Reset rabbitmq
+
   ```sh
   rabbitmqctl stop_app
   rabbitmqctl reset
@@ -294,10 +303,12 @@ Available end point
   ```
 #### Queue
 - ลบ messages ทั้งหมดทิ้ง
+
   ```sh
   rabbitmqctl purge_queue 
   ```
 - ดู list_queues, list_exchanges and list_bindings
+
   ```sh
   rabbitmqctl list_* 
   ```
@@ -305,6 +316,7 @@ Available end point
 
 #### Other
 - Report
+
   ```sh
   rabbitmqctl report > server_report.txt
   ```
