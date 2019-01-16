@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 /**
  * @name amqp.js
  * @description amqp lib with reuse + emit event-driven, emit is faster than channel.cancel(consumerTag)
