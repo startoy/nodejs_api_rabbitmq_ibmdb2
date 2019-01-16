@@ -10,7 +10,7 @@ import '@babel/polyfill';
 
 import * as db from '../lib/db2Function';
 import * as conf from '../lib/config';
-import { log } from '../lib/util';
+import { log, dblog } from '../lib/util';
 import { showIndex, getDB2ReqParamsAfterNext } from '../lib/routerFunction';
 import errr from '../error/type';
 
@@ -25,10 +25,12 @@ router.all('/querysec', querySec);
 // util if needed
 router.all('/queryrecords', queryRecords);
 router.all('/querytotalpages', queryTotalPages);
+router.use(handleResDB2Router);
 
 // Handle all request through /db/
 // identify method and store to locals then pass those to target route
 async function handleReqDB2Router(req, res, next) {
+  dblog.info('Receive Request');
   try {
     let fieldsArray, table, from, to;
     let page, pageSize;
@@ -69,8 +71,27 @@ async function handleReqDB2Router(req, res, next) {
   next();
 }
 
+async function handleResDB2Router(req, res, next) {
+  dblog.info('Send Respond');
+  try {
+    // get data from previous route in res.locals.dataNext
+    let data = res.locals.dataNext;
+
+    // convert to json object format
+    let jsonObj = db.getJsonObj(data);
+    res.json(jsonObj);
+  } catch (e) {
+    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
+    if (e) {
+      log.error(e);
+      jsonObj.message = e;
+    }
+    res.json(jsonObj);
+  }
+}
+
 // FIX QUERY : query *
-async function queryDB(req, res) {
+async function queryDB(req, res, next) {
   try {
     let { page, pageSize } = await getDB2ReqParamsAfterNext(res);
     let { from, to } = await db.calRangeFromPage(page, pageSize);
@@ -96,14 +117,15 @@ async function queryDB(req, res) {
 }
 
 // Fix query only SECSYMBOL field
-async function queryStock(req, res) {
+async function queryStock(req, res, next) {
   try {
     // Filter
-    let { table } = await getDB2ReqParamsAfterNext(res);
+    let { table, page, pageSize } = await getDB2ReqParamsAfterNext(res);
+    let { from, to } = await db.calRangeFromPage(page, pageSize);
     let fieldsArray = 'SECSYMBOL';
 
     // Operate
-    let queryStmnt = await db.createQueryCFRate(fieldsArray, table);
+    let queryStmnt = await db.createQueryCFRate(fieldsArray, table, from, to);
     let jsonArray = await db.query(queryStmnt);
 
     // Logic
@@ -111,8 +133,10 @@ async function queryStock(req, res) {
     let dataArray = db.getArrayOfValueFromKey(jsonArray, 'SECSYMBOL');
 
     // convert to json object format
-    let jsonObj = db.getJsonObj(dataArray);
-    res.json(jsonObj);
+    res.locals.dataNext = dataArray;
+    next();
+    /*     let jsonObj = db.getJsonObj(dataArray);
+    res.json(jsonObj); */
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
     if (e) {
@@ -124,7 +148,7 @@ async function queryStock(req, res) {
 }
 
 // Universal filter query
-async function querySec(req, res) {
+async function querySec(req, res, next) {
   try {
     // Filter
     let { fieldsArray, table, page, pageSize } = await getDB2ReqParamsAfterNext(
@@ -152,7 +176,7 @@ async function querySec(req, res) {
 }
 
 // Query records from filter table by filter field
-async function queryRecords(req, res) {
+async function queryRecords(req, res, next) {
   try {
     // Filter
     let { fieldsArray, table } = await getDB2ReqParamsAfterNext(res);
@@ -178,7 +202,7 @@ async function queryRecords(req, res) {
 }
 
 // Query records then calculate to total pages by page size
-async function queryTotalPages(req, res) {
+async function queryTotalPages(req, res, next) {
   try {
     // Filter
     let { fieldsArray, table, pageSize } = await getDB2ReqParamsAfterNext(res);

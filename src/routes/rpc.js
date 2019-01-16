@@ -21,10 +21,8 @@ import errr from '../error/type';
 
 const router = express.Router();
 
-let channel;
-let conn;
-
-async function main() {
+let channel, conn;
+async function loadAMQP() {
   let uri = conf.AMQPURI;
   if (typeof uri === 'undefined' && !uri) {
     log.error('[ERROR] provided uri is not in proper format, got ' + uri);
@@ -32,23 +30,24 @@ async function main() {
   }
 
   try {
-    log.info(' [-] Trying to connect RabbitMQ with uri...' + uri);
+    log.info('Loading RabbitMQ Setting:');
+    log.info(' [.] Trying to connect RabbitMQ with uri...' + uri);
     conn = await client.connect({
       uri: uri
     });
-    log.info(' [-] Trying to create RabbitMQ channel...');
+    log.info(' [.] Trying to create RabbitMQ channel...');
     channel = await client.create(conn);
+    log.info(' [.] Channel Created !');
+    return { channel, conn };
   } catch (e) {
     if (e) log.error(e);
-    log.info(" [-] Did RabbitMQ service's start ?");
+    log.info(" [.] Did RabbitMQ service's start ?");
     console.error(' [x]Creating channel failed: Termiated process..');
     process.exit(1);
   }
 }
 
-// TODO: might call this in app.js instead ?
-main();
-
+loadAMQP();
 router.get('/', showIndex);
 router.post('/query', queryOkury);
 router.get('/:queueName/:message', queryGetOkury);

@@ -9,26 +9,34 @@ import fs from 'fs';
 fs.existsSync('./logs') || fs.mkdirSync('./logs');
 
 // FIXME: rotate file
-
+let maxWidth = 4;
 const log = logger.instance({
-  namespace: 'NodeRB',
-  nsWidth: 6,
+  namespace: 'Node',
+  nsWidth: maxWidth,
+  directory: './logs/messages/',
+  toConsole: true,
+  enabled: true
+});
+
+const dblog = logger.instance({
+  namespace: 'DB2',
+  nsWidth: maxWidth,
   directory: './logs/messages/',
   toConsole: true,
   enabled: true
 });
 
 const devlog = logger.instance({
-  namespace: 'DevLog',
-  nsWidth: 6,
+  namespace: 'Dev!',
+  nsWidth: maxWidth,
   directory: './logs/messages_dev/',
-  toConsole: conf.isDev,
-  enabled: conf.isDev
+  toConsole: conf.log.dev,
+  enabled: conf.log.dev
 });
 
 const datalog = logger.instance({
-  namespace: 'DataLog',
-  nsWidth: 7,
+  namespace: 'Data',
+  nsWidth: maxWidth,
   directory: './logs/messages_data/',
   toConsole: conf.logConsole,
   enabled: true
@@ -69,6 +77,7 @@ function printf(...a) {
 
 module.exports = {
   log: log,
+  dblog: dblog,
   devlog: devlog,
   datalog: datalog,
   isString: isString,

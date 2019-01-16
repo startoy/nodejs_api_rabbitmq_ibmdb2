@@ -16,8 +16,9 @@ let connectionString = createDBConn(
   db2.port
 );
 
-devlog.info(' [-] DB2 Using Codepage: [' + db2.codepage + ']');
-devlog.info(' [-] DB2 Connection String [' + connectionString + ']');
+log.info('Loading DB2 Setting:');
+devlog.info(' [.] DB2 Using Codepage: [' + db2.codepage + ']');
+devlog.info(' [.] DB2 Connection String [' + connectionString + ']');
 
 /**
  *

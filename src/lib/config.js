@@ -13,11 +13,26 @@ export const sv = {
 
 // ENVIRONMENTS
 let rcvEnv = process.env.NODE_ENV || 'development';
-export const isDev = rcvEnv === 'development' ? true : false || false;
-let rcvLogConsole = process.env.WRITEDATALOGCONSOLE || 'no';
-export const logConsole = rcvLogConsole === 'yes' ? true : false || false;
-let rcvEnableDB2 = process.env.ENABLEDB2 || true;
-export const enableDB2 = rcvEnableDB2 === 'yes' ? true : false || true;
+const devLogConsole = rcvEnv === 'development' ? true : false || false;
+
+let rcvdataL = process.env.WRITEDATALOGCONSOLE || 'no';
+const dataLogConsole = rcvdataL === 'yes' ? true : false || false;
+
+let rcvDBL = process.env.WRITEDBLOGCONSOLE || 'yes';
+const dbLogConsole = rcvDBL === 'yes' ? true : false || false;
+
+let rcvNodeL = process.env.WRITENODELOGCONSOLE || 'yes';
+const nodeLogConsole = rcvNodeL === 'yes' ? true : false || false;
+
+export const log = {
+  dev: devLogConsole,
+  data: dataLogConsole,
+  db: dbLogConsole,
+  node: nodeLogConsole
+};
+
+let rcvEnableDB2 = process.env.ENABLEDB2 || 'yes';
+export const enableDB2 = rcvEnableDB2 === 'yes' ? true : false || false;
 export const replyWaitTime = process.env.REPLYWAITTIME || 6000;
 
 // Server

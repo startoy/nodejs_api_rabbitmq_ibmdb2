@@ -109,7 +109,7 @@
       - `-e ENV=value` pass Parameter ชื่อ ENV ค่า value เข้า Nodejs  
 
       **ENVIRONMENT LIST**
-      - สามารถดู config อื่นๆ ได้ที่ [Environment Configuration](#env-list) `lib/config.js`
+      - สามารถดู config อื่นๆ ได้ที่ [Environment Configuration](#environment-configuration) หรือ `lib/config.js`
       - **NODE_ENV** Mode ที่จะสตาร์ท Nodejs, Default ถ้าไม่ส่งค่าคือ development (ถ้าใช้จริงควรส่งค่า `production`). ex NODE_ENV=production
           - `development` จะแสดง DevLog ของการเรียกฟังก์ชันต่างๆ และเก็บลงไฟล์ที่ `logs/messages_dev/` + แสดง log Request  และเก็บลงไฟล์ที่ `logs/` 
           - `production` จะแสดงเฉพาะ log NodeRB ที่สำคัญๆ และเก็บลงไฟล์ไว้ที่ `logs/messages/` + ไม่แสดง log Request  แต่เก็บลงไฟล์ log
@@ -371,9 +371,9 @@ Test with nodejs on docker exec
   ```sh
   docker run -it -d \
     -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
-    --name nodejs- \
+    --name nodejs-api \
     -p 15673:15673 \
-    fwg/nodejs- \
+    fwg/nodejs-api \
     npm start
   ```
   - inspect network ดู ip
@@ -381,10 +381,10 @@ Test with nodejs on docker exec
   ```sh
   docker run -it -d \
     -e "NODE_ENV=development" -e "AMQPURI=amqp://172.17.0.2" \
-    -e "WRITEDATA LOGCONSOLE=no" \
-    --name nodejs--1901RBXX \
+    -e "WRITEDATA LOGCONSOLE=no" -e "ENABLEDB2=no" \
+    --name nodejs-api-1901RB16 \
     -p 15673:15673 \
-    fwg/nodejs- \
+    fwg/nodejs-api \
     npm start
   ```
 
@@ -401,15 +401,13 @@ Test with nodejs on docker exec
   - ip ของ server
 
 ---
-<a name="env-list">
-
 ## Environment Configuration
 
 | VARIABLE | DEFAULT | EXPECTED | REMARK  | DESCRIPTION |
 | -------- | :------ | :------  | :------ | :------ |
 |NODE_ENV           |`development` | `production` or `development` || mode ของ environment มีผลต่อการแสดง Log |
 |WRITEDATALOGCONSOLE|`no`          |`yes` or `no`||แสดง Data Log ไปที่ console (data ที่มาจาก okury และ db) |
-|~~ENABLEDB2~~      | ~~`yes`~~    |~~`yes` or `no`~~| ไม่ใช้งาน |~~เปิดใช้งาน Router ในส่วนที่เชื่อมต่อกับ~~ |
+|ENABLEDB2      | `yes`    |`yes` or `no`| ไม่ใช้งาน |เปิดใช้งาน Router ในส่วนที่เชื่อมต่อกับ DB2 |
 |REPLYWAITTIME      | 6000         |number(ms) ||เวลาในการรอตอบกลับจาก Okury |
 |PAGESIZE      | 20         |number(ms) ||ขนาด page |
 | -------- | ------ | ------  | ------ | ------ |
@@ -435,7 +433,6 @@ Test with nodejs on docker exec
 |DBUSER| `db2inst1`| any | | login username |
 |DBPWD| `db2inst1`| any | | login password |
 
-</a>
 ---
 ## Fix Terminated Container  
 - https://stackoverflow.com/a/32353134

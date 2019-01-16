@@ -15,7 +15,7 @@ import rfs from 'rotating-file-stream';
 
 import { log, printf } from './lib/util';
 import * as routerfn from './lib/routerFunction';
-import { isDev, sv, logConsole, enableDB2 } from './lib/config';
+import { sv, log as lconsole, enableDB2 } from './lib/config';
 
 import rpcRouter from './routes/rpc';
 import directRouter from './routes/direct';
@@ -44,16 +44,25 @@ app.use(
   })
 );
 
-if (isDev) {
+// Print Settings
+log.info(printf(' [.] Enable IBM-DB2 [%s]', enableDB2));
+log.info('Environment Setting:');
+if (lconsole.dev) {
+  log.info(' [.] Development');
+  log.info(" [.] use logger('dev')");
   app.use(logger('dev'));
-  log.info(' [x] Use Development Logging..');
 } else {
-  log.info(' [x] Use Production Logging..');
+  log.info(' [.] Production');
 }
+log.info('Loading Log Setting:');
+log.info(printf(' [.] Show Node log to screen [%s]', lconsole.node));
+log.info(printf(' [.] Show Dev  log to screen [%s]', lconsole.dev));
+log.info(printf(' [.] Show Data log to screen [%s]', lconsole.data));
+log.info(printf(' [.] Show DB   log to screen [%s]', lconsole.db));
+log.info(printf('Node API Version: %s', sv.version));
 
-log.info(
-  printf(' [-] Show DataLog to screen [%s][%s]', logConsole, typeof logConsole)
-);
+// Connect RabbitMQ
+
 
 // View engine setup
 app.set('views', path.join(__dirname, '../views'));
@@ -90,7 +99,5 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error');
 });
-
-log.info(' [.] Node API Version: ' + sv.version);
 
 module.exports = app;
