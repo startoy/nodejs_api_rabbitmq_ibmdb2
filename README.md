@@ -129,8 +129,6 @@
       docker ps
       ```
 
-      ![]() 
-
       ```sh
       curl localhost:15673/version
       ```
@@ -141,11 +139,12 @@
       docker logs 771 -f 
       ```
 
-      - **771** 3 ตัวแรกของ Container ID/ชื่อ Container
-      - log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
-        ```sh
-        2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
-        ```
+  - **771** 3 ตัวแรกของ Container ID/ชื่อ Container
+  - log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
+  
+    ```sh
+    2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
+    ```
 
 ---
 
@@ -215,12 +214,9 @@ config อื่นๆ ให้อิงตามที่ **ENVIRONMENT LIST**
   localhost:15673
   ```
 
-  ![]()
-
-# 
+# API
 Available end point   
 ดูใน excel หรือ https://documenter.getpostman.com/view/3529476/RznJmbr8#intro
-  
 
 # DEV NOTE
   maintenance ต่างๆ ที่เกี่ยวข้อง  
