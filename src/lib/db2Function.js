@@ -29,6 +29,7 @@ async function query(queryStr) {
   return new Promise((resolve, reject) => {
     try {
       ibmdb.open(connectionString, (err, conn) => {
+        devlog.warn('Open Connection to database..');
         if (err) {
           reject(err);
           return; // prevent continue reading code : asynchronous
@@ -54,7 +55,7 @@ async function query(queryStr) {
           }
 
           conn.close(() => {
-            log.warn('Connection Closed..');
+            devlog.warn('Connection Closed..');
           });
         });
       });
@@ -204,16 +205,20 @@ async function calDBTotalPages(records, pageSize) {
 }
 
 async function calRangeFromPage(page, pageSize) {
-  let pSize = pageSize || global.pageSize;
+  let pSize = pageSize <= 0 ? global.pageSize : pageSize;
   let from, to;
-  if (page <= 0 || pSize <= 0) {
+
+  if (page === null && pageSize === null) {
     from = null;
     to = null;
+  } else if (page <= 0) {
+    from = null;
+    to = pSize;
   } else {
     from = pSize * page + 1 - pSize;
     to = pSize * page;
   }
-
+  devlog.info(printf('from[%s] to[%s]', from, to));
   return { from, to };
 }
 module.exports = {

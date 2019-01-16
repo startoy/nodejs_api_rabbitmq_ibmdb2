@@ -10,7 +10,7 @@ import '@babel/polyfill';
 
 import * as db from '../lib/db2Function';
 import * as conf from '../lib/config';
-import { log, dblog } from '../lib/util';
+import { log, dblog, printf } from '../lib/util';
 import { showIndex, getDB2ReqParamsAfterNext } from '../lib/routerFunction';
 import errr from '../error/type';
 
@@ -21,7 +21,6 @@ router.all('/', showIndex);
 router.all('/querydb', queryDB);
 router.all('/querystock', queryStock);
 router.all('/querysec', querySec);
-
 // util if needed
 router.all('/queryrecords', queryRecords);
 router.all('/querytotalpages', queryTotalPages);
@@ -30,15 +29,15 @@ router.use(handleResDB2Router);
 // Handle all request through /db/
 // identify method and store to locals then pass those to target route
 async function handleReqDB2Router(req, res, next) {
-  dblog.info('Receive Request');
+  dblog.info('Request Received!');
   try {
     let fieldsArray, table, from, to;
     let page, pageSize;
     if (req.method === 'POST') {
       fieldsArray = req.body.fields || '*';
       table = req.body.table || conf.db2.table;
-      page = req.body.page || null;
-      pageSize = req.body.page_size || null;
+      page = req.body.page;
+      pageSize = req.body.page_size;
 
       // for dev
       from = req.body.from || null;
@@ -46,13 +45,15 @@ async function handleReqDB2Router(req, res, next) {
     } else {
       fieldsArray = req.query.fields || '*';
       table = req.query.table || conf.db2.table;
-      page = req.query.page || null;
-      pageSize = req.query.page_size || null;
+      page = req.query.page;
+      pageSize = req.query.page_size;
 
       // for dev
       from = req.query.from || null;
       to = req.query.to || null;
     }
+
+    dblog.info(printf('Request page[%s] page_size[%s]', page, pageSize));
 
     res.locals.fieldsArray = fieldsArray;
     res.locals.table = table.toUpperCase();
@@ -72,7 +73,7 @@ async function handleReqDB2Router(req, res, next) {
 }
 
 async function handleResDB2Router(req, res, next) {
-  dblog.info('Send Respond');
+  dblog.info('Respond Sent!');
   try {
     // get data from previous route in res.locals.dataNext
     let data = res.locals.dataNext;
@@ -103,9 +104,9 @@ async function queryDB(req, res, next) {
 
     // Logic
 
-    // convert to json object format
-    let jsonObj = db.getJsonObj(jsonArray);
-    res.json(jsonObj);
+    // store data to be used next
+    res.locals.dataNext = jsonArray;
+    next();
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
     if (e) {
@@ -116,7 +117,7 @@ async function queryDB(req, res, next) {
   }
 }
 
-// Fix query only SECSYMBOL field
+// Fix query : only SECSYMBOL field
 async function queryStock(req, res, next) {
   try {
     // Filter
@@ -132,11 +133,9 @@ async function queryStock(req, res, next) {
     // get stock from each array
     let dataArray = db.getArrayOfValueFromKey(jsonArray, 'SECSYMBOL');
 
-    // convert to json object format
+    // Store data to be used next
     res.locals.dataNext = dataArray;
     next();
-    /*     let jsonObj = db.getJsonObj(dataArray);
-    res.json(jsonObj); */
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
     if (e) {
@@ -162,9 +161,9 @@ async function querySec(req, res, next) {
 
     // Logic
 
-    // convert to json object format
-    let jsonObj = db.getJsonObj(jsonArray);
-    res.json(jsonObj);
+    // Store data to be used next
+    res.locals.dataNext = jsonArray;
+    next();
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
     if (e) {
@@ -187,9 +186,9 @@ async function queryRecords(req, res, next) {
 
     // Logic
 
-    // convert to json object format
-    let jsonObj = db.getJsonObj(jsonArray);
-    res.json(jsonObj);
+    // Store data to be used next
+    res.locals.dataNext = jsonArray;
+    next();
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
     if (e) {
@@ -215,9 +214,9 @@ async function queryTotalPages(req, res, next) {
     let totalRecords = db.getArrayOfValueFromKey(jsonArray, 'TOTAL');
     let totalPages = await db.calDBTotalPages(totalRecords, pageSize);
 
-    // convert to json object format
-    let jsonObj = db.getJsonObj(totalPages);
-    res.json(jsonObj);
+    // Store data to be used next
+    res.locals.dataNext = totalPages;
+    next();
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
     if (e) {

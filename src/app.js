@@ -61,9 +61,6 @@ log.info(printf(' [.] Show Data log to screen [%s]', lconsole.data));
 log.info(printf(' [.] Show DB   log to screen [%s]', lconsole.db));
 log.info(printf('Node API Version: %s', sv.version));
 
-// Connect RabbitMQ
-
-
 // View engine setup
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');

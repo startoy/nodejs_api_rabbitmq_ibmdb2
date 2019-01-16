@@ -13,21 +13,21 @@ let maxWidth = 4;
 const log = logger.instance({
   namespace: 'Node',
   nsWidth: maxWidth,
-  directory: './logs/messages/',
-  toConsole: true,
+  directory: './logs/messages_node/',
+  toConsole: conf.log.node,
   enabled: true
 });
 
 const dblog = logger.instance({
   namespace: 'DB2',
   nsWidth: maxWidth,
-  directory: './logs/messages/',
-  toConsole: true,
+  directory: './logs/messages_db/',
+  toConsole: conf.log.db,
   enabled: true
 });
 
 const devlog = logger.instance({
-  namespace: 'Dev!',
+  namespace: 'DevE',
   nsWidth: maxWidth,
   directory: './logs/messages_dev/',
   toConsole: conf.log.dev,
@@ -38,7 +38,7 @@ const datalog = logger.instance({
   namespace: 'Data',
   nsWidth: maxWidth,
   directory: './logs/messages_data/',
-  toConsole: conf.logConsole,
+  toConsole: conf.log.data,
   enabled: true
 });
 
@@ -75,6 +75,16 @@ function printf(...a) {
   });
 }
 
+// expected Array
+// count everything in array
+function countElement(array) {
+  // custom what ever u want to count each element
+  return array.reduce((total, e) => {
+    /* return JSON.stringify(e).startsWith('{') ? total + 1 : 0; */
+    return total + 1;
+  }, 0);
+}
+
 module.exports = {
   log: log,
   dblog: dblog,
@@ -86,5 +96,6 @@ module.exports = {
   wait: wait,
   decode64: decode64,
   encode64: encode64,
-  printf: printf
+  printf: printf,
+  countElement: countElement
 };
