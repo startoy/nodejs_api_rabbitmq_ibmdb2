@@ -12,11 +12,12 @@ export const sv = {
 };
 
 // ENVIRONMENTS
-const env = process.env.NODE_ENV || 'development';
-export const isDev = env === 'development' ? true : false || false;
-const logCS = process.env.WRITEDATALOGCONSOLE || 'no';
-export const logConsole = logCS === 'yes' ? true : false || false;
-export const enableDB2 = process.env.ENABLEDB2 || true;
+let rcvEnv = process.env.NODE_ENV || 'development';
+export const isDev = rcvEnv === 'development' ? true : false || false;
+let rcvLogConsole = process.env.WRITEDATALOGCONSOLE || 'no';
+export const logConsole = rcvLogConsole === 'yes' ? true : false || false;
+let rcvEnableDB2 = process.env.ENABLEDB2 || true;
+export const enableDB2 = rcvEnableDB2 === 'yes' ? true : false || true;
 export const replyWaitTime = process.env.REPLYWAITTIME || 6000;
 
 // Server

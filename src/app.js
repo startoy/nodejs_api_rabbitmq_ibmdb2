@@ -15,11 +15,12 @@ import rfs from 'rotating-file-stream';
 
 import { log, printf } from './lib/util';
 import * as routerfn from './lib/routerFunction';
-import { isDev, sv, logConsole } from './lib/config';
+import { isDev, sv, logConsole, enableDB2 } from './lib/config';
 
 import rpcRouter from './routes/rpc';
 import directRouter from './routes/direct';
-import db2Router from './routes/db2';
+// import db2Router from './routes/db2';
+if (enableDB2) var db2Router = require('./routes/db2');
 
 var app = express();
 var logFile = 'express.log';
@@ -73,7 +74,7 @@ app.all('/', routerfn.showIndex);
 app.all('/version', routerfn.showVersion);
 app.use('/rpc', rpcRouter);
 app.use('/direct', directRouter);
-app.use('/db', db2Router);
+if (enableDB2) app.use('/db', db2Router);
 
 // catch 404 then redirect to error handler
 app.use((req, res, next) => {

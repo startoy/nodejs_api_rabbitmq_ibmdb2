@@ -101,6 +101,7 @@ function getJsonObj(jsonArray) {
       jsonObj.data.push(element);
     }
   }
+  datalog.info(printf('SendDB2 [%s]', JSON.stringify(jsonObj)));
   return jsonObj;
 }
 
@@ -175,6 +176,7 @@ async function createQueryCFRate(fieldsArray, table, from, to) {
       ' T  ) ' +
       whereClause;
 
+    devlog.info(printf('QueryString: [%s]', result));
     return result;
   } catch (e) {
     if (e) log.error(e);

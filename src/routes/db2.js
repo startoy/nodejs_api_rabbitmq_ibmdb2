@@ -10,7 +10,7 @@ import '@babel/polyfill';
 
 import * as db from '../lib/db2Function';
 import * as conf from '../lib/config';
-import { log, devlog, datalog } from '../lib/util';
+import { log } from '../lib/util';
 import { showIndex, getDB2ReqParamsAfterNext } from '../lib/routerFunction';
 import errr from '../error/type';
 
@@ -30,7 +30,6 @@ router.all('/querytotalpages', queryTotalPages);
 // identify method and store to locals then pass those to target route
 async function handleReqDB2Router(req, res, next) {
   try {
-    console.log('ENTER handleReqDB2Router');
     let fieldsArray, table, from, to;
     let page, pageSize;
     if (req.method === 'POST') {
@@ -59,13 +58,6 @@ async function handleReqDB2Router(req, res, next) {
     res.locals.page_size = pageSize;
     res.locals.from = from;
     res.locals.to = to;
-
-    console.log('fieldsArray=' + fieldsArray + typeof fieldsArray);
-    console.log('table=' + table + typeof table);
-    console.log('page=' + page + typeof page);
-    console.log('pageSize=' + pageSize + typeof pageSize);
-    console.log('ForInDev --> from=' + from + typeof from);
-    console.log('ForInDev --> to=' + to + typeof to);
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
     if (e) {
@@ -84,15 +76,14 @@ async function queryDB(req, res) {
     let { from, to } = await db.calRangeFromPage(page, pageSize);
     let fieldsArray = '*';
     let table = conf.db2.table;
-    let queryStmnt = await db.createQueryCFRate(fieldsArray, table, from, to);
-    devlog.info('QueryString:' + queryStmnt);
 
+    let queryStmnt = await db.createQueryCFRate(fieldsArray, table, from, to);
     let jsonArray = await db.query(queryStmnt);
-    // logic goes here...
+
+    // Logic
 
     // convert to json object format
     let jsonObj = db.getJsonObj(jsonArray);
-    datalog.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
@@ -104,21 +95,23 @@ async function queryDB(req, res) {
   }
 }
 
-// FIX QUERY:query only SECSYMBOL field
+// Fix query only SECSYMBOL field
 async function queryStock(req, res) {
   try {
+    // Filter
     let { table } = await getDB2ReqParamsAfterNext(res);
     let fieldsArray = 'SECSYMBOL';
+
+    // Operate
     let queryStmnt = await db.createQueryCFRate(fieldsArray, table);
-    devlog.info('QueryString:' + queryStmnt);
     let jsonArray = await db.query(queryStmnt);
 
+    // Logic
     // get stock from each array
     let dataArray = db.getArrayOfValueFromKey(jsonArray, 'SECSYMBOL');
 
     // convert to json object format
     let jsonObj = db.getJsonObj(dataArray);
-    datalog.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
@@ -133,17 +126,20 @@ async function queryStock(req, res) {
 // Universal filter query
 async function querySec(req, res) {
   try {
+    // Filter
     let { fieldsArray, table, page, pageSize } = await getDB2ReqParamsAfterNext(
       res
     );
     let { from, to } = await db.calRangeFromPage(page, pageSize);
+
+    // Operate
     let queryStmnt = await db.createQueryCFRate(fieldsArray, table, from, to);
-    devlog.info('QueryString:' + queryStmnt);
     let jsonArray = await db.query(queryStmnt);
+
+    // Logic
 
     // convert to json object format
     let jsonObj = db.getJsonObj(jsonArray);
-    datalog.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
@@ -155,40 +151,48 @@ async function querySec(req, res) {
   }
 }
 
+// Query records from filter table by filter field
 async function queryRecords(req, res) {
   try {
+    // Filter
     let { fieldsArray, table } = await getDB2ReqParamsAfterNext(res);
+
+    // Operate
     let queryStmnt = await db.createQueryCountRecords(fieldsArray, table);
-    devlog.info('QueryString:' + queryStmnt);
     let jsonArray = await db.query(queryStmnt);
+
+    // Logic
 
     // convert to json object format
     let jsonObj = db.getJsonObj(jsonArray);
-    datalog.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-
-    log.error(e);
-    jsonObj.message = e;
+    if (e) {
+      log.error(e);
+      jsonObj.message = e;
+    }
 
     res.json(jsonObj);
   }
 }
 
-// total_records/rec_per_page
+// Query records then calculate to total pages by page size
 async function queryTotalPages(req, res) {
   try {
+    // Filter
     let { fieldsArray, table, pageSize } = await getDB2ReqParamsAfterNext(res);
+
+    // Operate
     let queryStmnt = await db.createQueryCountRecords(fieldsArray[0], table);
-    devlog.info('QueryString:' + queryStmnt);
     let jsonArray = await db.query(queryStmnt);
+
+    // Logic
     let totalRecords = db.getArrayOfValueFromKey(jsonArray, 'TOTAL');
     let totalPages = await db.calDBTotalPages(totalRecords, pageSize);
 
     // convert to json object format
     let jsonObj = db.getJsonObj(totalPages);
-    datalog.info('SendDB2 [' + JSON.stringify(jsonObj) + ']');
     res.json(jsonObj);
   } catch (e) {
     let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;

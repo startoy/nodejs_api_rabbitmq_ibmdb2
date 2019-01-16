@@ -61,13 +61,10 @@ function encode64(data) {
   return Buffer.from(data).toString('base64');
 }
 
-function printf(format) {
-  // (...a) => {return a.reduce((p: string, c: any) => p.replace(/%s/, c));
-  var values = Array.prototype.slice.call(arguments, 1);
-  function insert(str, val) {
-    return str.replace(/%s/, val);
-  }
-  return values.reduce(insert, format);
+function printf(...a) {
+  return a.reduce((p, c) => {
+    return p.replace(/%s/, c);
+  });
 }
 
 module.exports = {

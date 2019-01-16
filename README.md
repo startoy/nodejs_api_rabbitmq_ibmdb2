@@ -109,7 +109,7 @@
       - `-e ENV=value` pass Parameter ชื่อ ENV ค่า value เข้า Nodejs  
 
       **ENVIRONMENT LIST**
-      - สามารถดู config อื่นๆ ได้ที่ `lib/config.js`
+      - สามารถดู config อื่นๆ ได้ที่ [Environment Configuration](#env-list) `lib/config.js`
       - **NODE_ENV** Mode ที่จะสตาร์ท Nodejs, Default ถ้าไม่ส่งค่าคือ development (ถ้าใช้จริงควรส่งค่า `production`). ex NODE_ENV=production
           - `development` จะแสดง DevLog ของการเรียกฟังก์ชันต่างๆ และเก็บลงไฟล์ที่ `logs/messages_dev/` + แสดง log Request  และเก็บลงไฟล์ที่ `logs/` 
           - `production` จะแสดงเฉพาะ log NodeRB ที่สำคัญๆ และเก็บลงไฟล์ไว้ที่ `logs/messages/` + ไม่แสดง log Request  แต่เก็บลงไฟล์ log
@@ -401,6 +401,7 @@ Test with nodejs on docker exec
   - ip ของ server
 
 ---
+<a name="env-list">
 
 ## Environment Configuration
 
@@ -434,6 +435,7 @@ Test with nodejs on docker exec
 |DBUSER| `db2inst1`| any | | login username |
 |DBPWD| `db2inst1`| any | | login password |
 
+</a>
 ---
 ## Fix Terminated Container  
 - https://stackoverflow.com/a/32353134
