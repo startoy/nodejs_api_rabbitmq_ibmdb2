@@ -16,21 +16,23 @@ async function setResHeader(req, res, next) {
 }
 
 async function getDB2ReqParamsAfterNext(res) {
-  let fieldsArray, table, from, to, page, pageSize;
-  fieldsArray = res.locals.fieldsArray;
+  let fieldArray, table, secSymbol, from, to, page, pageSize;
+  fieldArray = res.locals.fieldArray;
   table = res.locals.table;
+  secSymbol = res.locals.secsymbol;
   from = res.locals.from;
   to = res.locals.to;
   page = res.locals.page;
   pageSize = res.locals.page_size;
 
   return {
-    fieldsArray,
+    fieldArray,
     table,
-    from,
-    to,
+    secSymbol,
     page,
-    pageSize
+    pageSize,
+    from,
+    to
   };
 }
 

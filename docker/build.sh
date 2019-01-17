@@ -19,8 +19,8 @@ export_docker_image() {
 
 build() {
   local VERSION=':'$VERSION
-  echo 'Build with Version: ' $VERSION;
-  echo 'Finding Dockerfile';
+  echo 'Build with Version: ['$VERSION']';
+  echo 'Finding Dockerfile '$(pwd)/full;
   ls -la $(pwd)/full
 
 # TODO -> check if Dockerfile exist

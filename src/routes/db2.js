@@ -10,9 +10,8 @@ import '@babel/polyfill';
 
 import * as db from '../lib/db2Function';
 import * as conf from '../lib/config';
-import { log, dblog, printf } from '../lib/util';
+import { dblog, printf, catchJsonObject } from '../lib/util';
 import { showIndex, getDB2ReqParamsAfterNext } from '../lib/routerFunction';
-import errr from '../error/type';
 
 const router = express.Router();
 
@@ -31,62 +30,49 @@ router.use(handleResDB2Router);
 async function handleReqDB2Router(req, res, next) {
   dblog.info('Request Received!');
   try {
-    let fieldsArray, table, from, to;
+    let fieldArray, table, secSymbol;
     let page, pageSize;
     if (req.method === 'POST') {
-      fieldsArray = req.body.fields || '*';
+      fieldArray = req.body.fields || '*';
       table = req.body.table || conf.db2.table;
+      secSymbol = req.body.secsymbol || '';
       page = req.body.page;
       pageSize = req.body.page_size;
-
-      // for dev
-      from = req.body.from || null;
-      to = req.body.to || null;
     } else {
-      fieldsArray = req.query.fields || '*';
+      fieldArray = req.query.fields || '*';
       table = req.query.table || conf.db2.table;
+      secSymbol = req.query.secsymbol || '';
       page = req.query.page;
       pageSize = req.query.page_size;
-
-      // for dev
-      from = req.query.from || null;
-      to = req.query.to || null;
     }
 
     dblog.info(printf('Request page[%s] page_size[%s]', page, pageSize));
 
-    res.locals.fieldsArray = fieldsArray;
+    res.locals.fieldArray = fieldArray;
     res.locals.table = table.toUpperCase();
+    res.locals.secsymbol = secSymbol.toUpperCase();
     res.locals.page = page;
     res.locals.page_size = pageSize;
-    res.locals.from = from;
-    res.locals.to = to;
   } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
+    let jsonObj = catchJsonObject(e);
     res.json(jsonObj);
   }
   next();
 }
 
 async function handleResDB2Router(req, res, next) {
-  dblog.info('Respond Sent!');
   try {
-    // get data from previous route in res.locals.dataNext
-    let data = res.locals.dataNext;
+    // get data from previous route in res.locals.dataOfArray
+    let data = res.locals.dataOfArray;
 
     // convert to json object format
-    let jsonObj = db.getJsonObj(data);
+    let jsonObj = await db.getJsonObj(data);
+
+    dblog.info('Respond Sent!');
     res.json(jsonObj);
   } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
+    let jsonObj = catchJsonObject(e);
+    dblog.info('Respond Sent!');
     res.json(jsonObj);
   }
 }
@@ -94,25 +80,31 @@ async function handleResDB2Router(req, res, next) {
 // FIX QUERY : query *
 async function queryDB(req, res, next) {
   try {
-    let { page, pageSize } = await getDB2ReqParamsAfterNext(res);
+    let {
+      fieldArray,
+      secSymbol,
+      page,
+      pageSize
+    } = await getDB2ReqParamsAfterNext(res);
     let { from, to } = await db.calRangeFromPage(page, pageSize);
-    let fieldsArray = '*';
     let table = conf.db2.table;
 
-    let queryStmnt = await db.createQueryCFRate(fieldsArray, table, from, to);
+    let queryStmnt = await db.createQueryCFRate(
+      fieldArray,
+      table,
+      secSymbol,
+      from,
+      to
+    );
     let jsonArray = await db.query(queryStmnt);
 
     // Logic
 
     // store data to be used next
-    res.locals.dataNext = jsonArray;
+    res.locals.dataOfArray = jsonArray;
     next();
   } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
+    let jsonObj = catchJsonObject(e);
     res.json(jsonObj);
   }
 }
@@ -123,10 +115,16 @@ async function queryStock(req, res, next) {
     // Filter
     let { table, page, pageSize } = await getDB2ReqParamsAfterNext(res);
     let { from, to } = await db.calRangeFromPage(page, pageSize);
-    let fieldsArray = 'SECSYMBOL';
+    let fieldArray = 'SECSYMBOL';
 
     // Operate
-    let queryStmnt = await db.createQueryCFRate(fieldsArray, table, from, to);
+    let queryStmnt = await db.createQueryCFRate(
+      fieldArray,
+      table,
+      '',
+      from,
+      to
+    );
     let jsonArray = await db.query(queryStmnt);
 
     // Logic
@@ -134,14 +132,10 @@ async function queryStock(req, res, next) {
     let dataArray = db.getArrayOfValueFromKey(jsonArray, 'SECSYMBOL');
 
     // Store data to be used next
-    res.locals.dataNext = dataArray;
+    res.locals.dataOfArray = dataArray;
     next();
   } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
+    let jsonObj = catchJsonObject(e);
     res.json(jsonObj);
   }
 }
@@ -150,26 +144,28 @@ async function queryStock(req, res, next) {
 async function querySec(req, res, next) {
   try {
     // Filter
-    let { fieldsArray, table, page, pageSize } = await getDB2ReqParamsAfterNext(
+    let { fieldArray, table, page, pageSize } = await getDB2ReqParamsAfterNext(
       res
     );
     let { from, to } = await db.calRangeFromPage(page, pageSize);
 
     // Operate
-    let queryStmnt = await db.createQueryCFRate(fieldsArray, table, from, to);
+    let queryStmnt = await db.createQueryCFRate(
+      fieldArray,
+      table,
+      '',
+      from,
+      to
+    );
     let jsonArray = await db.query(queryStmnt);
 
     // Logic
 
     // Store data to be used next
-    res.locals.dataNext = jsonArray;
+    res.locals.dataOfArray = jsonArray;
     next();
   } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
+    let jsonObj = catchJsonObject(e);
     res.json(jsonObj);
   }
 }
@@ -178,24 +174,19 @@ async function querySec(req, res, next) {
 async function queryRecords(req, res, next) {
   try {
     // Filter
-    let { fieldsArray, table } = await getDB2ReqParamsAfterNext(res);
+    let { fieldArray, table } = await getDB2ReqParamsAfterNext(res);
 
     // Operate
-    let queryStmnt = await db.createQueryCountRecords(fieldsArray, table);
+    let queryStmnt = await db.createQueryCountRecords(fieldArray, table);
     let jsonArray = await db.query(queryStmnt);
 
     // Logic
 
     // Store data to be used next
-    res.locals.dataNext = jsonArray;
+    res.locals.dataOfArray = jsonArray;
     next();
   } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
-
+    let jsonObj = catchJsonObject(e);
     res.json(jsonObj);
   }
 }
@@ -204,10 +195,10 @@ async function queryRecords(req, res, next) {
 async function queryTotalPages(req, res, next) {
   try {
     // Filter
-    let { fieldsArray, table, pageSize } = await getDB2ReqParamsAfterNext(res);
+    let { fieldArray, table, pageSize } = await getDB2ReqParamsAfterNext(res);
 
     // Operate
-    let queryStmnt = await db.createQueryCountRecords(fieldsArray[0], table);
+    let queryStmnt = await db.createQueryCountRecords(fieldArray[0], table);
     let jsonArray = await db.query(queryStmnt);
 
     // Logic
@@ -215,14 +206,10 @@ async function queryTotalPages(req, res, next) {
     let totalPages = await db.calDBTotalPages(totalRecords, pageSize);
 
     // Store data to be used next
-    res.locals.dataNext = totalPages;
+    res.locals.dataOfArray = Array(totalPages);
     next();
   } catch (e) {
-    let jsonObj = e ? errr.API_CUSTOM_ERROR : errr.API_REQUEST_ERROR;
-    if (e) {
-      log.error(e);
-      jsonObj.message = e;
-    }
+    let jsonObj = catchJsonObject(e);
     res.json(jsonObj);
   }
 }

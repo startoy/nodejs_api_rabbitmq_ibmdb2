@@ -413,11 +413,13 @@ Test with nodejs on docker exec
 
 | VARIABLE | DEFAULT | EXPECTED | REMARK  | DESCRIPTION |
 | -------- | :------ | :------  | :------ | :------ |
-|NODE_ENV           |`development` | `production` or `development` || mode ของ environment มีผลต่อการแสดง Log |
-|WRITEDATALOGCONSOLE|`no`          |`yes` or `no`||แสดง Data Log ไปที่ console (data ที่มาจาก okury และ db) |
-|ENABLEDB2      | `yes`    |`yes` or `no`| ไม่ใช้งาน |เปิดใช้งาน Router ในส่วนที่เชื่อมต่อกับ DB2 |
-|REPLYWAITTIME      | 6000         |number(ms) ||เวลาในการรอตอบกลับจาก Okury |
-|PAGESIZE      | 20         |number(ms) ||ขนาด page |
+|NODE_ENV|`development` | `production` or `development` || mode ของ environment มีผลต่อการแสดง Log |
+|WRITEDATALOGCONSOLE|`no`|`yes` or `no`||แสดง Data Log ไปที่ console (data ที่มาจาก okury และ db) |
+|WRITEDBLOGCONSOLE|`yes`|`yes` or `no`||แสดง Database Log ไปที่ console |
+|WRITENODELOGCONSOLE|`yes`|`yes` or `no`||แสดง Node Log ไปที่ console|
+|ENABLEDB2|`yes`|`yes` or `no`| ไม่ใช้งาน |เปิดใช้งาน Router ในส่วนที่เชื่อมต่อกับ DB2 |
+|REPLYWAITTIME|6000|number(ms)||เวลาในการรอตอบกลับจาก Okury |
+|PAGESIZE|20|number(ms)||ขนาด page |
 | -------- | ------ | ------  | ------ | ------ |
 | **RabbitMQ** |  |  |   |  |
 | -------- | ------ | ------  | ------ | ------ |

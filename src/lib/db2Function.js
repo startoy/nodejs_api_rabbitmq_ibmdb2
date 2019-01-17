@@ -5,7 +5,8 @@
 
 'use strict';
 import { db2 } from './config';
-import { log, devlog, datalog, printf } from './util';
+import { log, devlog, datalog, printf, isNullOrUndefined } from './util';
+import err from '../error/type';
 import ibmdb from 'ibm_db';
 
 let connectionString = createDBConn(
@@ -34,12 +35,10 @@ async function query(queryStr) {
           reject(err);
           return; // prevent continue reading code : asynchronous
         }
-
         if (!queryStr) {
           log.error('No query string provided');
           resolve(false);
         }
-
         conn.query(queryStr, (err, object) => {
           if (err) {
             reject(err);
@@ -47,10 +46,8 @@ async function query(queryStr) {
           } else {
             let jsonArray = [];
             datalog.info('RecvDB2 => ' + JSON.stringify(object));
-
             if (JSON.stringify(object).startsWith('{')) jsonArray.push(object);
             else jsonArray = object;
-
             resolve(jsonArray);
           }
 
@@ -91,20 +88,35 @@ function createDBConn(dbname, hostname, uid, pwd, port) {
  * @param {jsonArray} jsonArray array[]
  * @returns {jsonObject} object{}
  */
-function getJsonObj(jsonArray) {
-  let jsonObj = {
-    code: 0,
-    message: 'success',
-    data: []
-  };
-  for (const data in jsonArray) {
-    if (jsonArray.hasOwnProperty(data)) {
-      const element = jsonArray[data];
-      jsonObj.data.push(element);
+async function getJsonObj(jsonArray) {
+  try {
+    let jsonObj = {
+      code: 0,
+      message: 'success',
+      data: []
+    };
+
+    // devlog.info('getJsonObj jsonArray:' + JSON.stringify(jsonArray) + '');
+
+    /* for (const data in jsonArray) {
+        if (jsonArray.hasOwnProperty(data)) {
+          const element = jsonArray[data];
+          jsonObj.data.push(element);
+        }
+      } */
+
+    if (!jsonArray || !jsonArray[0]) jsonObj = err.NO_DATA;
+    else jsonObj.data = jsonArray;
+    datalog.info(printf('SendDB2 [%s]', JSON.stringify(jsonObj)));
+    return jsonObj;
+  } catch (e) {
+    let jsonObj = e ? err.API_CUSTOM_ERROR : err.INTERNAL_ERROR;
+    if (e) {
+      log.error(e);
+      jsonObj.message = e;
     }
+    return jsonObj;
   }
-  datalog.info(printf('SendDB2 [%s]', JSON.stringify(jsonObj)));
-  return jsonObj;
 }
 
 /**
@@ -147,36 +159,40 @@ function getArrayOfJsonObjFromKey(jsonArray, keys) {
 
 /**
  * dynamic create query string from table as page
- * @param {Array} fieldsArray
+ * @param {Array} fieldArray
  * @param {String} table
+ * @param {String} secSymbol
  * @param {Number} from
  * @param {Number} to
  */
-async function createQueryCFRate(fieldsArray, table, from, to) {
+async function createQueryCFRate(fieldArray, table, secSymbol, from, to) {
   let result = new Error();
-  let whereClause = '';
+  let filter = '';
+  let tail = '';
+
   from = +from;
   to = +to;
   try {
-    if (!table || !fieldsArray) return result;
+    if (!table || !fieldArray) return result;
+    if (secSymbol) filter = printf("WHERE SECSYMBOL='%s'", secSymbol);
     if (+from || +to) {
       // fetch from n1 to n2
       if (+from && +to && +from <= +to && +from >= 0 && +to > 0)
-        whereClause = 'WHERE R BETWEEN ' + +from + ' AND ' + +to;
+        tail = printf('WHERE R BETWEEN %s AND %s', from, to);
       // fetch from 0 to n2
       else if (!+from && +to && +to > 0)
-        whereClause = 'FETCH FIRST ' + +to + ' ROWS ONLY ';
+        tail = printf('FETCH FIRST %s ROWS ONLY', to);
       else return result;
-    } else if (!+from && !+to) whereClause = '';
+    } else if (!+from && !+to) tail = '';
     else return result;
 
-    result =
-      'SELECT ' +
-      fieldsArray +
-      ' FROM ( SELECT T.*, ROW_NUMBER() OVER(ORDER BY SECSYMBOL) R FROM ' +
-      table +
-      ' T  ) ' +
-      whereClause;
+    result = printf(
+      'SELECT %s FROM ( SELECT T.*, ROW_NUMBER() OVER(ORDER BY SECSYMBOL) R FROM %s T %s ) %s',
+      fieldArray,
+      table,
+      filter,
+      tail
+    );
 
     devlog.info(printf('QueryString: [%s]', result));
     return result;
@@ -201,26 +217,33 @@ async function createQueryCountRecords(field, table) {
 
 async function calDBTotalPages(records, pageSize) {
   let pSize = pageSize || global.pageSize;
-  return { total: Math.ceil(+records / pSize) };
+  return {
+    total: Math.ceil(+records / pSize)
+  };
 }
 
 async function calRangeFromPage(page, pageSize) {
-  let pSize = pageSize <= 0 ? global.pageSize : pageSize;
+  let pSize =
+    pageSize <= 0 || isNullOrUndefined(pageSize) ? +global.pageSize : +pageSize;
   let from, to;
 
-  if (page === null && pageSize === null) {
+  if (isNullOrUndefined(page) && isNullOrUndefined(pageSize)) {
     from = null;
     to = null;
-  } else if (page <= 0) {
+  } else if ((+page <= 0 || isNullOrUndefined(page)) && +pSize >= 0) {
     from = null;
-    to = pSize;
+    to = +pSize;
   } else {
-    from = pSize * page + 1 - pSize;
-    to = pSize * page;
+    from = +pSize * +page + 1 - +pSize;
+    to = +pSize * +page;
   }
-  devlog.info(printf('from[%s] to[%s]', from, to));
-  return { from, to };
+
+  return {
+    from,
+    to
+  };
 }
+
 module.exports = {
   query: query,
   getJsonObj: getJsonObj,

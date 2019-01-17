@@ -12,23 +12,27 @@ export const sv = {
 };
 
 // ENVIRONMENTS
-let rcvEnv = process.env.NODE_ENV || 'development';
-const devLogConsole = rcvEnv === 'development' ? true : false || false;
+let rEnv = process.env.NODE_ENV || 'development';
+const devLogConsole = rEnv === 'development' ? true : false || false;
 
-let rcvdataL = process.env.WRITEDATALOGCONSOLE || 'no';
-const dataLogConsole = rcvdataL === 'yes' ? true : false || false;
+let rdata = process.env.WRITEDATALOGCONSOLE || 'no';
+const dataLogConsole = rdata === 'yes' ? true : false || false;
 
-let rcvDBL = process.env.WRITEDBLOGCONSOLE || 'yes';
-const dbLogConsole = rcvDBL === 'yes' ? true : false || false;
+let rDB = process.env.WRITEDBLOGCONSOLE || 'yes';
+const dbLogConsole = rDB === 'yes' ? true : false || false;
 
-let rcvNodeL = process.env.WRITENODELOGCONSOLE || 'yes';
-const nodeLogConsole = rcvNodeL === 'yes' ? true : false || false;
+let rNode = process.env.WRITENODELOGCONSOLE || 'yes';
+const nodeLogConsole = rNode === 'yes' ? true : false || false;
+
+let rErr = process.env.WRITEERRORLOGCONSOLE || 'yes';
+const errorLogConsole = rErr === 'yes' ? true : false || false;
 
 export const log = {
   dev: devLogConsole,
   data: dataLogConsole,
   db: dbLogConsole,
-  node: nodeLogConsole
+  node: nodeLogConsole,
+  err: errorLogConsole
 };
 
 let rcvEnableDB2 = process.env.ENABLEDB2 || 'yes';

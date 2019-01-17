@@ -5,13 +5,14 @@
 import logger from 'util.log';
 import * as conf from './config';
 import fs from 'fs';
+import err from '../error/type';
 
 fs.existsSync('./logs') || fs.mkdirSync('./logs');
 
 // FIXME: rotate file
 let maxWidth = 4;
 const log = logger.instance({
-  namespace: 'Node',
+  namespace: 'NODE',
   nsWidth: maxWidth,
   directory: './logs/messages_node/',
   toConsole: conf.log.node,
@@ -27,7 +28,7 @@ const dblog = logger.instance({
 });
 
 const devlog = logger.instance({
-  namespace: 'DevE',
+  namespace: 'DEV',
   nsWidth: maxWidth,
   directory: './logs/messages_dev/',
   toConsole: conf.log.dev,
@@ -35,7 +36,7 @@ const devlog = logger.instance({
 });
 
 const datalog = logger.instance({
-  namespace: 'Data',
+  namespace: 'DATA',
   nsWidth: maxWidth,
   directory: './logs/messages_data/',
   toConsole: conf.log.data,
@@ -77,12 +78,37 @@ function printf(...a) {
 
 // expected Array
 // count everything in array
-function countElement(array) {
+async function countElement(array) {
   // custom what ever u want to count each element
-  return array.reduce((total, e) => {
+  let c = array.reduce((total, e) => {
     /* return JSON.stringify(e).startsWith('{') ? total + 1 : 0; */
     return total + 1;
   }, 0);
+  devlog.info('Count Element:' + c);
+  return c;
+}
+
+function catchJsonObject(e) {
+  let jsonObj = e ? err.API_CUSTOM_ERROR : err.API_REQUEST_ERROR;
+  if (e) {
+    log.error(e);
+    jsonObj.message = e;
+  }
+  return jsonObj;
+}
+
+function isNullOrUndefined(a) {
+  if (isUndefined(a) || isNull(a)) return true;
+  else return false;
+}
+
+function isUndefined(a) {
+  if (typeof a === 'undefined') return true;
+  else return false;
+}
+function isNull(a) {
+  if (a === null) return true;
+  else return false;
 }
 
 module.exports = {
@@ -97,5 +123,9 @@ module.exports = {
   decode64: decode64,
   encode64: encode64,
   printf: printf,
-  countElement: countElement
+  catchJsonObject: catchJsonObject,
+  countElement: countElement,
+  isNullOrUndefined,
+  isUndefined: isUndefined,
+  isNull: isNull
 };
