@@ -7,8 +7,8 @@
 export const sv = {
   service: 'fwg/nodejs-api',
   version: '19.01.DB.05',
-  desc: '- seperate router for db, config log',
-  last_update: '15/01/2019'
+  desc: '- Support filter secsymbol in db/querydb/',
+  last_update: '17/01/2019'
 };
 
 // ENVIRONMENTS
