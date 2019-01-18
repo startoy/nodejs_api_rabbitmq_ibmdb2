@@ -10,10 +10,11 @@ usage() {
 }
 
 export_docker_image() {
+  echo
   echo "export docker image.."
-  echo "find image fwg/nodejs-api$VERSION"
-  echo "saving image to file name nodejs-api.tar ..."
-  docker save -o nodejs-api.tar fwg/nodejs-api$VERSION
+  echo "find image fwg/nodejs-api:$VERSION"
+  echo "saving image to file name nodejs-api_$VERSION.tar ..."
+  docker save -o nodejs-api_$VERSION.tar fwg/nodejs-api:$VERSION
   echo -e "export processing completed.."
   date
   ls -lrt
@@ -21,7 +22,7 @@ export_docker_image() {
 }
 
 build() {
-  VERSION=':'$VERSION
+  local VERSION=':'$VERSION
   echo 'Build with Version: ['$VERSION']';
   echo 'Finding Dockerfile '$(pwd)/full;
   ls -la $(pwd)/full
