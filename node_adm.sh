@@ -26,6 +26,7 @@ help() {
   echo " Usage: $(basename ${0}) <command> <cname>"
   echo
   echo " <command>:"
+  echo "  deploy               do cp, build, restart the container"
   echo "  start                start container"
   echo "  stop                 stop container"
   echo "  build                build source code in src/ to build/ in container"
@@ -165,6 +166,11 @@ else
   echo
   read_config
   case $cmd in
+    d|deploy)
+      cp
+      build
+      restart
+      ;;
     s|start)
       start
       ;;

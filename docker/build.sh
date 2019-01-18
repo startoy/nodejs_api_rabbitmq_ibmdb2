@@ -11,10 +11,12 @@ usage() {
 
 export_docker_image() {
   echo -e "export docker image.."
-  docker save -o nodejs-api$VERSION.tar fwg/nodejs-api$VERSION
+  docker save -o nodejs-api.tar fwg/nodejs-api$VERSION
 
   echo -e "export processing completed.."
-  ls -la
+
+  du -msh *
+
 }
 
 build() {
@@ -43,4 +45,7 @@ usage
 else 
 build
 export_docker_image
+cd ../
+chmod +x node_adm.sh
+mv node_adm.sh node_adm
 fi
