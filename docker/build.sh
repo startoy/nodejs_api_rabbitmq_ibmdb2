@@ -3,24 +3,25 @@
 VERSION=${1};
 
 usage() {
-        echo -e "---------------------------";
+        echo
         echo -e " Usage: "$(basename ${0})" <version>";
         echo -e "  ex. <version> = 19.01.DB.01"
-        echo -e "---------------------------";
+        echo
 }
 
 export_docker_image() {
-  echo -e "export docker image.."
+  echo "export docker image.."
+  echo "find image fwg/nodejs-api$VERSION"
+  echo "saving image to file name nodejs-api.tar ..."
   docker save -o nodejs-api.tar fwg/nodejs-api$VERSION
-
   echo -e "export processing completed.."
-
+  date
+  ls -lrt
   du -msh *
-
 }
 
 build() {
-  local VERSION=':'$VERSION
+  VERSION=':'$VERSION
   echo 'Build with Version: ['$VERSION']';
   echo 'Finding Dockerfile '$(pwd)/full;
   ls -la $(pwd)/full
@@ -48,4 +49,5 @@ export_docker_image
 cd ../
 chmod +x node_adm.sh
 mv node_adm.sh node_adm
+rm Dockerfile
 fi

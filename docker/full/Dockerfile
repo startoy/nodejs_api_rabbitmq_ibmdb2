@@ -10,10 +10,7 @@ ENV IBM_DB_INSTALLER_URL /app/install
 RUN npm install ibm_db && npm install
 RUN npm run build
 
-RUN rm -rf /app/src
-RUN rm -rf /app/install
-RUN rm -rf /app/docker
-
+RUN rm -rf /app/src && rm -rf /app/install & rm -rf /app/docker
 
 EXPOSE 15673
 CMD ["npm", "start"]
