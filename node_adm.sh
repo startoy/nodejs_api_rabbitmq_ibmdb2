@@ -33,6 +33,7 @@ help() {
   echo "  cp                   copy all files in deploy/ folder to app/ in docker container process"
   echo "  log                  tail log docker container"
   echo "  cplog                copy logs/ folder from docker container to current directory"
+  echo "  config <cid>         create config file with container id for default use"
   echo
   echo " <cname>:"
   echo "  \$name               target container name (if no file docker_cid.cnf provide)"
