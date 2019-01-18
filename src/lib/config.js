@@ -6,9 +6,14 @@
 // DEPLOY SRC VERSION
 export const sv = {
   service: 'fwg/nodejs-api',
-  version: '19.01.DB.05',
-  desc: '- Support filter secsymbol in db/querydb/',
-  last_update: '17/01/2019'
+  type: 'source code',
+  version: '19.01.DB.06',
+  desc: [
+    '- update docker image version',
+    '- update Dockerfile',
+    '- add node_adm shell'
+  ],
+  last_update: '18/01/2019'
 };
 
 // ENVIRONMENTS

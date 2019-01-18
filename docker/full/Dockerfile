@@ -8,6 +8,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ENV IBM_DB_INSTALLER_URL /app/install
 RUN npm install ibm_db && npm install && rm -rf /app/install
+RUN npm run build
+RUN rm -rf /app/src
 
 EXPOSE 15673
 CMD ["npm", "start"]

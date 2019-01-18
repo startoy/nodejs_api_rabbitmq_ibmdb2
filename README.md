@@ -8,13 +8,7 @@
   - Nodejs connect to IBM DB2
 
 # CHANGELOG
-
-### 15/01/2019
-  - UPDATE VERSION 19.01.DB.05
-    - เพิ่ม document api
-    - ย้าย route ที่เกี่ยวกับ database ไปที่ db/
-    - เพิ่มการ filter page เมื่อขอข้อมูลจาก database (performance)
-    - เพิ่ม router เพื่อ query ตาม filter ที่ขอ
+- ดูที่ไฟล์ CHANGELOG
 
 # วิธี Update source code (ไม่ต้อง Build image ใหม่)
 **ถ้าไม่มีการเพิ่ม/ลด dependencies** แค่ copy src/ ขึ้นไปบน container แล้วสั่ง restart ก็จะได้ src ใหม่แล้ว  

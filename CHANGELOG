@@ -1,0 +1,9 @@
+- version 19.01.DB.06
+  - 18/01/2019
+    - อัพเดท docker image เป็น tag 19.01.DB.06 Final
+- version 19.01.DB.05
+  - 17/01/2019
+    - เพิ่ม document api
+    - ย้าย route ที่เกี่ยวกับ database ไปที่ db/
+    - เพิ่มการ filter page เมื่อขอข้อมูลจาก database (performance)
+    - เพิ่ม router เพื่อ query ตาม filter ที่ขอ
