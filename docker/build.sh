@@ -21,8 +21,18 @@ export_docker_image() {
   du -msh *
 }
 
+remove_unness() {
+  chmod +x node_adm.sh
+  rm Dockerfile
+}
+
+export_version() {
+  echo "export version name to file image_version.cnf"
+  echo "$VERSION > image_version.cnf"
+  echo $VERSION > image_version.cnf
+}
+
 build() {
-  local VERSION=':'$VERSION
   echo 'Build with Version: ['$VERSION']';
   echo 'Finding Dockerfile '$(pwd)/full;
   ls -la $(pwd)/full
@@ -33,7 +43,7 @@ build() {
   ls -la $(pwd)/../
 
   cd $(pwd)/../
-  docker build -t fwg/nodejs-api$VERSION .
+  docker build -t fwg/nodejs-api:$VERSION .
 
   cd -
 
@@ -43,12 +53,11 @@ build() {
 
 if [ -z "$VERSION" ]
 then
-usage
+  usage
 else 
-build
-export_docker_image
-cd ../
-chmod +x node_adm.sh
-mv node_adm.sh node_adm
-rm Dockerfile
+  build
+  export_docker_image
+  cd ../
+  remove_unness
+  export_version
 fi

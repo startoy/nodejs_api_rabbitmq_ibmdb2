@@ -29,15 +29,11 @@ const dbLogConsole = rDB === 'yes' ? true : false || false;
 let rNode = process.env.WRITENODELOGCONSOLE || 'yes';
 const nodeLogConsole = rNode === 'yes' ? true : false || false;
 
-let rErr = process.env.WRITEERRORLOGCONSOLE || 'yes';
-const errorLogConsole = rErr === 'yes' ? true : false || false;
-
 export const log = {
   dev: devLogConsole,
   data: dataLogConsole,
   db: dbLogConsole,
-  node: nodeLogConsole,
-  err: errorLogConsole
+  node: nodeLogConsole
 };
 
 let rcvEnableDB2 = process.env.ENABLEDB2 || 'yes';

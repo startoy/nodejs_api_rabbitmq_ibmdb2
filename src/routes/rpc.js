@@ -25,7 +25,7 @@ let channel, conn;
 async function loadAMQP() {
   let uri = conf.AMQPURI;
   if (typeof uri === 'undefined' && !uri) {
-    log.error('[ERROR] provided uri is not in proper format, got ' + uri);
+    log.error('Provided uri is not in the proper format, got ' + uri);
     process.exit(1);
   }
 

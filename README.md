@@ -14,12 +14,9 @@
 **ถ้าไม่มีการเพิ่ม/ลด dependencies** แค่ copy src/ ขึ้นไปบน container แล้วสั่ง restart ก็จะได้ src ใหม่แล้ว  
 **ถ้ามีการ npm install ... เพิ่ม dependency** ต้อง build images ใหม่  
 
-- ใช้ **shell/cpdocker.sh**
-1. เอาทั้งโฟลเดอร์ **src/** ที่มีอัพเดท ไปไว้ในโฟลเดอร์ **shell/**  
-2. สั่ง cpdocker.sh
-
-- **logdocker.sh** ดู logs
-- **rmvdocker.sh** ลบ log ของ docker container
+- ใช้ **node_adm.sh**
+1. เอาทั้งโฟลเดอร์ **src/** หรือไฟล์อื่นๆที่มีอัพเดทไปไว้ในโฟลเดอร์ **deploy/**  
+2. สั่ง node_adm.sh deploy
 
 # วิธี Build Source เป็น Docker Image (10/01/2019)
 
@@ -60,19 +57,19 @@
         chmod +x build.sh
         ./build.sh <version>
       ```
- - version ใส่เวอร์ชัน เช่น 19.01.DB.01 ถ้าไม่ใส่ จะได้ TAG latest
+ - version ใส่เวอร์ชัน เช่น 19.01.DB.01 (ถ้าไม่ใส่ จะได้ TAG latest)
       
       ```sh
         REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-        fwg/nodejs-      latest              c4dfedfd51ae        8 seconds ago       836MB 
+        fwg/nodejs-api      19.01.DB.01         8b073de4d04b        8 seconds ago       836MB 
       ```
     
-      จะได้ไฟล์ **nodejs-.tar**
+      จะได้ไฟล์ **nodejs-api_$VERSION.tar** และ **image_version.cnf** (todo: ไว้ใช้ตรวจ version)
 
   2. หลังจากได้ Image ไฟล์ ให้ copy ไฟล์ไปวางไว้ที่ server ที่ deploy แล้ว Load image ขึ้น Docker ด้วยคำสั่ง
 
       ```sh
-      docker load -i nodejs-.tar
+      docker load -i nodejs-api_$VERSION.tar
       ```
 
       เช็คว่ามี Image จากคำสั่ง
@@ -80,42 +77,21 @@
       ```sh
       docker images
           REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-          fwg/-rabbit      latest              a2554eac0192        8 seconds ago       95.8MB
+          fwg/nodejs-api      19.01.DB.01         8b073de4d04b        8 seconds ago       836MB
       ```
+      
+      ทุกอย่างจะตรงกัน (รวมไปถึงเวลา CREATED)
 
-  3. สตาร์ท Container จาก Image ด้วยคำสั่ง
+  3. สร้าง Container จาก Image ด้วยคำสั่ง 'node_adm.sh create <TAG_version> <ชื่อ>'
+
+      พวก environment ในการ config จะอยู่ที่ไฟล์ env_new_container.sh
 
       ```sh
-      docker run -d \
-        -e "NODE_ENV=production" -e "AMQPURI=amqp://172.17.0.2" \
-        --name nodejs--10-01-19-prod \
-        -p 15673:15673 \
-        fwg/nodejs- \
-        npm start 
+      node_adm.sh create 19.01.DB.01
+      
+      // or (optionally)
+      node_adm.sh create 19.01.DB.01 container-name
       ```
-      - TODO: ทำ script deploy รับ config เข้าไป แล้วรัน container
-      - `-d` รันแบบ background. 
-      - `--name` เปลี่ยนชื่อ container 
-      - `-p` แมพพอร์ตจาก **'hostport':'containerport'**  
-      - `fwg/-rabbit` ชื่อ Repository Image ที่จะเอามารัน
-      - `npm start` Execute command, if not provided will use default command from Dockerfile.
-      - `-m` Limit the max memory use of this container.
-      - `-e ENV=value` pass Parameter ชื่อ ENV ค่า value เข้า Nodejs  
-
-      **ENVIRONMENT LIST**
-      - สามารถดู config อื่นๆ ได้ที่ [Environment Configuration](#environment-configuration) หรือ `lib/config.js`
-      - **NODE_ENV** Mode ที่จะสตาร์ท Nodejs, Default ถ้าไม่ส่งค่าคือ development (ถ้าใช้จริงควรส่งค่า `production`). ex NODE_ENV=production
-          - `development` จะแสดง DevLog ของการเรียกฟังก์ชันต่างๆ และเก็บลงไฟล์ที่ `logs/messages_dev/` + แสดง log Request  และเก็บลงไฟล์ที่ `logs/` 
-          - `production` จะแสดงเฉพาะ log NodeRB ที่สำคัญๆ และเก็บลงไฟล์ไว้ที่ `logs/messages/` + ไม่แสดง log Request  แต่เก็บลงไฟล์ log
-      - **PORT** เลข port ที่ต้องการให้ Nodejs สตาร์ท (Default เมื่อไม่ส่งคือ 15673). ex PORT=8000
-          - ต้องแมพ -p ให้ตรงด้วย
-      - **AMQPURI** กำหนด rabbitmq uri.
-          - ถ้า amqp รันด้วย docker(ไม่ใช่ service/process ที่ลงเองบนเครื่อง) ให้ใช้ ip ของ docker container แทน ip เครื่อง เช่น `amqp://172.17.0.x` (ดูจาก docker network inspect bridge)
-          - ถ้า logs จาก node ขึ้น ACCESS_ERROR อาจจะต้อง login ด้วย account จะใช้ uri รูปแบบ `amqp://username:password@ip`  
-          - อื่นๆ [URI SPEC](https://www.rabbitmq.com/uri-spec.html) for more.
-      - **REPLYWAITTIME** เวลาที่จะให้รอการ response เมื่อขอ msg แบบ RPC (default 6000) ในหน่วย ms. ex REPLYWAITTIME=6000
-    
-      แล้วดู Container จากคำสั่ง
       
   4. ดู container สตาร์ทและใช้งานได้จริงจากคำสั่ง
             
@@ -134,11 +110,26 @@
       ```
 
   - **771** 3 ตัวแรกของ Container ID/ชื่อ Container
-  - log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
+  - Log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
   
     ```sh
     2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
     ```
+
+6. อื่นๆ  
+
+    ดูจาก 
+    ```sh
+    node_adm.sh
+    ```
+
+    - **deploy** copy from deploy/* to app/ on container แล้ว run ให้ใหม่
+    - **log** ดู log  
+    ...  
+
+  **ที่สำคัญ**  
+    - **node_adm.sh config \<cid>** เป็นการเขียนไฟล์เพื่อใช้ container id เป็น default  
+    - ถ้าไม่มี ต้อง pass cid เข้าไปตามพวกคำสั่ง **deploy \<cid>**, **start \<cid>**
 
 ---
 
@@ -378,7 +369,7 @@ Test with nodejs on docker exec
     fwg/nodejs-api \
     npm start
   ```
-  - inspect network ดู ip
+
 ### Rabbitmq อยู่บน Docker, ไม่เปิด log data ไป console
   ```sh
   docker run -it -d \
@@ -411,14 +402,14 @@ Test with nodejs on docker exec
 |WRITEDATALOGCONSOLE|`no`|`yes` or `no`||แสดง Data Log ไปที่ console (data ที่มาจาก okury และ db) |
 |WRITEDBLOGCONSOLE|`yes`|`yes` or `no`||แสดง Database Log ไปที่ console |
 |WRITENODELOGCONSOLE|`yes`|`yes` or `no`||แสดง Node Log ไปที่ console|
-|ENABLEDB2|`yes`|`yes` or `no`| ไม่ใช้งาน |เปิดใช้งาน Router ในส่วนที่เชื่อมต่อกับ DB2 |
+|ENABLEDB2|`yes`|`yes` or `no`| |เปิดใช้งาน Router ในส่วนที่เชื่อมต่อกับ DB2 |
 |REPLYWAITTIME|6000|number(ms)||เวลาในการรอตอบกลับจาก Okury |
 |PAGESIZE|20|number(ms)||ขนาด page |
 | -------- | ------ | ------  | ------ | ------ |
 | **RabbitMQ** |  |  |   |  |
 | -------- | ------ | ------  | ------ | ------ |
 |~~RBHOSTNAME~~|~~`localhost`~~| ~~any hostname~~ | ไม่ใช้งาน | ~~hostname ในการเชื่อมต่อจาก nodejs ไปที่ rabbitmq-server~~|
-|RBPORT|`15673`| any | | เลข port |
+|~~RBPOR~~T|~~`15672`~~|~~any~~| ไม่ใช้งาน | ~~เลข port~~ |
 |AMQPURI| `amqp://localhost` | any string||hostname ในการเชื่อมต่อจาก nodejs ไปที่ rabbitmq-server|
 | -------- | ------ | ------  | ------ | ------ |
 | **QUEUE** |  |  |   |  |
