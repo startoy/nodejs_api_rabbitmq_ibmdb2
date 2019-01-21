@@ -124,6 +124,12 @@ else
     stop
     echo
     ;;
+  ps|process)
+    echo
+    echo 'Mode [Process]'
+    ps x | grep -v grep | grep 'Sl     0:00 node ./bin/www'
+    echo
+    ;;
   '')
     echo ' Invalid Mode !'
     usage
