@@ -1,9 +1,9 @@
 cmd=$1
 cname=$2
+container_name=$3
 id=
 config_file='docker_cid.cnf'
 foo='bar'
-container_name=$3
 
 # config
 deploy_folder='deploy/*'
@@ -50,7 +50,7 @@ help() {
 
 get_docker_cid_from_name() {
   echo 'finding container name ['$1']..';
-  id=$(docker ps | grep $1 | awk '{print $1}')
+  id=$(docker ps -a | grep $1 | awk '{print $1}')
 }
 
 read_config() {

@@ -83,14 +83,13 @@
 
 #### 3. สร้าง Container จาก Image ด้วยคำสั่ง 'node_adm.sh create <TAG_version> <ชื่อ>'
 
-  พวก environment ในการ config จะอยู่ที่ไฟล์ env_new_container.sh
-
   ```sh
   node_adm.sh create 19.01.DB.01
   
   // or (optionally)
   node_adm.sh create 19.01.DB.01 container-name
   ```
+  - พวก environment ในการ config จะอยู่ที่ไฟล์ **env_new_container.sh**
       
 #### 4. ดู container สตาร์ทและใช้งานได้จริงจากคำสั่ง
         
@@ -119,15 +118,28 @@
 #### 6. อื่นๆ  
 
   ```sh
-  node_adm.sh
+  node_adm.sh h
   ```
 
-- **deploy** copy from deploy/* to app/ on container แล้ว run ให้ใหม่  
-- **log** ดู log  
+  <img src="./public/node_adm.png">  
 
 **ที่สำคัญ**  
-  - **node_adm.sh config \<cid>** เป็นการเขียนไฟล์เพื่อใช้ container id เป็น default  
-  - ถ้าไม่มี ต้อง pass cid เข้าไปตามพวกคำสั่ง **deploy \<cid>**, **start \<cid>**
+  - **node_adm.sh config \<cid>** เป็นการเขียน container id ลงไฟล์ เพื่อใช้ container id เป็น default  ในการทำคำสั่งต่างๆ
+  - ถ้าไม่มี ต้อง pass cname (container name/id ก็ได้) เข้าไปตามหลังพวกคำสั่ง เช่น **deploy \<cname>**, **start \<cname>**
+
+**Command**  
+- **deploy** copy ไฟล์ทั้งหมดจากโฟลเดอร์ deploy/* ไปที่ app/ บน Container แล้ว run ให้ใหม่  ถ้ามีการอัพเดทไฟล์หรือ src/ ให้วางไว้ในโฟลเดอร์ deploy/ แล้วรันคำสั่งนี้  
+- **start**  start container 
+- **stop**  stop container
+- **build**  build source code in src/ to build/ in container
+- **restart**  restart container *ทำให้ container รันใหม่ src/ จะถูก build ใหม่ด้วย
+- **cp**  copy ไฟล์ทั้งหมดจากโฟลเดอร์ deploy/* ไปที่ app/ บน Container  
+- **log** ดู log  container (tail log)
+- **cplog**  copy โฟลเดอร์ logs/ บน Container ลงมาที่ $pwd เพื่อดู log (กรณีที่ไม่ได้สั่งให้ write log ไปที่ console)
+- **create** \<version> \<name>  สร้าง container ชื่อ \<name> ขึ้นมา จาก image \<version>, config ของ container หรือ Node มาจาก env_new_container.sh (ถ้าไม่ใส่ \<name> จะได้ container ชื่อ `nodejs-api` แทน)
+- **config** \<cid>  สั่งให้ write \<cid> (container id) ที่เราใช้งานลงไฟล์ config ไว้ เพื่อทำคำสั่งจะได้ไม่ต้อง pass parameter cid เข้าไป
+- **checklog**  เช็คขนาดไฟล์ log ของ docker container ที่ออก console (Docker เก็บ log ของ container ที่ออก console ด้วย -- console ออกเยอะ log อาจจะเต็ม ต้องเคลียร์ text ข้างใน เอง เพราะ docker ไม่ลบให้อัตโนมัติ)
+- **truncate**  เคลียร์ข้อมูลในไฟล์ log ของ docker container (เคลียร์ข้อมูลข้างใน-ไม่ได้ลบไฟล์)
 
 ---
 
@@ -165,14 +177,12 @@
   npm start
   ```
 
-   - for developing testing etc.
-   - เห็น log, logdev, log request router ออกจอ
-
+ถ้าต้องการ Config (ตามตาราง ENVIRONMENT) ให้ใส่ชื่อ env และค่า
   ```
   NODE_ENV=production npm start
   ```
 
-   - for production
+   - for production (ถ้าไม่ใส่เหมือนข้างบน จะเป็น development โดย Default)
    - เห็น log เก็บ log ลงไฟล์, ไม่เก็บและไม่เห็น logdev
    
 default NODE_ENV คือ development  
