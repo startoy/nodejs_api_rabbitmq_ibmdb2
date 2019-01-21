@@ -160,7 +160,7 @@
 
 ## ติดตั้ง
 
-  Install dependencies
+  **Install Nodejs dependencies**
 
   ```sh
   unzip node--rabbitmq-master.zip
@@ -174,16 +174,45 @@
   npm install
   ```
 
-  * หลังจากสั่งคำสั่ง `npm install` เสร็จ, ควรจะมีโฟลเดอร์ `node_modules` ขึ้นมา
+  * หลังจากสั่งคำสั่ง `npm install` เสร็จ, ควรจะมีโฟลเดอร์ `node_modules` ขึ้นมา  
+
+  **Install ibm-db2 driver**
+
+  (ถ้ามี)ไฟล์ obdc cli-driver ให้ export env ชี้ไปที่ path ที่วางไฟล์ไว้  
+  ```sh
+  // set แล้ว error ยังไม่ใช้งาน
+  export IBM_DB_HOME=/install
+
+  // ใช้
+  export IBM_DB_INSTALLER_URL=$(pwd)/install
+  ```
+
+  แล้วสั่ง  
+  ```sh
+  npm install ibm_db
+  ```
+
+  - ibm_db ไม่ใช่ ibm_db2 (ถ้าลง ibm_db2 src จะหา module ไม่เจอ)
+
 
 ## วิธีสตาร์ท
-หลังลง dependencies แล้ว ให้สั่งคำสั่ง 
+หลังลง dependencies แล้ว ให้ config node ในไฟล์ env_new_container.sh จากนั้น set environment ตามที่ config โดยสั่ง
 
-  ```
-  npm start
+  ```sh
+  . env_new_container.sh
   ```
 
-ถ้าต้องการ Config (ตามตาราง ENVIRONMENT) ให้ใส่ชื่อ env และค่า
+เช็คว่า environment ถูก config ด้วยคำสั่ง `echo $RB_RPCQUEUE` (จะ echo ตาม config) แล้วสั่ง  shell start
+  ```
+  npm_start.sh
+
+  // or
+
+  ./npm_start.sh
+  ```
+  - เป็น shell สำหรับ npm start โดยใช้ env จาก config ที่เซ็ต
+
+ถ้าต้องการ Config เอง (ตามตาราง ENVIRONMENT) ให้ใส่ชื่อ env และค่าก่อน `npm start`
   ```
   NODE_ENV=production npm start
   ```
@@ -207,10 +236,10 @@ config อื่นๆ ให้อิงตามที่ **ENVIRONMENT LIST**
 
   ```sh
   // ON TERMINAL
-  curl localhost:15673/ 
+  curl localhost:15673/version
 
   // ON BROWSER
-  localhost:15673
+  localhost:15673/version
   ```
 
 # API
