@@ -156,7 +156,7 @@
   - `Nodejs` >= 8.9.4 (test on Windows), 8.11.3 (test on Ubuntu16) [Official Download](https://nodejs.org/en/download/)
   - `Source code` (compressed file) [Download on Gitlab](http://gitlab.freewillgroup.com/peerapat_suk/node--rabbitmq)
   - `Rabbitmq server` (Assume broker running on `amqp://localhost`) [Download](https://www.rabbitmq.com/)
-  - `IBM DB` เป็น obdc driver สำหรับติดต่อกับ database [See](https://www.npmjs.com/package/ibm_db2)
+  - `IBM DB` เป็น obdc driver สำหรับติดต่อกับ database [See](https://www.npmjs.com/package/ibm_db2). สามารถทดสอบก่อนได้จาก git repo ชื่อ `nodejs-db2` [:gitlab](http://gitlab.freewillgroup.com/peerapat_suk/nodejs-db2)
 
 
 ## ติดตั้ง
