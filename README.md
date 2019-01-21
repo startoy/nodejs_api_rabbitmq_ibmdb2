@@ -96,7 +96,7 @@
   node_adm.sh create 19.01.DB.01 container-name
   ```
   - พวก environment ในการ config จะอยู่ที่ไฟล์ **env_new_container.sh** --> ความหมายแต่ละ env [Environment Configuration](#environment-configuration)
-  - ถ้า run แล้ว Container Exited ให้ดู URI อาจจะผิด --> [RabbitMQ Maintainance](#rabbitMQ-maintainance)
+  - ถ้า run แล้ว Container Exited ให้ดู URI อาจจะผิด --> [RabbitMQ Maintainance](#rabbitmq-maintainance)
   - uri กรณี rabbit เป็น docker ใช้ ip ของ container rabbit นั้น
   - uri กรณี rabbit เป็น service native ให้ใช้ ip ของเครื่อง (ที่ไม่ใช่ localhost) และ rabbit ต้องสร้าง user, pass ให้สิทธิ์ในการเข้าถึงคิวต่าง ๆ ด้วย 
       
