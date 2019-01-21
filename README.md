@@ -95,7 +95,10 @@
   // or (optionally)
   node_adm.sh create 19.01.DB.01 container-name
   ```
-  - พวก environment ในการ config จะอยู่ที่ไฟล์ **env_new_container.sh**
+  - พวก environment ในการ config จะอยู่ที่ไฟล์ **env_new_container.sh** --> ความหมายแต่ละ env [Environment Configuration](#Environment-Configuration)
+  - ถ้า run แล้ว Container Exited ให้ดู URI อาจจะผิด --> [RabbitMQ Maintainance](#RabbitMQ-Maintainance)
+  - uri กรณี rabbit เป็น docker ใช้ ip ของ container rabbit นั้น
+  - uri กรณี rabbit เป็น service native ให้ใช้ ip ของเครื่อง (ที่ไม่ใช่ localhost) และ rabbit ต้องสร้าง user, pass ให้สิทธิ์ในการเข้าถึงคิวต่าง ๆ ด้วย 
       
 #### 4. ดู container สตาร์ทและใช้งานได้จริงจากคำสั่ง
         
@@ -125,7 +128,7 @@
 
   ```sh
   node_adm.sh h
-  ```
+  ```  
 
   <img src="./public/node_adm.png">  
 
@@ -149,7 +152,7 @@
 
 ---
 
-# 2. Run ด้วย Nodejs (Not Update)
+# 2. Run ด้วย Nodejs
 
 ## Prerequisites
   
@@ -181,8 +184,8 @@
 
   (ถ้ามี)ไฟล์ obdc cli-driver ให้ export env ชี้ไปที่ path ที่วางไฟล์ไว้  
   ```sh
-  // set แล้ว error ยังไม่ใช้งาน
-  export IBM_DB_HOME=/install
+  // set แล้ว error, ยังไม่ใช้งาน
+  export IBM_DB_HOME=$(pwd)/install
 
   // ใช้
   export IBM_DB_INSTALLER_URL=$(pwd)/install
@@ -195,18 +198,23 @@
 
   - ibm_db ไม่ใช่ ibm_db2 (ถ้าลง ibm_db2 src จะหา module ไม่เจอ)
 
+ถ้า Error อาจจะขาด python ลงด้วย
+
+  ```sh
+  sudo apt install node-gyp
+  ```
 
 ## วิธีสตาร์ท
 หลังลง dependencies แล้ว ให้ config node ในไฟล์ env_new_container.sh  
 แล้วเช็คว่า environment ถูก config ด้วยคำสั่ง `echo $RB_RPCQUEUE` (จะ echo ตาม config)  
-แล้วสั่ง  shell start
+แล้วสั่ง  shell start (อย่าลืม chmod +x npm_adm.sh)
 
   ```
-  npm_start.sh start
+  npm_adm.sh start
 
   // or
 
-  ./npm_start.sh start
+  ./npm_adm.sh start
   ```
   - เป็น shell สำหรับ npm start โดยใช้ env จาก config ที่เซ็ตไว้
 
