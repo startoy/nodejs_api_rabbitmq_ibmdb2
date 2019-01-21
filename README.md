@@ -47,9 +47,15 @@
       ```
 ---
 
-## Build Step
+## Build Step  
+ถ้าไม่ต้องการ Build image ใหม่ สามารถใช้ไฟล์ Docker image ได้จาก
+```sh
+\\nas1\securities\SDP\user\prs\Projects\Rabbitmq\Docker Images\nodejs-api_<version>.tar
+```  
+แล้วไปขั้นตอนที่ 2  
+
 ### เมื่อดาวโหลด source code จาก repository นี้ไปแล้ว  
-#### 1. สั่งให้ build docker image (เช็ค `Dockerfile`)
+#### 1. สั่งให้ Build Docker Image (เช็ค `Dockerfile`)
   
   ```sh
     cd docker
@@ -232,7 +238,7 @@ Available end point
    ให้ทำการ Load ไฟล์ Image มาใช้แทนการ Pull (เหมือนการสตาร์ท Nodejs) ไฟล์อยู่ที่:
 
     ```sh
-    \\nas1\securities\SDP\user\prs\RabbitMQ\Docker Images\rabbitmq_3-management.tar
+    \\nas1\securities\SDP\user\prs\Projects\Rabbitmq\Docker Images\rabbitmq_3-management.tar
 
     // copy ไปที่ server แล้ว Load ขึ้น Docker
     docker load -i rabbitmq_3-management.tar
