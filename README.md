@@ -197,35 +197,30 @@
 
 
 ## วิธีสตาร์ท
-หลังลง dependencies แล้ว ให้ config node ในไฟล์ env_new_container.sh จากนั้น set environment ตามที่ config โดยสั่ง
+หลังลง dependencies แล้ว ให้ config node ในไฟล์ env_new_container.sh  
+แล้วเช็คว่า environment ถูก config ด้วยคำสั่ง `echo $RB_RPCQUEUE` (จะ echo ตาม config)  
+แล้วสั่ง  shell start
 
-  ```sh
-  . env_new_container.sh
   ```
-
-เช็คว่า environment ถูก config ด้วยคำสั่ง `echo $RB_RPCQUEUE` (จะ echo ตาม config) แล้วสั่ง  shell start
-  ```
-  npm_start.sh
+  npm_start.sh start
 
   // or
 
-  ./npm_start.sh
+  ./npm_start.sh start
   ```
-  - เป็น shell สำหรับ npm start โดยใช้ env จาก config ที่เซ็ต
+  - เป็น shell สำหรับ npm start โดยใช้ env จาก config ที่เซ็ตไว้
 
-ถ้าต้องการ Config เอง (ตามตาราง ENVIRONMENT) ให้ใส่ชื่อ env และค่าก่อน `npm start`
+  คำสั่งอื่น ๆ
+
+  ```sh
+  npm_adm.sh help
+  ```
+
+ถ้าต้องการ Config เอง (ตามตาราง ENVIRONMENT) ให้ใส่ชื่อ env และค่า ก่อน `npm start`  เช่น  
+
   ```
   NODE_ENV=production npm start
   ```
-
-   - for production (ถ้าไม่ใส่เหมือนข้างบน จะเป็น development โดย Default)
-   - เห็น log เก็บ log ลงไฟล์, ไม่เก็บและไม่เห็น logdev
-   
-default NODE_ENV คือ development  
-default port คือ **15673**  
-default uri amqp คือ amqp://localhost  
-config อื่นๆ ให้อิงตามที่ **ENVIRONMENT LIST**  
-
 
 ตัวอย่าง ถ้า rabbitmq อยู่บน docker ต้องใช้ uri amqp ของ container นั้น  
 
