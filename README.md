@@ -457,15 +457,15 @@ Test with nodejs on docker exec
 |  |  |   |  |  |
 | **RabbitMQ** |  |  |   |  |
 |  |  |   |  |  |
-|~~RBHOSTNAME~~|~~localhost~~| ~~any hostname~~ | ~~ไม่ใช้งาน~~ | ~~hostname ในการเชื่อมต่อจาก nodejs ไปที่ rabbitmq-server~~|
-|~~RBPOR~~T|~~15672~~|~~any~~| ~~ไม่ใช้งาน~~ | ~~เลข port~~ |
+|~~RBHOSTNAME~~|~~localhost~~| ~~any hostname~~ | ~~`ไม่ใช้งาน`~~ | ~~hostname ในการเชื่อมต่อจาก nodejs ไปที่ rabbitmq-server~~|
+|~~RBPOR~~T|~~15672~~|~~any~~| ~~`ไม่ใช้งาน`~~ | ~~เลข port~~ |
 |AMQPURI| amqp://localhost | any string||hostname ในการเชื่อมต่อจาก nodejs ไปที่ rabbitmq-server|
 |  |  |   |  |  |
 | **QUEUE** |  |  |   |  |
 |  |  |   |  |  |
-|SELFQUEUE| rabbit.reply-to | any | ~~ไม่ใช้งาน~~ - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
+|SELFQUEUE| rabbit.reply-to | any | ~~`ไม่ใช้งาน`~~ - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
 |RPCQUEUE| test_queue | any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DIRECTQUEUE| directQueue | any | ~~ไม่ใช้งาน~~ | ส่ง message เข้า direct queue |
+|DIRECTQUEUE| directQueue | any | ~~`ไม่ใช้งาน`~~ | ส่ง message เข้า direct queue |
 |  |  |   |  |  |
 | **DATABASE** |  |  |   |  |
 |  |  |   |  |  |
