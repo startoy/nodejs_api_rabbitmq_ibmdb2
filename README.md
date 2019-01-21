@@ -48,88 +48,86 @@
 ---
 
 ## Build Step
-เมื่อดาวโหลด source code จาก repository นี้ไปแล้ว  
-
-  1. สั่งให้ build docker image (เช็ค `Dockerfile`)
+### เมื่อดาวโหลด source code จาก repository นี้ไปแล้ว  
+#### 1. สั่งให้ build docker image (เช็ค `Dockerfile`)
   
-      ```sh
-        cd docker
-        chmod +x build.sh
-        ./build.sh <version>
-      ```
- - version ใส่เวอร์ชัน เช่น 19.01.DB.01 (ถ้าไม่ใส่ จะได้ TAG latest)
+  ```sh
+    cd docker
+    chmod +x build.sh
+    ./build.sh <version>
+  ```
+  - version ใส่เวอร์ชัน เช่น 19.01.DB.01 (ถ้าไม่ใส่ จะได้ TAG latest)
       
-      ```sh
-        REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-        fwg/nodejs-api      19.01.DB.01         8b073de4d04b        8 seconds ago       836MB 
-      ```
+  ```sh
+    REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+    fwg/nodejs-api      19.01.DB.01         8b073de4d04b        8 seconds ago       836MB 
+  ```
     
-      จะได้ไฟล์ **nodejs-api_$VERSION.tar** และ **image_version.cnf** (todo: ไว้ใช้ตรวจ version)
+  จะได้ไฟล์ **nodejs-api_$VERSION.tar** และ **image_version.cnf** (todo: ไว้ใช้ตรวจ version)
 
-  2. หลังจากได้ Image ไฟล์ ให้ copy ไฟล์ไปวางไว้ที่ server ที่ deploy แล้ว Load image ขึ้น Docker ด้วยคำสั่ง
+#### 2. หลังจากได้ Image ไฟล์ ให้ copy ไฟล์ไปวางไว้ที่ server ที่ deploy แล้ว Load image ขึ้น Docker ด้วยคำสั่ง
 
-      ```sh
-      docker load -i nodejs-api_$VERSION.tar
-      ```
+  ```sh
+  docker load -i nodejs-api_$VERSION.tar
+  ```
 
-      เช็คว่ามี Image จากคำสั่ง
+  เช็คว่ามี Image จากคำสั่ง
 
-      ```sh
-      docker images
-          REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-          fwg/nodejs-api      19.01.DB.01         8b073de4d04b        8 seconds ago       836MB
-      ```
-      
-      ทุกอย่างจะตรงกัน (รวมไปถึงเวลา CREATED)
-
-  3. สร้าง Container จาก Image ด้วยคำสั่ง 'node_adm.sh create <TAG_version> <ชื่อ>'
-
-      พวก environment ในการ config จะอยู่ที่ไฟล์ env_new_container.sh
-
-      ```sh
-      node_adm.sh create 19.01.DB.01
-      
-      // or (optionally)
-      node_adm.sh create 19.01.DB.01 container-name
-      ```
-      
-  4. ดู container สตาร์ทและใช้งานได้จริงจากคำสั่ง
-            
-      ```sh
-      docker ps
-      ```
-
-      ```sh
-      curl localhost:15673/version
-      ```
-
-  5. ดู Container log (พวกที่ออก Console ของ Nodejs) จากคำสั่ง
-
-      ```sh
-      docker logs 771 -f 
-      ```
-
-  - **771** 3 ตัวแรกของ Container ID/ชื่อ Container
-  - Log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
+  ```sh
+  docker images
+      REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+      fwg/nodejs-api      19.01.DB.01         8b073de4d04b        8 seconds ago       836MB
+  ```
   
-    ```sh
-    2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
-    ```
+  ทุกอย่างจะตรงกัน (รวมไปถึงเวลา CREATED)
 
-6. อื่นๆ  
+#### 3. สร้าง Container จาก Image ด้วยคำสั่ง 'node_adm.sh create <TAG_version> <ชื่อ>'
 
-    ดูจาก 
-    ```sh
-    node_adm.sh
-    ```
+  พวก environment ในการ config จะอยู่ที่ไฟล์ env_new_container.sh
 
-    - **deploy** copy from deploy/* to app/ on container แล้ว run ให้ใหม่
-    - **log** ดู log  
-    ...  
+  ```sh
+  node_adm.sh create 19.01.DB.01
+  
+  // or (optionally)
+  node_adm.sh create 19.01.DB.01 container-name
+  ```
+      
+#### 4. ดู container สตาร์ทและใช้งานได้จริงจากคำสั่ง
+        
+  ```sh
+  docker ps
+  ```
 
-  **ที่สำคัญ**  
-    - **node_adm.sh config \<cid>** เป็นการเขียนไฟล์เพื่อใช้ container id เป็น default  
-    - ถ้าไม่มี ต้อง pass cid เข้าไปตามพวกคำสั่ง **deploy \<cid>**, **start \<cid>**
+  ```sh
+  curl localhost:15673/version
+  ```
+
+#### 5. ดู Container log (พวกที่ออก Console ของ Nodejs) จากคำสั่ง  
+
+  ```sh
+  docker logs 771 -f 
+  ```
+
+- **771** 3 ตัวแรกของ Container ID/ชื่อ Container
+- Log pattern `':date[iso] : :method :url :status :response-time ms - :res[content-length]'`
+
+
+  ```sh
+  2018-12-29T03:17:21.543Z : POST /rpc/test_queue/AMU1017,10170012%20%20,1,10 404 18.899 ms - 1316
+  ```  
+
+#### 6. อื่นๆ  
+
+  ```sh
+  node_adm.sh
+  ```
+
+- **deploy** copy from deploy/* to app/ on container แล้ว run ให้ใหม่  
+- **log** ดู log  
+
+**ที่สำคัญ**  
+  - **node_adm.sh config \<cid>** เป็นการเขียนไฟล์เพื่อใช้ container id เป็น default  
+  - ถ้าไม่มี ต้อง pass cid เข้าไปตามพวกคำสั่ง **deploy \<cid>**, **start \<cid>**
 
 ---
 
