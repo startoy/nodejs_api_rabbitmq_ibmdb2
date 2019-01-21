@@ -358,17 +358,19 @@ Available end point
   ```
   TypeError: Cannot read property 'createChannel' of undefined
   ``` 
- - Change the uri, Dedicate that not found specific uri.
-## COMMAND
-  ```sh
-  // Go in container
+ - Change the uri, Dedicate that not found specific uri.  
+
+## COMMAND  
+  ```sh  
+  // Go in container  
   docker exec -it <id> sh
 
   // execute <command> to container (ex. npm start)
   docker exec -it <id> <command>
-  ```
+  ```  
 
-- ถ้าใช้ sh ไม่ได้ ให้ใช้ bash แล้วไปลง vim บน container (ใช้ internet)
+- ถ้าใช้ sh ไม่ได้ ให้ใช้ bash แล้วไปลง vim บน container (ใช้ internet)  
+
   ```sh
   docker exec -it <container> bash
   apt-get update
