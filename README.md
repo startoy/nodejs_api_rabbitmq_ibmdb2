@@ -445,37 +445,37 @@ Test with nodejs on docker exec
 ---
 ## Environment Configuration
 
-| VARIABLE | DEFAULT | EXPECTED | REMARK  | DESCRIPTION |
+| **VARIABLE** | **DEFAULT** | **EXPECTED** | **REMARK**  | **DESCRIPTION** |
 | -------- | :------ | :------  | :------ | :------ |
-|NODE_ENV|`development` | `production` or `development` || mode ของ environment มีผลต่อการแสดง Log |
-|WRITEDATALOGCONSOLE|`no`|`yes` or `no`||แสดง Data Log ไปที่ console (data ที่มาจาก okury และ db) |
-|WRITEDBLOGCONSOLE|`yes`|`yes` or `no`||แสดง Database Log ไปที่ console |
-|WRITENODELOGCONSOLE|`yes`|`yes` or `no`||แสดง Node Log ไปที่ console|
-|ENABLEDB2|`yes`|`yes` or `no`| |เปิดใช้งาน Router ในส่วนที่เชื่อมต่อกับ DB2 |
+|NODE_ENV| development | production or development || mode ของ environment มีผลต่อการแสดง Log |
+|WRITEDATALOGCONSOLE| no | yes or no ||แสดง Data Log ไปที่ console (data ที่มาจาก okury และ db) |
+|WRITEDBLOGCONSOLE| yes | yes or no ||แสดง Database Log ไปที่ console |
+|WRITENODELOGCONSOLE| yes | yes or no ||แสดง Node Log ไปที่ console|
+|ENABLEDB2| yes | yes or no | |เปิดใช้งาน Router ในส่วนที่เชื่อมต่อกับ DB2 |
 |REPLYWAITTIME|6000|number(ms)||เวลาในการรอตอบกลับจาก Okury |
 |PAGESIZE|20|number(ms)||ขนาด page |
-| -------- | ------ | ------  | ------ | ------ |
+|  |  |   |  |  |
 | **RabbitMQ** |  |  |   |  |
-| -------- | ------ | ------  | ------ | ------ |
+|  |  |   |  |  |
 |~~RBHOSTNAME~~|~~`localhost`~~| ~~any hostname~~ | ไม่ใช้งาน | ~~hostname ในการเชื่อมต่อจาก nodejs ไปที่ rabbitmq-server~~|
 |~~RBPOR~~T|~~`15672`~~|~~any~~| ไม่ใช้งาน | ~~เลข port~~ |
-|AMQPURI| `amqp://localhost` | any string||hostname ในการเชื่อมต่อจาก nodejs ไปที่ rabbitmq-server|
-| -------- | ------ | ------  | ------ | ------ |
+|AMQPURI| amqp://localhost | any string||hostname ในการเชื่อมต่อจาก nodejs ไปที่ rabbitmq-server|
+|  |  |   |  |  |
 | **QUEUE** |  |  |   |  |
-| -------- | ------ | ------  | ------ | ------ |
-|SELFQUEUE|`rabbit.reply-to`| any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
-|RPCQUEUE|`test_queue`| any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
-|DIRECTQUEUE| `directQueue`| any | ไม่ใช้งาน | ส่ง message เข้า direct queue |
-| -------- | ------ | ------  | ------ | ------ |
+|  |  |   |  |  |
+|SELFQUEUE| rabbit.reply-to | any | ไม่ใช้งาน - Auto gen | ชื่อ queue ของตัวเอง ให้คนอื่นตอบกลับ |
+|RPCQUEUE| test_queue | any |  | ชื่อ rpc queue เพื่อส่ง message ไป (okruy รอรับ) |
+|DIRECTQUEUE| directQueue | any | ไม่ใช้งาน | ส่ง message เข้า direct queue |
+|  |  |   |  |  |
 | **DATABASE** |  |  |   |  |
-| -------- | ------ | ------  | ------ | ------ |
-|DBCODEPAGE|`874`| any |  | CodePage ที่คุยกันระหว่าง DB2-CLI กับ Server |
-|DBHOST|`10.22.19.13`| any | | ชื่อ host |
-|DBPORT| `50001`| any | | port |
-|DBNAME|`fisdb_nt`| any | | ชื่อ database |
-|DBTABLE|`SECCALLFORCERATETAB`| any | | ชื่อ table |
-|DBUSER| `db2inst1`| any | | login username |
-|DBPWD| `db2inst1`| any | | login password |
+|  |  |   |  |  |
+|DBCODEPAGE|874| any |  | CodePage ที่คุยกันระหว่าง DB2-CLI กับ Server |
+|DBHOST|10.22.19.13| any | | ชื่อ host |
+|DBPORT| 50001| any | | port |
+|DBNAME|fisdb_nt| any | | ชื่อ database |
+|DBTABLE|SECCALLFORCERATETAB| any | | ชื่อ table |
+|DBUSER| db2inst1| any | | login username |
+|DBPWD|db2inst1| any | | login password |
 
 ---
 ## Fix Terminated Container  
